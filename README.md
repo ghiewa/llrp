@@ -23,4 +23,5 @@ List of function I implement base on we used. So if you want to add more functio
  ## Issue 
  Received oversize incoming message while run long period
 >We fixed by reset & reconfigure them (it's take ~ 10 - 20 second).If you have another way to fixed it.Feel free to contact me fixed in this package. 
-
+## main developer
+Pichit Rintara (Thailand)
