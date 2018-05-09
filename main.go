@@ -290,6 +290,7 @@ func onloop() {
 			response_test(buf, reqLen)
 		case <-something_wrong_here:
 			fmt.Printf("\n***************detecting error : %d , Will reconnecting", reqLen)
+			panic(fmt.Sprintf("buf full %d", reqLen))
 			be_offline <- true
 		case <-cmd:
 			if !online {
@@ -305,6 +306,7 @@ func onloop() {
 				break
 				panic("Wrong cmd")
 			}
+
 			if args == 0 {
 				// set all gpo
 				conn.Write(SET_READER_CONFIG(messageId, false,
