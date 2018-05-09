@@ -3,7 +3,7 @@ package main
 import (
 	. "./llrp"
 	"fmt"
-	"io"
+	//"io"
 	"net"
 	"reflect"
 	"time"
@@ -243,9 +243,8 @@ func test_enable_ro() {
 func onloop() {
 	// will loop send gpi request [bypass ack send] & get response both gpi response & ro report
 	var (
-		send_gpi_req         = time.NewTicker(time.Millisecond * 4000).C
-		send_keep_alive      = time.NewTicker(time.Second + 40)
-		test_toggle_gpo      = time.NewTicker(time.Millisecond * 15000).C
+		send_gpi_req = time.NewTicker(time.Millisecond * 4000).C
+		//test_toggle_gpo      = time.NewTicker(time.Millisecond * 15000).C
 		time_delay           = time.Second * 15
 		reconnect            = time.NewTicker(time.Hour * 24).C
 		be_offline           = make(chan bool)
@@ -285,7 +284,7 @@ func onloop() {
 			}()
 		}
 		select {
-		case <-send_keep_alive:
+		//case <-send_keep_alive:
 		case <-msg:
 			response_test(buf, reqLen)
 		case <-something_wrong_here:
