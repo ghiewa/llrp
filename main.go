@@ -347,7 +347,7 @@ func onloop() {
 			if online {
 				continue
 			}
-			conn, err = net.Dial("udp", ip+":"+port)
+			conn, err = net.Dial("tcp", ip+":"+port)
 			if err != nil {
 				fmt.Errorf(err.Error())
 				continue
@@ -381,7 +381,7 @@ func set_gpo_cmd(port int, state bool) {
 }
 
 func init() {
-	conn, err = net.Dial("udp", ip+":"+port)
+	conn, err = net.Dial("tcp", ip+":"+port)
 	if err != nil {
 		fmt.Errorf(err.Error())
 		return
