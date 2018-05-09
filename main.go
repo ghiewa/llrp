@@ -272,6 +272,7 @@ func onloop() {
 	for {
 		if online {
 			go func() {
+
 				reqLen, err = conn.Read(buf)
 				if err != nil {
 					be_offline <- true
@@ -346,7 +347,7 @@ func onloop() {
 			if online {
 				continue
 			}
-			conn, err = net.Dial("tcp", ip+":"+port)
+			conn, err = net.Dial("udp", ip+":"+port)
 			if err != nil {
 				fmt.Errorf(err.Error())
 				continue
