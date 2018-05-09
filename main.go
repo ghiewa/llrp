@@ -381,7 +381,7 @@ func set_gpo_cmd(port int, state bool) {
 }
 
 func init() {
-	conn, err = net.DialUDP("udp", ip+":"+port)
+	conn, err = net.Dial("udp", ip+":"+port)
 	if err != nil {
 		fmt.Errorf(err.Error())
 		return
