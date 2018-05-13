@@ -302,12 +302,7 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 	// Stack based buffer.
 
 	b := make([]byte, defaultBufSize)
-	log.Debugf("looping 1", nc.mu)
-	nc.mu.Lock()
 	conn := nc.conn
-	log.Debugf("looping 2", nc.mu)
-	nc.mu.Unlock()
-	log.Debugf("looping 3", nc.mu)
 
 	for {
 		if conn == nil {
