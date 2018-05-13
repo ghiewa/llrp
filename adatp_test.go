@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	card_evt bool
+	card_evt bool = true
 )
 
 func handler(msg *Msg) {
