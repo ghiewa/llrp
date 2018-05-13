@@ -221,10 +221,10 @@ func (nc *RConn) waitForMsgs(s *Subscription) {
 	)
 	for {
 		log.Debugf("waitForMsgs")
+		s.mu.Lock()
 		if s.pHead == nil && !s.closed {
 			s.pCond.Wait()
 		}
-		s.mu.Lock()
 		log.Debugf("flow ")
 		// pop msg from list
 		m := s.pHead
