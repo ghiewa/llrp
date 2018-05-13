@@ -4,6 +4,7 @@ import (
 	"bufio"
 	log "github.com/sirupsen/logrus"
 	"os"
+	"reflect"
 	"testing"
 )
 
