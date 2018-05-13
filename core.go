@@ -303,6 +303,7 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 		}
 		log.Debugf("reading loop")
 		n, err := conn.Read(b)
+		log.Debugf("reading 2", len(b))
 		if err != nil {
 			log.Errorf("readLoop op error %d", n)
 			nc.processOpErr(err)
@@ -431,7 +432,6 @@ func (nc *RConn) processConnectInit() (err error) {
 		return err
 	}
 	nc.kickFlusher()
-
 	go nc.spinUpGoRoutines()
 	return nil
 }
