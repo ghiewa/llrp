@@ -172,6 +172,7 @@ func (nc *RConn) connect(host string) error {
 	log.Debugf("process connect init")
 	err := nc.processConnectInit()
 	if err != nil {
+		log.Errorf("processConnectInit not success : %v", err)
 		nc.mu.Unlock()
 		nc.close(DISCONNECTED, false)
 		return err
