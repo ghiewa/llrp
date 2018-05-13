@@ -179,6 +179,7 @@ func (nc *RConn) connect(host string) error {
 }
 
 func (cnc *Conn) subscribe(cb MsgHandler, ch chan *Msg) ([]*Subscription, error) {
+	log.Debugf("sbfn")
 	if cb == nil {
 		return nil, ErrBadSubscription
 	}
