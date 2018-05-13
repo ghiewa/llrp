@@ -39,7 +39,6 @@ func (nc *RConn) publish(data []byte) error {
 	if nc == nil {
 		return ErrInvalidConnection
 	}
-
 	nc.mu.Lock()
 	if nc.isClosed() {
 		nc.mu.Unlock()
@@ -161,8 +160,6 @@ func (nc *RConn) flusher(wg *sync.WaitGroup) {
 
 // connect to reader
 func (nc *RConn) connect(host string) error {
-	nc.mu.Lock()
-	defer nc.mu.Unlock()
 	nc.initc = true
 	log.Debugf("start connecting")
 	if err := nc.createConn(host); err != nil {
@@ -191,8 +188,6 @@ func (cnc *Conn) subscribe(cb MsgHandler, ch chan *Msg) ([]*Subscription, error)
 	)
 	for id, ncc := range cnc.readers {
 		nc := ncc.conn
-		nc.mu.Lock()
-		defer nc.mu.Unlock()
 		defer nc.kickFlusher()
 		// check error condition
 		log.Debugf("subscribe : %s", id)
@@ -295,7 +290,9 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 	b := make([]byte, defaultBufSize)
 	for {
 		log.Debugf("looping")
+		nc.mu.Lock()
 		conn := nc.conn
+		nc.mu.Unlock()
 		if conn == nil {
 			break
 		}
