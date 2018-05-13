@@ -51,8 +51,7 @@ func loop(t *testing.T) {
 		}
 
 	}
-
-	log.Info("subscribe")
+	host.Subscription(handler)
 	var text string
 	var err error
 	for false {
