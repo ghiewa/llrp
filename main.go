@@ -140,8 +140,8 @@ func main() {
 			card_evt = true
 		case "io":
 			log.Infof("sample command please enter number(0-2)")
-			text, _ = reader.ReadString('\n')
-			switch text {
+			scanner.Scan()
+			switch scanner.Text() {
 			case "0":
 				// set gpo all open state // 0 = close , 1 = open , 2 = igonre
 				// GPOset(id,port_state ...)  - set 4 port open state
