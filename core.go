@@ -17,7 +17,8 @@ func (nc *Conn) registry(sp *SPReaderInfo) error {
 	// add to Conn
 	nc.readers[sp.Id] = sp
 	sp.conn = &RConn{
-		opts: &nc.Opts,
+		opts:        &nc.Opts,
+		initCommand: sp.InitCommand,
 	}
 
 	sp.conn.ach = make(chan asyncCB, asyncCBChanSize)
@@ -356,11 +357,29 @@ func (nc *RConn) processConnectInit() (err error) {
 	nc.status = CONNECTING
 
 	// process init commands ( reset factory / set gpo off and so on..
+
 	err = nc.bw.Flush()
 	if err != nil {
 		return err
 	}
-	nc.status = CONNECTED
+	err = nc.sendPrefixCommand()
+	if err != nil {
+		return err
+	}
+
+	go nc.spinUpGoRoutines()
+	return nil
+}
+func (nc *RConn) sendPrefixCommand() error {
+	nc.mu.Lock()
+	defer nc.mu.Unlock()
+	for _, k := range nc.initCommand {
+		_, err := nc.bw.Write(k)
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 

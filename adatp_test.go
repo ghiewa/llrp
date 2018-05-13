@@ -19,10 +19,12 @@ func handler(code int, msg *Msg) {
 
 }
 
-func TestReaderSub(t *testing.T) {
+func TestM(t *testing.T) {
+	t.Run("th", thread)
+}
+func thread() {
 	opt := GetDefaultOptions()
 	host := opt.NewConn()
-
 	readers := []*SPReaderInfo{
 		&SPReaderInfo{
 			Id:   "random_reader_id",

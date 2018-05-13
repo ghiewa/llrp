@@ -185,6 +185,7 @@ type RConn struct {
 	ptmr        *time.Timer
 	pout        int
 	sub         *Subscription
+	initCommand [][]byte
 }
 
 type SPReaderInfo struct {
