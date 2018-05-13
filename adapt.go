@@ -4,11 +4,13 @@ func (o Options) NewConn() *Conn {
 	if o.ReconnectBufSize == 0 {
 		o.ReconnectBufSize = DefaultReconnectBufSize
 	}
+
 	if o.Timeout == 0 {
 		o.Timeout = DefaultTimeout
 	}
 	return &Conn{
-		Opts: o,
+		Opts:    o,
+		readers: make(map[string]*SPReaderInfo),
 	}
 }
 func (nc *Conn) Registry(reader *SPReaderInfo) error {
