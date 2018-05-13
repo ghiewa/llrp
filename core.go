@@ -436,7 +436,9 @@ func (nc *RConn) processConnectInit() (err error) {
 		return err
 	}
 	log.Debugf("sendPrefixCommand")
+	nc.mu.Lock()
 	err = nc.sendPrefixCommand()
+	nc.mu.Unlock()
 	if err != nil {
 		log.Errorf("Can't sendPrefixCommand ")
 		return err
