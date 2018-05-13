@@ -98,7 +98,6 @@ func (c *RConn) createConn(host string) (err error) {
 		c.bw.Flush()
 	}
 	log.Debugf("create bufio")
-
 	c.bw = bufio.NewWriterSize(c.conn, defaultBufSize)
 	return nil
 }
@@ -431,6 +430,7 @@ func (nc *RConn) processConnectInit() (err error) {
 		log.Errorf("Can't sendPrefixCommand ")
 		return err
 	}
+	nc.kickFlusher()
 
 	go nc.spinUpGoRoutines()
 	return nil
