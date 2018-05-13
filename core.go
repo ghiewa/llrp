@@ -92,11 +92,13 @@ func (c *RConn) createConn(host string) (err error) {
 		c.err = err
 		return err
 	}
+	log.Infof("dial to %s", host)
 	if c.pending != nil && c.bw != nil {
 		// move to pending buffer.
 		c.bw.Flush()
 	}
 	log.Debugf("create bufio")
+
 	c.bw = bufio.NewWriterSize(c.conn, defaultBufSize)
 	return nil
 }
@@ -134,7 +136,6 @@ func (nc *RConn) flusher(wg *sync.WaitGroup) {
 	if nc.conn == nil || nc.bw == nil {
 		return
 	}
-
 	for {
 		nc.mu.Lock()
 		defer nc.mu.Unlock()
@@ -433,9 +434,9 @@ func (nc *RConn) processConnectInit() (err error) {
 	return nil
 }
 func (nc *RConn) sendPrefixCommand() error {
+	log.Debugf("send init command")
 	nc.mu.Lock()
 	defer nc.mu.Unlock()
-	log.Debugf("loop init command")
 	for _, k := range nc.initCommand {
 		i, err := nc.bw.Write(k)
 		log.Debugf("write command %d", i)
