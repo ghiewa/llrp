@@ -43,7 +43,6 @@ func loop(t *testing.T) {
 			},
 		},
 	}
-
 	log.Info("registry")
 	for _, reader := range readers {
 		// doReconnected when loss signal
@@ -53,7 +52,9 @@ func loop(t *testing.T) {
 		}
 
 	}
+
 	host.Subscription(handler)
+
 	log.Info("subscribe")
 	var text string
 	var err error

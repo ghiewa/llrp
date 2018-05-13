@@ -409,15 +409,13 @@ func (nc *RConn) processConnectInit() (err error) {
 
 	// process init commands ( reset factory / set gpo off and so on..
 
-	log.Debugf("do flush %s", nc.sub.Id)
 	err = nc.bw.Flush()
 	if err != nil {
 		return err
 	}
-	log.Debugf("sendPrefixCommand %s", nc.sub.Id)
 	err = nc.sendPrefixCommand()
 	if err != nil {
-		log.Errorf("Can't sendPrefixCommand %s", nc.sub.Id)
+		log.Errorf("Can't sendPrefixCommand ")
 		return err
 	}
 
