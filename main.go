@@ -16,11 +16,12 @@ var (
 )
 
 func handler(msg *Msg) {
-	log.Warnf("--- Form %s", msg.From.Id)
 	for _, k := range msg.Reports {
 		switch k.(type) {
 		case *ROAccessReportResponse:
-			if card_evt || long_run {
+
+			if card_evt {
+				log.Warnf("--- Form %s", msg.From.Id)
 				kk := k.(*ROAccessReportResponse)
 				if kk.Data != nil {
 					log.Infof("[RO][%d][%s]", kk.MsgId, kk.Data.EPC_96)
@@ -33,6 +34,12 @@ func handler(msg *Msg) {
 					count = 0
 				} else {
 					count++
+				}
+			} else if long_run {
+				log.Warnf("--- Form %s", msg.From.Id)
+				kk := k.(*ROAccessReportResponse)
+				if kk.Data != nil {
+					log.Infof("[RO][%d][%s]", kk.MsgId, kk.Data.EPC_96)
 				}
 			}
 		case *DELETE_ROSPEC_RESPONSE:
