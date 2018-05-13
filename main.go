@@ -1,4 +1,4 @@
-package llrp
+package main
 
 import (
 	. "./llrp"
@@ -9,7 +9,10 @@ import (
 )
 
 var (
-	card_evt bool = true
+	card_evt   bool = true
+	count           = 0
+	card_limit      = 50
+	long_run   bool
 )
 
 func handler(msg *Msg) {
@@ -17,12 +20,19 @@ func handler(msg *Msg) {
 	for _, k := range msg.Reports {
 		switch k.(type) {
 		case *ROAccessReportResponse:
-			if card_evt {
+			if card_evt || long_run {
 				kk := k.(*ROAccessReportResponse)
 				if kk.Data != nil {
 					log.Infof("[RO][%d][%s]", kk.MsgId, kk.Data.EPC_96)
 				} else {
 					log.Infof("\n[RO]")
+				}
+				if card_limit > count {
+					card_evt = false
+					log.Warnf("[RO] We pause card logs here.")
+					count = 0
+				} else {
+					count++
 				}
 			}
 		case *DELETE_ROSPEC_RESPONSE:
@@ -110,7 +120,7 @@ func main() {
 	var err error
 	for {
 		err = nil
-		log.Infof("Please enter command\nreader - list of readers\nnce - disable card event log\nce - enable card event log \nio - control gpo/get gpi state")
+		log.Infof("Please enter command\nreader - list of readers\nnce - disable card event log\nce - enable card event log \nio - control gpo/get gpi state\nlong - long run to test card logs")
 		scanner := bufio.NewScanner(os.Stdin)
 		scanner.Scan()
 		text = scanner.Text()
@@ -118,6 +128,8 @@ func main() {
 			break
 		}
 		switch text {
+		case "long":
+			long_run = !long_run
 		case "reader":
 			log.Infof("List Readers : %v", host.ListReader())
 		case "ne":
