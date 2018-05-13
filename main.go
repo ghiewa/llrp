@@ -9,38 +9,19 @@ import (
 )
 
 var (
-	card_evt   bool = true
-	count           = 0
-	card_limit      = 50
-	long_run   bool
+	card_evt bool = true
 )
 
 func handler(msg *Msg) {
 	for _, k := range msg.Reports {
 		switch k.(type) {
 		case *ROAccessReportResponse:
-
-			if card_evt {
-				log.Warnf("--- Form %s", msg.From.Id)
-				kk := k.(*ROAccessReportResponse)
-				if kk.Data != nil {
-					log.Infof("[RO][%d][%s]", kk.MsgId, kk.Data.EPC_96)
-				} else {
-					log.Infof("\n[RO]")
-				}
-				if card_limit < count {
-					card_evt = false
-					log.Warnf("[RO] We pause card logs here.")
-					count = 0
-				} else {
-					count++
-				}
-			} else if long_run {
-				log.Warnf("--- Form %s", msg.From.Id)
-				kk := k.(*ROAccessReportResponse)
-				if kk.Data != nil {
-					log.Infof("[RO][%d][%s]", kk.MsgId, kk.Data.EPC_96)
-				}
+			log.Warnf("--- Form %s", msg.From.Id)
+			kk := k.(*ROAccessReportResponse)
+			if kk.Data != nil {
+				log.Infof("[RO][%d][%s]", kk.MsgId, kk.Data.EPC_96)
+			} else {
+				log.Infof("\n[RO]")
 			}
 		case *DELETE_ROSPEC_RESPONSE:
 			kk := k.(*DELETE_ROSPEC_RESPONSE)
@@ -136,7 +117,6 @@ func main() {
 		}
 		switch text {
 		case "long":
-			long_run = !long_run
 		case "reader":
 			log.Infof("List Readers : %v", host.ListReader())
 		case "ne":
