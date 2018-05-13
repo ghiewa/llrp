@@ -203,8 +203,8 @@ func (cnc *Conn) subscribe(cb MsgHandler, ch chan *Msg) ([]*Subscription, error)
 		}
 		sub.pMsgsLimit = DefaultSubPendingMsgsLimit
 		sub.pBytesLimit = DefaultSubPendingBytesLimit
-
 		sub.pCond = sync.NewCond(&sub.mu)
+		nc.sub = sub
 		go nc.waitForMsgs(sub)
 
 		log.Debugf("loc  2k")
