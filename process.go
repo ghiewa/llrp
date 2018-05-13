@@ -40,8 +40,7 @@ func (nc *RConn) sendReport(reports []interface{}, len_data int) {
 // sent process message via subscript events
 func (nc *RConn) process(b []byte, len_data int) error {
 	// cut header & messageId
-
-	log.Debugf("process")
+	log.Debugf("incomming package %d", len_data)
 	var (
 		walk              = 0
 		get_resp          *GetConfigResponse
