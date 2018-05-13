@@ -8,6 +8,7 @@ import (
 
 func (nc *RConn) sendReport(reports []interface{}, len_data int) {
 	nc.subsMu.RLock()
+	log.Debugf("send reports")
 	nc.InMsgs++
 	nc.InBytes += uint64(len_data)
 	sub := nc.sub
@@ -39,6 +40,8 @@ func (nc *RConn) sendReport(reports []interface{}, len_data int) {
 // sent process message via subscript events
 func (nc *RConn) process(b []byte, len_data int) error {
 	// cut header & messageId
+
+	log.Debugf("process")
 	var (
 		walk              = 0
 		get_resp          *GetConfigResponse

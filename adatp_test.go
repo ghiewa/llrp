@@ -16,7 +16,6 @@ func handler(msg *Msg) {
 		log.Infof("evt %v", msg.Reports)
 	}
 	// msg.From - reader id
-
 }
 
 func TestM(t *testing.T) {
