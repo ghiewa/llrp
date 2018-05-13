@@ -1,0 +1,136 @@
+package llrp
+
+import (
+//"net"
+)
+
+// prepare reader to make sure everything ok.
+func (reader *SPReader) setup_reader() {
+	reader.mu.Lock()
+	defer reader.mu.Unlock()
+	conn := reader.conn
+	// factory
+	conn.Write(
+		SET_READER_CONFIG(
+			messageIdMap["resettofactory"],
+			true,
+		),
+	)
+	// delete setting
+	conn.Write(
+		DEL_ROSPEC(
+			messageIdMap["delro"],
+			0,
+		),
+	)
+	conn.Write(
+		CustomPack(
+			M_DELETE_ACCESSSPEC,
+			messageIdMap["delacc"],
+			[]interface{}{
+				uint32(0),
+			},
+		),
+	)
+	// set extension
+	vendor := uint32(25882)
+	subtype := uint8(21)
+	reserve := uint32(0)
+	conn.Write(
+		CustomPack(
+			M_CUSTOM_MESSAGE,
+			messageIdMap["extension"],
+			[]interface{}{
+				vendor,
+				subtype,
+				reserve,
+			},
+		),
+	)
+	// setting
+	conn.Write(
+		SET_READER_CONFIG(
+			messageIdMap["set_gpi"],
+			false,
+			gPIPortCurrentState_Param(1, 0, false),
+			gPIPortCurrentState_Param(2, 0, false),
+			gPIPortCurrentState_Param(3, 0, false),
+			gPIPortCurrentState_Param(4, 0, false),
+		),
+	)
+	conn.Write(
+		SET_READER_CONFIG(
+			messageIdMap["set_region"],
+			true,
+			CustomParameter(
+				vendor,
+				uint32(22),
+				uint16(14),
+			),
+		),
+	)
+	conn.Write(
+		SET_READER_CONFIG(
+			messageIdMap["set_gpo"],
+			false,
+			gPOWriteData_Param(1, true),
+			gPOWriteData_Param(2, true),
+			gPOWriteData_Param(3, true),
+			gPOWriteData_Param(4, true),
+		),
+	)
+	conn.Write(
+		SET_READER_CONFIG(
+			messageIdMap["set_event_spec"],
+			false,
+			ReaderEventNotification(
+				true, true, true,
+				true, true, false,
+				true, false, true,
+			),
+		),
+	)
+	conn.Write(
+		ADD_ROSPEC(
+			messageIdMap["addro"],
+			RoSpec(1234, 0, 0,
+				RoBoundSpec(1, 0, 0),
+				AISpec(2,
+					AISpecStopTrigger(0, 0),
+					InventoryParameterSpec(1234, 1,
+						AntennaConfiguration(1,
+							RFTransmitter(1, 0, 81),
+							C1G2InventoryCommand(0,
+								C1G2RFControl(1000, 0),
+								C1G2SingulationControl(0x80, 32, 0),
+								CustomParameter(uint32(25882), uint32(23), uint16(2)),
+								CustomParameter(uint32(25882), uint32(26), uint16(0), uint16(0), uint16(0)),
+								CustomParameter(uint32(25882), uint32(28), uint16(0), uint16(0), uint16(0)),
+							),
+						),
+						AntennaConfiguration(2,
+							RFTransmitter(1, 0, 81),
+							C1G2InventoryCommand(0,
+								C1G2RFControl(1000, 0),
+								C1G2SingulationControl(0x80, 32, 0),
+								CustomParameter(uint32(25882), uint32(23), uint16(2)),
+								CustomParameter(uint32(25882), uint32(26), uint16(0), uint16(0), uint16(0)),
+								CustomParameter(uint32(25882), uint32(28), uint16(0), uint16(0), uint16(0)),
+							),
+						),
+					),
+				),
+				RoReportSpec(2, 1,
+					TagReportContentSelector(0x1e40),
+				),
+			),
+		),
+	)
+	conn.Write(
+		ENABLE_ROSPEC(
+			messageIdMap["enable_ro"],
+			1234,
+		),
+	)
+
+}

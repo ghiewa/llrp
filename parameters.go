@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func GPIPortCurrentState_Param(port_number, status int, config bool) []interface{} {
+func gPIPortCurrentState_Param(port_number, status int, config bool) []interface{} {
 	_config := uint8(0)
 	if config {
 		_config += 1
@@ -18,7 +18,7 @@ func GPIPortCurrentState_Param(port_number, status int, config bool) []interface
 	}
 }
 
-func GPOWriteData_Param(port_number int, data bool) []interface{} {
+func gPOWriteData_Param(port_number int, data bool) []interface{} {
 	_data := uint8(0)
 	if data {
 		_data += 0x80

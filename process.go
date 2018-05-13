@@ -6,7 +6,38 @@ import (
 	//"strconv"
 )
 
-func Response(b []byte, len_data int) (reports []interface{}) {
+func (nc *RConn) sendReport(reports []interface{}, len_data int) {
+	nc.subsMu.RLock()
+	nc.InMsgs++
+	nc.InBytes += uint64(len_data)
+	sub := nc.sub
+	sub.mu.Lock()
+	sub.pMsgs++
+	if sub.pMsgs > sub.pMsgsMax {
+		sub.pBytesMax = sub.pMsgs
+	}
+	sub.pBytes += len_data
+	if sub.pBytes > sub.pBytesMax {
+		sub.pBytesMax = sub.pBytes
+	}
+	m := &Msg{
+		From:    nc.sub,
+		Reports: reports,
+	}
+	if sub.pHead == nil {
+		sub.pHead = m
+		sub.pTail = m
+		sub.pCond.Signal()
+	} else {
+		sub.pTail.next = m
+		sub.pTail = m
+	}
+	sub.mu.Unlock()
+	nc.subsMu.RUnlock()
+}
+
+// sent process message via subscript events
+func (nc *RConn) process(b []byte, len_data int) error {
 	// cut header & messageId
 	var (
 		walk              = 0
@@ -21,8 +52,11 @@ func Response(b []byte, len_data int) (reports []interface{}) {
 		err_resp          *ERROR_MESSAGE
 		dam_res           *MsgLoss
 		duticate_cards    = make(map[string]bool)
+		reports           []interface{}
+		vaild             = true
 	)
 	for len_data > 0 {
+		vaild = true
 		var (
 			ro_resp *ROAccessReportResponse
 		)
@@ -85,7 +119,8 @@ func Response(b []byte, len_data int) (reports []interface{}) {
 			dam_res = new(MsgLoss)
 			dam_res.Len = len_p
 			reports = append(reports, dam_res)
-			return reports
+			vaild = false
+			break
 		}
 		walk += 4
 		var (
@@ -142,6 +177,8 @@ func Response(b []byte, len_data int) (reports []interface{}) {
 				default:
 					// not implement yet(deletero , get cap , addro)
 					log.Errorf("\nnot implement")
+					vaild = false
+					continue
 				}
 			default:
 				// not implement yet will find len_ & skip parameter
@@ -150,9 +187,14 @@ func Response(b []byte, len_data int) (reports []interface{}) {
 			}
 			walk_pre = walk - walk_pre
 			len_pre -= walk_pre
-			//fmt.Printf("\nlen %d ,walk %d", len_pre, walk_pre)
 		}
 		len_data -= len_p
 	}
-	return
+
+	if vaild {
+		nc.mu.Lock()
+		nc.sendReport(reports, len_data)
+		nc.mu.Unlock()
+	}
+	return nil
 }
