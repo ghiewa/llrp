@@ -303,7 +303,7 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 		nc.mu.Lock()
 		conn := nc.conn
 		nc.mu.Unlock()
-		log.Debugf("loop Unlock", nc.mu)
+		log.Warnf("loop Unlock", nc.mu)
 
 		if conn == nil {
 			break
