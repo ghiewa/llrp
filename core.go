@@ -3,6 +3,7 @@ package llrp
 import (
 	"bufio"
 	"bytes"
+	log "github.com/sirupsen/logrus"
 	"net"
 	"runtime"
 	"sync"
@@ -15,6 +16,7 @@ func (nc *Conn) registry(sp *SPReaderInfo) error {
 	if sp.Host == "" || sp.Id == "" || nc.readers[sp.Id] != nil {
 		return ErrInvalidContext
 	}
+	log.Debugf("registry %+v", sp)
 	// add to Conn
 	nc.readers[sp.Id] = sp
 	sp.conn = &RConn{
@@ -24,7 +26,7 @@ func (nc *Conn) registry(sp *SPReaderInfo) error {
 
 	sp.conn.ach = make(chan asyncCB, asyncCBChanSize)
 	if err := sp.conn.connect(sp.Host); err != nil {
-		sp.conn.doReconnect()
+		log.Errorf("Unable to connected :%s", sp.Host)
 		return err
 	}
 
@@ -119,7 +121,7 @@ func (nc *RConn) spinUpGoRoutines() {
 	nc.waitForExits(nc.wg)
 	nc.wg = &sync.WaitGroup{}
 	nc.wg.Add(2)
-
+	log.Debugf("starting readLoop")
 	// spin
 	go nc.readLoop(nc.wg)
 	go nc.flusher(nc.wg)
@@ -280,6 +282,7 @@ func (nc *RConn) removeSub(s *Subscription) {
 func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 	defer wg.Done()
 	// Stack based buffer.
+
 	b := make([]byte, defaultBufSize)
 	for {
 		nc.mu.Lock()
@@ -290,9 +293,11 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 		}
 		n, err := conn.Read(b)
 		if err != nil {
+			log.Errorf("readLoop op error %d", n)
 			nc.processOpErr(err)
 			break
 		}
+		log.Debugf("start process.")
 		// process
 		if err := nc.process(b[:n], n); err != nil {
 			nc.processOpErr(err)
@@ -304,8 +309,11 @@ func (nc *RConn) processOpErr(err error) {
 	nc.mu.Lock()
 	if nc.isConnecting() || nc.isClosed() || nc.isReconnecting() {
 		nc.mu.Unlock()
+		log.Debugf("process op is reconneting or closed")
+		return
 	}
 	if nc.opts.AllowReconnect && nc.status == CONNECTED {
+		log.Debugf("allow to connected")
 		nc.status = RECONNECTING
 		if nc.ptmr != nil {
 			nc.ptmr.Stop()
@@ -321,10 +329,13 @@ func (nc *RConn) processOpErr(err error) {
 		nc.pending.Reset()
 		nc.bw.Reset(nc.pending)
 
+		log.Debugf("starting doReconnect")
 		go nc.doReconnect()
 		nc.mu.Unlock()
 		return
 	}
+
+	log.Debugf("set state to disconnected")
 	nc.status = DISCONNECTED
 	nc.err = err
 	nc.mu.Unlock()
@@ -353,6 +364,7 @@ func (nc *RConn) doReconnect() {
 	}
 
 	nc.mu.Unlock()
+	log.Debug("start sleep")
 	if sleepTime <= 0 {
 		runtime.Gosched()
 	} else {
@@ -362,8 +374,11 @@ func (nc *RConn) doReconnect() {
 	if nc.isClosed() {
 		return
 	}
+
+	log.Debug("start reconnecting")
 	nc.Reconnects++
 	if nc.err = nc.processConnectInit(); nc.err != nil {
+		log.Debug("start processConnectInit")
 		nc.status = RECONNECTING
 		nc.mu.Unlock()
 		return
@@ -394,12 +409,15 @@ func (nc *RConn) processConnectInit() (err error) {
 
 	// process init commands ( reset factory / set gpo off and so on..
 
+	log.Debugf("do flush %s", nc.sub.Id)
 	err = nc.bw.Flush()
 	if err != nil {
 		return err
 	}
+	log.Debugf("sendPrefixCommand %s", nc.sub.Id)
 	err = nc.sendPrefixCommand()
 	if err != nil {
+		log.Errorf("Can't sendPrefixCommand %s", nc.sub.Id)
 		return err
 	}
 

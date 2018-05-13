@@ -4,7 +4,6 @@ func (o Options) NewConn() *Conn {
 	if o.ReconnectBufSize == 0 {
 		o.ReconnectBufSize = DefaultReconnectBufSize
 	}
-
 	if o.Timeout == 0 {
 		o.Timeout = DefaultTimeout
 	}
