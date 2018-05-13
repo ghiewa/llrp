@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+// register reader to main conn
 func (nc *Conn) registry(sp *SPReaderInfo) error {
 	if sp.Host == "" || sp.Id == "" || nc.readers[sp.Id] != nil {
 		return ErrInvalidContext
@@ -27,6 +28,40 @@ func (nc *Conn) registry(sp *SPReaderInfo) error {
 	}
 
 	go sp.conn.asyncDispatch()
+	return nil
+}
+
+// logic of pushing msg to reader
+func (nc *RConn) publish(data []byte) error {
+	if nc == nil {
+		return ErrInvalidConnection
+	}
+
+	nc.mu.Lock()
+	if nc.isClosed() {
+		nc.mu.Unlock()
+		return ErrConnectionClosed
+	}
+
+	if nc.isReconnecting() {
+		nc.bw.Flush()
+		if nc.pending.Len() >= nc.opts.ReconnectBufSize {
+			nc.mu.Unlock()
+			return ErrReconnectBufExceeded
+		}
+	}
+
+	l, err := nc.bw.Write(data)
+	if err != nil {
+		nc.mu.Unlock()
+		return err
+	}
+	nc.OutMsgs++
+	nc.OutBytes += uint64(l)
+	if len(nc.fch) == 0 {
+		nc.kickFlusher()
+	}
+	nc.mu.Unlock()
 	return nil
 }
 
@@ -292,7 +327,7 @@ func (nc *RConn) processOpErr(err error) {
 	nc.status = DISCONNECTED
 	nc.err = err
 	nc.mu.Unlock()
-	nc.Close()
+	nc.close(CLOSED, true)
 }
 func (nc *RConn) doReconnect() {
 	nc.mu.Lock()

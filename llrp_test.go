@@ -117,10 +117,10 @@ func TestSetGPO(t *testing.T) {
 	}
 	messageId = 155
 	b := SET_READER_CONFIG(messageId, false,
-		GPOWriteData_Param(1, false),
-		GPOWriteData_Param(2, false),
-		GPOWriteData_Param(3, false),
-		GPOWriteData_Param(4, false),
+		gPOWriteData_Param(1, false),
+		gPOWriteData_Param(2, false),
+		gPOWriteData_Param(3, false),
+		gPOWriteData_Param(4, false),
 	)
 	if !bytes.Equal(v, b) {
 		t.Errorf("want:% x", v)
@@ -358,10 +358,10 @@ func TestSendGPI(t *testing.T) {
 		0, 0xe1, 0, 0x08, 0, 4, 0, 0,
 	}
 	b := SET_READER_CONFIG(messageId, false,
-		GPIPortCurrentState_Param(1, 0, false),
-		GPIPortCurrentState_Param(2, 0, false),
-		GPIPortCurrentState_Param(3, 0, false),
-		GPIPortCurrentState_Param(4, 0, false),
+		gPIPortCurrentState_Param(1, 0, false),
+		gPIPortCurrentState_Param(2, 0, false),
+		gPIPortCurrentState_Param(3, 0, false),
+		gPIPortCurrentState_Param(4, 0, false),
 	)
 	if !bytes.Equal(v, b) {
 		t.Errorf("want:% x", v)

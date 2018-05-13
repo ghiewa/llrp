@@ -15,10 +15,10 @@ func set_gpo_off(t *testing.T) {
 	)
 
 	conn.Write(SET_READER_CONFIG(messageId, false,
-		GPOWriteData_Param(1, false),
-		GPOWriteData_Param(2, false),
-		GPOWriteData_Param(3, false),
-		GPOWriteData_Param(4, false),
+		gPOWriteData_Param(1, false),
+		gPOWriteData_Param(2, false),
+		gPOWriteData_Param(3, false),
+		gPOWriteData_Param(4, false),
 	))
 	len_, err := conn.Read(buf)
 	if err == io.EOF {
@@ -33,10 +33,10 @@ func set_gpo_on(t *testing.T) {
 		buf = make([]byte, BufferSize)
 	)
 	conn.Write(SET_READER_CONFIG(messageId, false,
-		GPOWriteData_Param(1, true),
-		GPOWriteData_Param(2, true),
-		GPOWriteData_Param(3, true),
-		GPOWriteData_Param(4, true),
+		gPOWriteData_Param(1, true),
+		gPOWriteData_Param(2, true),
+		gPOWriteData_Param(3, true),
+		gPOWriteData_Param(4, true),
 	))
 	len_, err := conn.Read(buf)
 	if err == io.EOF {
@@ -47,10 +47,10 @@ func set_gpo_on(t *testing.T) {
 func test_set_gpi() {
 	// no. 168
 	conn.Write(SET_READER_CONFIG(messageId, false,
-		GPIPortCurrentState_Param(1, 0, false),
-		GPIPortCurrentState_Param(2, 0, false),
-		GPIPortCurrentState_Param(3, 0, false),
-		GPIPortCurrentState_Param(4, 0, false),
+		gPIPortCurrentState_Param(1, 0, false),
+		gPIPortCurrentState_Param(2, 0, false),
+		gPIPortCurrentState_Param(3, 0, false),
+		gPIPortCurrentState_Param(4, 0, false),
 	))
 }
 func test_set_region() {
@@ -65,10 +65,10 @@ func test_set_region() {
 func test_set_gpo() {
 	// no. 179
 	conn.Write(SET_READER_CONFIG(messageId, false,
-		GPOWriteData_Param(1, true),
-		GPOWriteData_Param(2, true),
-		GPOWriteData_Param(3, true),
-		GPOWriteData_Param(4, true),
+		gPOWriteData_Param(1, true),
+		gPOWriteData_Param(2, true),
+		gPOWriteData_Param(3, true),
+		gPOWriteData_Param(4, true),
 	))
 }
 func test_set_event_notice_spec() {
@@ -255,7 +255,7 @@ func test_enable_ro() {
 
 }
 
-func loop(t *testing.T) {
+func nloop(t *testing.T) {
 	onloop()
 }
 func onloop() {
@@ -308,19 +308,19 @@ func onloop() {
 			if args == 0 {
 				// set all gpo
 				conn.Write(SET_READER_CONFIG(messageId, false,
-					GPOWriteData_Param(1, set_gpo),
-					GPOWriteData_Param(2, set_gpo),
-					GPOWriteData_Param(3, set_gpo),
-					GPOWriteData_Param(4, set_gpo),
+					gPOWriteData_Param(1, set_gpo),
+					gPOWriteData_Param(2, set_gpo),
+					gPOWriteData_Param(3, set_gpo),
+					gPOWriteData_Param(4, set_gpo),
 				))
 			} else {
 				conn.Write(SET_READER_CONFIG(messageId, false,
-					GPOWriteData_Param(args, set_gpo),
+					gPOWriteData_Param(args, set_gpo),
 				))
 			}
 		case gpo := <-gpos:
 			conn.Write(SET_READER_CONFIG(messageId, false,
-				GPOWriteData_Param(gpo.Port, gpo.State),
+				gPOWriteData_Param(gpo.Port, gpo.State),
 			))
 		case <-test_toggle_gpo:
 			web_req()
@@ -364,10 +364,6 @@ var (
 	err          error
 )
 
-const (
-	BufferSize = 512
-)
-
 func web_req() {
 	fmt.Printf("\n--------***************************************** Web request Simulate")
 	state_toggle = !state_toggle
@@ -384,7 +380,7 @@ func init() {
 	}
 }
 func TestHw(t *testing.T) {
-	t.Run("loop", loop)
+	t.Run("loop", nloop)
 	t.Run("gpo_on", set_gpo_on)
 	t.Run("gpo_off", set_gpo_off)
 }

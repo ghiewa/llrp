@@ -11,18 +11,18 @@ var (
 	card_evt bool
 )
 
-func handler(code int, msg *Msg) {
+func handler(msg *Msg) {
 	if card_evt {
-		log.Infof(msg.Data)
+		log.Infof("evt %v", msg.Reports)
 	}
 	// msg.From - reader id
 
 }
 
 func TestM(t *testing.T) {
-	t.Run("th", thread)
+	t.Run("th", loop)
 }
-func thread() {
+func loop(t *testing.T) {
 	opt := GetDefaultOptions()
 	host := opt.NewConn()
 	readers := []*SPReaderInfo{
@@ -45,16 +45,15 @@ func thread() {
 		// doReconnected when loss signal
 		err := host.Registry(reader)
 		if err != nil {
-			t.Error(err)
+			log.Error(err)
 		}
 
 	}
 	host.Subscription(handler)
-	host.Start()
 	var text string
-	var success bool
+	var err error
 	for {
-		success = false
+		err = nil
 		log.Infof("Please enter command\nreader - list of readers\nnce - disable card event log\nce - enable card event log \nio - control gpo/get gpi state")
 		scan := bufio.NewScanner(os.Stdin)
 		scan.Scan()
@@ -65,7 +64,6 @@ func thread() {
 		switch text {
 		case "reader":
 			log.Infof("List Readers : %v", host.ListReader())
-			success = true
 		case "ne":
 			// disable card logs
 			card_evt = false
@@ -73,30 +71,29 @@ func thread() {
 			// enable card logs
 			card_evt = true
 		case "io":
-			log.Infof("sample command please enter number(0-3)")
+			log.Infof("sample command please enter number(0-2)")
 			scan.Scan()
 			switch scan.Text() {
 			case "0":
 				// set gpo all open state // 0 = close , 1 = open , 2 = igonre
 				// GPOset(id,port_state ...)  - set 4 port open state
-				success = host.GPOset("random_reader_id", 1, 1, 1, 1)
+				err = host.GPOset(123, "random_reader_id", true, true, true, true)
 			case "1":
 				// set gpo spectfic port eg. port no.1 will open
-				success = host.GPOsetp("random_reader_id", 1, true)
+				err = host.GPOsetp(222, "random_reader_id", 1, true)
 			case "2":
 				// get all gpi port
-				success = host.GPIget("random_reader_id")
-			case "3":
-				// get gpi port only port 1 will be reply
-				success = ost.GPIget("random_reader_id", 1)
+				err = host.GPIget(333, "random_reader_id")
 			default:
 				log.Infof("not found cmd here")
 			}
 		default:
 			log.Infof("not found cmd here")
 		}
-		if !success {
-			log.Warnf("Send command not success.")
+		if err != nil {
+			log.Warnf("Send command not success. %v", err)
+		} else {
+			log.Infof("Send command success. ")
 		}
 	}
 	// close connection

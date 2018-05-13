@@ -15,14 +15,71 @@ func (nc *Conn) Registry(reader *SPReaderInfo) error {
 	return nc.registry(reader)
 }
 
+// List of readers registed
+func (nc *Conn) ListReader() map[string]*SPReaderInfo {
+	return nc.readers
+}
+
+// set gpo via reader_id by order params 1-4
+func (nc *Conn) GPOset(messageId int, reader_id string, params ...bool) error {
+	var gpo [][]interface{}
+	for i, k := range params {
+		gpo = append(
+			gpo,
+			gPOWriteData_Param(i+1, k),
+		)
+	}
+	if re, ok := nc.readers[reader_id]; ok {
+		return re.conn.publish(
+			SET_READER_CONFIG(
+				messageId,
+				false,
+				gpo...,
+			),
+		)
+	}
+	return nil
+}
+
+func (nc *Conn) GPIget(messageId int, reader_id string) error {
+	if re, ok := nc.readers[reader_id]; ok {
+		return re.conn.publish(
+			GET_READER_CONFIG_V1311(
+				messageId,
+				0,
+				V_1311_GPIPortCurrentState,
+				0,
+				0,
+			),
+		)
+	}
+	return nil
+}
+
+func (nc *Conn) GPOsetp(messageId int, reader_id string, number_port int, state bool) error {
+	if re, ok := nc.readers[reader_id]; ok {
+		return re.conn.publish(
+			SET_READER_CONFIG(
+				messageId,
+				false,
+				gPOWriteData_Param(number_port, state),
+			),
+		)
+	}
+	return nil
+
+}
+
 func (nc *Conn) Subscription(cb MsgHandler) ([]*Subscription, error) {
 	return nc.subscribe(cb, nil)
 }
 
 // Close will close the connection to the server. This call will release
 // all blocking calls, such as Flush() and NextMsg()
-func (nc *RConn) Close() {
-	nc.close(CLOSED, true)
+func (nc *Conn) Close() {
+	for _, k := range nc.readers {
+		k.conn.close(CLOSED, true)
+	}
 }
 
 // IsClosed tests if a Conn has been closed.
