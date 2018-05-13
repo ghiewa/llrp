@@ -12,8 +12,64 @@ var (
 )
 
 func handler(msg *Msg) {
-	if card_evt {
-		log.Infof("evt %v", msg.Reports)
+	log.Warnf("--- Form %s", msg.From.Id)
+	for _, k := range msg.Reports {
+		switch k.(type) {
+		case *ROAccessReportResponse:
+			kk := k.(*ROAccessReportResponse)
+			if kk.Data != nil {
+				log.Infof("\n[RO][%d][%s]", kk.MsgId, kk.Data.EPC_96)
+			} else {
+				log.Infof("\n[RO]")
+			}
+		case *DELETE_ROSPEC_RESPONSE:
+			kk := k.(*DELETE_ROSPEC_RESPONSE)
+			if kk.Status != nil {
+				log.Infof("\n[DELRO] success = %v\n", kk.Status.Success)
+			}
+		case *DELETE_ACCESSSPEC_RESPONSE:
+			kk := k.(*DELETE_ACCESSSPEC_RESPONSE)
+			if kk.Status != nil {
+				log.Infof("\n[DELACC] success = %v\n", kk.Status.Success)
+			}
+		case *ADD_ROSPEC_RESPONSE:
+			kk := k.(*ADD_ROSPEC_RESPONSE)
+			if kk.Status != nil {
+				log.Infof("\n[ADD_ROSPEC] success = %v ,%s\n", kk.Status.Success, kk.Status.ErrMsg)
+			}
+		case *GetConfigResponse:
+			kk := k.(*GetConfigResponse)
+			log.Infof("\n[GET][%d] : %+v", kk.MsgId, kk.Status)
+			if kk.GPI != nil {
+				log.Infof("\ngpi=")
+				for _, kkk := range kk.GPI {
+					log.Infof("[%d=%d],", kkk.Number, kkk.State)
+				}
+			}
+		case *SetConfigResponse:
+			kk := k.(*SetConfigResponse)
+			log.Infof("\n[SET][%d] success=%v", kk.MsgId, kk.Status.Success)
+		case *CUSTOM_MESSAGE_RESPONSE:
+			kk := k.(*CUSTOM_MESSAGE_RESPONSE)
+			if kk.Status != nil {
+				log.Infof("\n[CUSTOM][%d] success=%v", kk.MsgId, kk.Status.Success)
+			}
+		case *ENABLE_ROSPEC_RESPONSE:
+			kk := k.(*ENABLE_ROSPEC_RESPONSE)
+			log.Infof("\n[ENA_RO] Success=%v", kk.Status.Success)
+		case *EventNotificationResponse:
+			log.Infof("\n[EVT]")
+		case *ERROR_MESSAGE:
+			kk := k.(*ERROR_MESSAGE)
+			log.Infof("\n[ERROR] code=%d ,msg=%s", kk.Status.StatusCode, kk.Status.ErrMsg)
+		case *MsgLoss:
+			kk := k.(*MsgLoss)
+			log.Infof("\n[MSG_DAMAGE] len=%d ", kk.Len)
+		default:
+			log.Errorf("Can't handle type %v", reflect.TypeOf(k))
+
+		}
+
 	}
 	// msg.From - reader id
 }
@@ -25,7 +81,7 @@ func loop(t *testing.T) {
 	log.Info("loop")
 	opt := GetDefaultOptions()
 	host := opt.NewConn()
-	log.SetLevel(log.DebugLevel)
+	//log.SetLevel(log.DebugLevel)
 	readers := []*SPReaderInfo{
 		&SPReaderInfo{
 			Id:   "random_reader_id",
