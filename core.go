@@ -171,7 +171,6 @@ func (nc *RConn) connect(host string) error {
 	err := nc.processConnectInit()
 	if err != nil {
 		log.Errorf("processConnectInit not success : %v", err)
-		nc.mu.Unlock()
 		nc.close(DISCONNECTED, false)
 		return err
 	}
@@ -313,6 +312,7 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 	}
 }
 func (nc *RConn) processOpErr(err error) {
+	log.Debugf("process op err")
 	nc.mu.Lock()
 	if nc.isConnecting() || nc.isClosed() || nc.isReconnecting() {
 		nc.mu.Unlock()
