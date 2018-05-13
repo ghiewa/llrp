@@ -188,6 +188,8 @@ func (cnc *Conn) subscribe(cb MsgHandler, ch chan *Msg) ([]*Subscription, error)
 		defer nc.mu.Unlock()
 		defer nc.kickFlusher()
 		// check error condition
+		log.Debugf("subscribe : %s", id)
+
 		sub := &Subscription{
 			Id:   id,
 			mcb:  cb,
