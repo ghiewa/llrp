@@ -436,9 +436,7 @@ func (nc *RConn) processConnectInit() (err error) {
 		return err
 	}
 	log.Debugf("sendPrefixCommand")
-	nc.mu.Lock()
 	err = nc.sendPrefixCommand()
-	nc.mu.Unlock()
 	if err != nil {
 		log.Errorf("Can't sendPrefixCommand ")
 		return err
@@ -449,6 +447,8 @@ func (nc *RConn) processConnectInit() (err error) {
 }
 func (nc *RConn) sendPrefixCommand() error {
 	log.Debugf("send init command")
+	nc.mu.Lock()
+	defer nc.mu.Unlock()
 	for _, k := range nc.initCommand {
 		i, err := nc.bw.Write(k)
 		log.Debugf("write command %d", i)
