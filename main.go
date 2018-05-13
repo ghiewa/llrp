@@ -28,7 +28,7 @@ func handler(msg *Msg) {
 				} else {
 					log.Infof("\n[RO]")
 				}
-				if card_limit > count {
+				if card_limit < count {
 					card_evt = false
 					log.Warnf("[RO] We pause card logs here.")
 					count = 0
