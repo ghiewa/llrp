@@ -124,6 +124,13 @@ func (nc *RConn) spinUpGoRoutines() {
 	nc.wg.Add(2)
 	log.Debugf("starting readLoop")
 	// spin
+	log.Debugf("lock")
+	nc.mu.Lock()
+	log.Debugf("in")
+	nc.mu.Unlock()
+	log.Debugf("Unlock")
+
+	log.Debugf("starting readLoop")
 	go nc.readLoop(nc.wg)
 	go nc.flusher(nc.wg)
 
