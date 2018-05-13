@@ -163,6 +163,7 @@ func (nc *RConn) flusher(wg *sync.WaitGroup) {
 // connect to reader
 func (nc *RConn) connect(host string) error {
 	nc.mu.Lock()
+	defer nc.mu.Unlock()
 	nc.initc = true
 	log.Debugf("start connecting")
 	if err := nc.createConn(host); err != nil {
@@ -179,7 +180,6 @@ func (nc *RConn) connect(host string) error {
 		return err
 	}
 	log.Infof("Establish connection %s", host)
-	defer nc.mu.Unlock()
 	return nil
 }
 
@@ -435,8 +435,6 @@ func (nc *RConn) processConnectInit() (err error) {
 }
 func (nc *RConn) sendPrefixCommand() error {
 	log.Debugf("send init command")
-	nc.mu.Lock()
-	defer nc.mu.Unlock()
 	for _, k := range nc.initCommand {
 		i, err := nc.bw.Write(k)
 		log.Debugf("write command %d", i)
