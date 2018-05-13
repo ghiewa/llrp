@@ -127,12 +127,6 @@ func (nc *RConn) spinUpGoRoutines() {
 	log.Debugf("starting readLoop")
 	go nc.readLoop(nc.wg)
 	go nc.flusher(nc.wg)
-	log.Debugf("lock")
-	nc.mu.Lock()
-	log.Debugf("in")
-	nc.mu.Unlock()
-	log.Debugf("Unlock")
-
 }
 func (nc *RConn) flusher(wg *sync.WaitGroup) {
 	defer wg.Done()
@@ -206,6 +200,12 @@ func (cnc *Conn) subscribe(cb MsgHandler, ch chan *Msg) ([]*Subscription, error)
 		sub.pBytesLimit = DefaultSubPendingBytesLimit
 		sub.pCond = sync.NewCond(&sub.mu)
 		go nc.waitForMsgs(sub)
+		log.Debugf("lock")
+		nc.mu.Lock()
+		log.Debugf("in")
+		nc.mu.Unlock()
+		log.Debugf("Unlock")
+
 		subs = append(subs, sub)
 	}
 	return subs, nil
