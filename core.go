@@ -177,6 +177,7 @@ func (nc *RConn) connect(host string) error {
 		nc.close(DISCONNECTED, false)
 		return err
 	}
+	log.Infof("Establish connection %s", host)
 	defer nc.mu.Unlock()
 	return nil
 }
