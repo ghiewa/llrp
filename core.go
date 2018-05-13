@@ -199,11 +199,6 @@ func (cnc *Conn) subscribe(cb MsgHandler, ch chan *Msg) ([]*Subscription, error)
 		}
 		sub.pMsgsLimit = DefaultSubPendingMsgsLimit
 		sub.pBytesLimit = DefaultSubPendingBytesLimit
-		log.Debugf("lock 1")
-		nc.mu.Lock()
-		log.Debugf("pcond")
-		nc.mu.Unlock()
-		log.Debugf("Unlock")
 
 		sub.pCond = sync.NewCond(&sub.mu)
 		go nc.waitForMsgs(sub)
@@ -226,13 +221,11 @@ func (nc *RConn) waitForMsgs(s *Subscription) {
 	)
 	for {
 		log.Debugf("waitForMsgs")
-		s.mu.Lock()
-		log.Debugf("waitForMsgs lock")
 		if s.pHead == nil && !s.closed {
 			s.pCond.Wait()
 		}
-
-		log.Debugf("flow lock")
+		s.mu.Lock()
+		log.Debugf("flow ")
 		// pop msg from list
 		m := s.pHead
 		if m != nil {
