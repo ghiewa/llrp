@@ -371,16 +371,18 @@ func web_req() {
 }
 
 func init() {
-	ip := "192.168.33.16"
-	port := "5084"
-	conn, err = net.Dial("tcp", ip+":"+port)
-	if err != nil {
-		fmt.Errorf(err.Error())
-		return
-	}
+	/*
+		ip := "192.168.33.16"
+		port := "5084"
+		conn, err = net.Dial("tcp", ip+":"+port)
+		if err != nil {
+			fmt.Errorf(err.Error())
+			return
+		}
+	*/
 }
 func TestHw(t *testing.T) {
-	t.Run("loop", nloop)
+	t.Run("nloop", nloop)
 	t.Run("gpo_on", set_gpo_on)
 	t.Run("gpo_off", set_gpo_off)
 }

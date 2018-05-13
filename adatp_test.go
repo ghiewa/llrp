@@ -23,6 +23,7 @@ func TestM(t *testing.T) {
 	t.Run("th", loop)
 }
 func loop(t *testing.T) {
+	log.Info("loop")
 	opt := GetDefaultOptions()
 	host := opt.NewConn()
 	readers := []*SPReaderInfo{
@@ -41,6 +42,8 @@ func loop(t *testing.T) {
 			},
 		},
 	}
+
+	log.Info("registry")
 	for _, reader := range readers {
 		// doReconnected when loss signal
 		err := host.Registry(reader)
@@ -50,6 +53,7 @@ func loop(t *testing.T) {
 
 	}
 	host.Subscription(handler)
+	log.Info("subscribe")
 	var text string
 	var err error
 	for {
