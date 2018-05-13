@@ -24,6 +24,7 @@ func (nc *Conn) registry(sp *SPReaderInfo) error {
 
 	sp.conn.ach = make(chan asyncCB, asyncCBChanSize)
 	if err := sp.conn.connect(sp.Host); err != nil {
+		sp.conn.doReconnect()
 		return err
 	}
 
