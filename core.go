@@ -163,10 +163,10 @@ func (nc *RConn) connect(host string) error {
 	nc.mu.Lock()
 	log.Debugf("start connecting")
 	if err := nc.createConn(host); err != nil {
+		nc.mu.Unlock()
 		log.Errorf("can't connecting")
 		return err
 	}
-
 	log.Debugf("process connect init")
 	err := nc.processConnectInit()
 	if err != nil {
@@ -451,8 +451,6 @@ func (nc *RConn) processConnectInit() (err error) {
 }
 func (nc *RConn) sendPrefixCommand() error {
 	log.Debugf("send init command")
-	nc.mu.Lock()
-	defer nc.mu.Unlock()
 	for _, k := range nc.initCommand {
 		i, err := nc.bw.Write(k)
 		log.Debugf("write command %d", i)
