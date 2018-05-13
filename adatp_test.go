@@ -56,7 +56,7 @@ func loop(t *testing.T) {
 	log.Info("subscribe")
 	var text string
 	var err error
-	for {
+	for false {
 		err = nil
 		log.Infof("Please enter command\nreader - list of readers\nnce - disable card event log\nce - enable card event log \nio - control gpo/get gpi state")
 		scan := bufio.NewScanner(os.Stdin)
@@ -100,6 +100,7 @@ func loop(t *testing.T) {
 			log.Infof("Send command success. ")
 		}
 	}
+	select {}
 	// close connection
 	host.Close()
 }
