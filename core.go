@@ -292,7 +292,8 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 
 	b := make([]byte, defaultBufSize)
 	for {
-		log.Debugf("looping")
+		log.Debugf("looping", nc.mu)
+
 		nc.mu.Lock()
 		conn := nc.conn
 		nc.mu.Unlock()

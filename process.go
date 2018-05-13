@@ -7,8 +7,8 @@ import (
 )
 
 func (nc *RConn) sendReport(reports []interface{}, len_data int) {
-	nc.subsMu.RLock()
 	log.Debugf("send reports")
+	nc.subsMu.RLock()
 	nc.InMsgs++
 	nc.InBytes += uint64(len_data)
 	sub := nc.sub
