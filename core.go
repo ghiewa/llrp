@@ -300,13 +300,15 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 	b := make([]byte, defaultBufSize)
 	for {
 		log.Debugf("looping", nc.mu)
-
 		nc.mu.Lock()
 		conn := nc.conn
 		nc.mu.Unlock()
+		log.Debugf("loop Unlock", nc.mu)
+
 		if conn == nil {
 			break
 		}
+
 		log.Debugf("reading loop")
 		n, err := conn.Read(b)
 		log.Debugf("reading 2", len(b))
