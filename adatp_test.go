@@ -19,28 +19,28 @@ func handler(msg *Msg) {
 		case *ROAccessReportResponse:
 			kk := k.(*ROAccessReportResponse)
 			if kk.Data != nil {
-				log.Infof("\n[RO][%d][%s]", kk.MsgId, kk.Data.EPC_96)
+				log.Infof("[RO][%d][%s]", kk.MsgId, kk.Data.EPC_96)
 			} else {
 				log.Infof("\n[RO]")
 			}
 		case *DELETE_ROSPEC_RESPONSE:
 			kk := k.(*DELETE_ROSPEC_RESPONSE)
 			if kk.Status != nil {
-				log.Infof("\n[DELRO] success = %v\n", kk.Status.Success)
+				log.Infof("[DELRO] success = %v\n", kk.Status.Success)
 			}
 		case *DELETE_ACCESSSPEC_RESPONSE:
 			kk := k.(*DELETE_ACCESSSPEC_RESPONSE)
 			if kk.Status != nil {
-				log.Infof("\n[DELACC] success = %v\n", kk.Status.Success)
+				log.Infof("[DELACC] success = %v\n", kk.Status.Success)
 			}
 		case *ADD_ROSPEC_RESPONSE:
 			kk := k.(*ADD_ROSPEC_RESPONSE)
 			if kk.Status != nil {
-				log.Infof("\n[ADD_ROSPEC] success = %v ,%s\n", kk.Status.Success, kk.Status.ErrMsg)
+				log.Infof("[ADD_ROSPEC] success = %v ,%s\n", kk.Status.Success, kk.Status.ErrMsg)
 			}
 		case *GetConfigResponse:
 			kk := k.(*GetConfigResponse)
-			log.Infof("\n[GET][%d] : %+v", kk.MsgId, kk.Status)
+			log.Infof("[GET][%d] : %+v", kk.MsgId, kk.Status)
 			if kk.GPI != nil {
 				log.Infof("\ngpi=")
 				for _, kkk := range kk.GPI {
@@ -49,26 +49,25 @@ func handler(msg *Msg) {
 			}
 		case *SetConfigResponse:
 			kk := k.(*SetConfigResponse)
-			log.Infof("\n[SET][%d] success=%v", kk.MsgId, kk.Status.Success)
+			log.Infof("[SET][%d] success=%v", kk.MsgId, kk.Status.Success)
 		case *CUSTOM_MESSAGE_RESPONSE:
 			kk := k.(*CUSTOM_MESSAGE_RESPONSE)
 			if kk.Status != nil {
-				log.Infof("\n[CUSTOM][%d] success=%v", kk.MsgId, kk.Status.Success)
+				log.Infof("[CUSTOM][%d] success=%v", kk.MsgId, kk.Status.Success)
 			}
 		case *ENABLE_ROSPEC_RESPONSE:
 			kk := k.(*ENABLE_ROSPEC_RESPONSE)
-			log.Infof("\n[ENA_RO] Success=%v", kk.Status.Success)
+			log.Infof("[ENA_RO] Success=%v", kk.Status.Success)
 		case *EventNotificationResponse:
-			log.Infof("\n[EVT]")
+			log.Infof("[EVT]")
 		case *ERROR_MESSAGE:
 			kk := k.(*ERROR_MESSAGE)
-			log.Infof("\n[ERROR] code=%d ,msg=%s", kk.Status.StatusCode, kk.Status.ErrMsg)
+			log.Infof("[ERROR] code=%d ,msg=%s", kk.Status.StatusCode, kk.Status.ErrMsg)
 		case *MsgLoss:
 			kk := k.(*MsgLoss)
-			log.Infof("\n[MSG_DAMAGE] len=%d ", kk.Len)
+			log.Errorf("[MSG_DAMAGE] len=%d ", kk.Len)
 		default:
 			log.Errorf("Can't handle type %v", reflect.TypeOf(k))
-
 		}
 
 	}
@@ -106,17 +105,15 @@ func loop(t *testing.T) {
 		if err != nil {
 			log.Error(err)
 		}
-
 	}
 	host.Subscription(handler)
 	var text string
 	var err error
-	for false {
+	for {
 		err = nil
 		log.Infof("Please enter command\nreader - list of readers\nnce - disable card event log\nce - enable card event log \nio - control gpo/get gpi state")
-		scan := bufio.NewScanner(os.Stdin)
-		scan.Scan()
-		text = scan.Text()
+		reader := bufio.NewReader(os.Stdin)
+		text, _ = reader.ReadString('\n')
 		if text == "q" {
 			break
 		}
@@ -131,8 +128,8 @@ func loop(t *testing.T) {
 			card_evt = true
 		case "io":
 			log.Infof("sample command please enter number(0-2)")
-			scan.Scan()
-			switch scan.Text() {
+			text, _ = reader.ReadString('\n')
+			switch text {
 			case "0":
 				// set gpo all open state // 0 = close , 1 = open , 2 = igonre
 				// GPOset(id,port_state ...)  - set 4 port open state
