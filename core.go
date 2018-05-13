@@ -16,7 +16,7 @@ func (nc *Conn) registry(sp *SPReaderInfo) error {
 	if sp.Host == "" || sp.Id == "" || nc.readers[sp.Id] != nil {
 		return ErrInvalidContext
 	}
-	log.Debugf("registry %+v", sp)
+	log.Debugf("start registry")
 	// add to Conn
 	nc.readers[sp.Id] = sp
 	sp.conn = &RConn{
@@ -29,7 +29,7 @@ func (nc *Conn) registry(sp *SPReaderInfo) error {
 		log.Errorf("Unable to connected :%s", sp.Host)
 		return err
 	}
-
+	log.Debugf("start asyncDispatch")
 	go sp.conn.asyncDispatch()
 	return nil
 }
@@ -96,6 +96,7 @@ func (c *RConn) createConn(host string) (err error) {
 		// move to pending buffer.
 		c.bw.Flush()
 	}
+	log.Debugf("create bufio")
 	c.bw = bufio.NewWriterSize(c.conn, defaultBufSize)
 	return nil
 }
@@ -162,9 +163,13 @@ func (nc *RConn) flusher(wg *sync.WaitGroup) {
 func (nc *RConn) connect(host string) error {
 	nc.mu.Lock()
 	nc.initc = true
+	log.Debugf("start connecting")
 	if err := nc.createConn(host); err != nil {
+		log.Errorf("can't connecting")
 		return err
 	}
+
+	log.Debugf("process connect init")
 	err := nc.processConnectInit()
 	if err != nil {
 		nc.mu.Unlock()
