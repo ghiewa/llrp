@@ -185,7 +185,7 @@ func (cnc *Conn) subscribe(cb MsgHandler, ch chan *Msg) ([]*Subscription, error)
 	var (
 		subs []*Subscription
 	)
-	log.Debugf("subscribe : %s", id)
+	log.Debugf("subscribe fn")
 	for id, ncc := range cnc.readers {
 		nc := ncc.conn
 		defer nc.kickFlusher()
