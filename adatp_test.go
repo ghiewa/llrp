@@ -131,10 +131,8 @@ func loop(t *testing.T) {
 		}
 	}
 	host.Subscription(handler)
-	select {}
 	var text string
 	var err error
-
 	log.Infof("Please enter command\nlist - list of readers\nd - disable card event log\ne - enable card event log \nio - control gpo/get gpi state\nam - long run to test card logs")
 	go func() {
 		for {
