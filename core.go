@@ -26,6 +26,7 @@ func (nc *Conn) registry(sp *SPReaderInfo) error {
 		initCommand: sp.InitCommand,
 		host:        sp.Host,
 		ip:          sp.Host[:strings.Index(sp.Host, ":")],
+		fch:         make(chan struct{}, flushChanSize),
 	}
 
 	sp.conn.ach = make(chan asyncCB, asyncCBChanSize)
@@ -47,6 +48,7 @@ func (nc *RConn) publish(data []byte) error {
 		return ErrInvalidConnection
 	}
 	log.Infof("publish", nc.mu)
+
 	if nc.isClosed() {
 		log.Errorf("can't publish channal close", nc.host)
 		return ErrConnectionClosed
