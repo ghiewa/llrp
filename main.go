@@ -292,7 +292,7 @@ func main() {
 			cmd := scanner.Text()
 			switch cmd {
 			case "gpi":
-				log.Infof("[GPI] get gpi port on reader [%s]", id)
+				log.Infof("[GPI] get gpi port on reader [%s]", reader_id)
 				err = host.GPIget(333, reader_id)
 			case "gpo":
 				log.Infof("[GPO] Please set state [ on | off ]")
@@ -306,7 +306,7 @@ func main() {
 					valid = false
 					continue
 				}
-				log.Infof("[GPO] Please set port to command [ all | [1-4]]")
+				log.Infof("[GPO] Please set port to command [%s] [ all | [1-4]]", reader_id)
 				scanner.Scan()
 				switch scanner.Text() {
 				case "all":

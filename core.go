@@ -40,7 +40,8 @@ func (nc *Conn) registry(sp *SPReaderInfo) error {
 
 // logic of pushing msg to reader
 func (nc *RConn) publish(data []byte) error {
-	if nc == nil {
+	if nc == nil || !nc.didConnect {
+		log.Errorf("invalid connection")
 		return ErrInvalidConnection
 	}
 	if nc.isClosed() || nc.bw == nil {
@@ -442,31 +443,23 @@ func (nc *RConn) processConnectInit() (err error) {
 
 	nc.status = CONNECTING
 
-	log.Infof("1", nc.mu)
 	// process init commands ( reset factory / set gpo off and so on..
 	err = nc.bw.Flush()
-	log.Infof("2")
 	if err != nil {
-		log.Infof("2e")
 		return err
 	}
 
-	log.Infof("3", nc.mu)
 	err = nc.sendPrefixCommand()
 	if err != nil {
-		log.Infof("3e")
 		return err
 	}
-	log.Infof("4")
 	nc.kickFlusher()
-	log.Infof("5")
 	go nc.spinUpGoRoutines()
 	return nil
 }
 func (nc *RConn) sendPrefixCommand() error {
 	for _, k := range nc.initCommand {
 		_, err := nc.bw.Write(k)
-		log.Info("7")
 		if err != nil {
 			return err
 		}
