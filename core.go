@@ -48,9 +48,9 @@ func (nc *RConn) publish(data []byte) error {
 	}
 	log.Infof("publish", nc.mu)
 	if nc.isClosed() {
+		log.Errorf("can't publish channal close", nc.host)
 		return ErrConnectionClosed
 	}
-
 	log.Infof("not close")
 	if nc.isReconnecting() {
 		nc.bw.Flush()
@@ -358,6 +358,7 @@ func (nc *RConn) processOpErr(err error) {
 					Type:       NETW_LOSS,
 				}
 				if nc.didConnect {
+					nc.status = CONNECTED
 					n.Type = NETW_CONNECTED
 					nc.sendReport(0, n)
 					break
