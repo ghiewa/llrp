@@ -48,26 +48,28 @@ func (nc *RConn) publish(data []byte) error {
 		log.Errorf("can't publish channal close", nc.host)
 		return ErrConnectionClosed
 	}
-	log.Infof(" --- P 1 %v", nc.status)
 	nc.mu.Lock()
-	defer nc.mu.Unlock()
 	if nc.isReconnecting() {
-		log.Infof("publish reconnect %v", nc.status)
 		nc.bw.Flush()
-		log.Infof("publish reconnect flush %v", nc.status)
 		if nc.pending.Len() >= nc.opts.ReconnectBufSize {
+			nc.mu.Unlock()
 			return ErrReconnectBufExceeded
 		}
 	}
 	log.Infof(" --- P 2 %v", nc.status)
 	l, err := nc.bw.Write(data)
 	if err != nil {
+		nc.mu.Unlock()
 		return err
 	}
 	log.Infof(" --- P 3 %v", nc.status)
 	nc.OutMsgs++
 	nc.OutBytes += uint64(l)
-	nc.kickFlusher()
+	if len(nc.fch) == 0 {
+		nc.kickFlusher()
+	}
+	nc.bw.Flush()
+	nc.mu.Unlock()
 	return nil
 }
 
@@ -325,7 +327,7 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 }
 func (nc *RConn) processOpErr(err error) {
 	nc.mu.Lock()
-	if nc.opts.AllowReconnect {
+	if nc.opts.AllowReconnect && nc.status == CONNECTED {
 		log.Warnf("tried to reconnect.. %s", nc.ip)
 		nc.status = RECONNECTING
 		nc.didConnect = false
@@ -351,17 +353,12 @@ func (nc *RConn) processOpErr(err error) {
 					Type:       NETW_LOSS,
 				}
 				if nc.didConnect {
-					nc.mu.Lock()
 					nc.status = CONNECTED
-					nc.mu.Unlock()
 					n.Type = NETW_CONNECTED
 					nc.sendReport(0, n)
 					break
 				}
-				nc.mu.Lock()
 				nc.status = DISCONNECTED
-				nc.mu.Unlock()
-
 				nc.sendReport(0, n)
 			}
 		}()
@@ -425,6 +422,17 @@ func (nc *RConn) doReconnect() {
 	log.Infof("didConnect %s %v", nc.host, nc.status)
 	nc.didConnect = true
 	nc.reconnects = 0
+	nc.flushReconnectPendingItems()
+	nc.err = nc.bw.Flush()
+	if nc.err != nil {
+		nc.status = RECONNECTING
+	}
+	nc.pending = nil
+	nc.status = CONNECTED
+	if nc.opts.ReconnectedCB != nil {
+		nc.ach <- func() { nc.opts.ReconnectedCB(nc) }
+	}
+
 	nc.mu.Unlock()
 
 }
