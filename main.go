@@ -104,7 +104,7 @@ func main() {
 	var valid bool
 	readers := []*SPReaderInfo{
 		&SPReaderInfo{
-			Id:   "random_reader_id1",
+			Id:   "random_reader_id",
 			Host: "192.168.33.16:5084",
 			InitCommand: [][]byte{
 				ResetFactoryOpt(),
