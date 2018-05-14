@@ -358,10 +358,10 @@ func (nc *RConn) processOpErr(err error) {
 				}
 				if nc.didConnect {
 					n.Type = NETW_CONNECTED
-					nc.sendReport(0, n)
+					//		nc.sendReport(0, n)
 					break
 				}
-				nc.sendReport(0, n)
+				//nc.sendReport(0, n)
 			}
 		}()
 		return
