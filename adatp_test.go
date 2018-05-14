@@ -19,7 +19,6 @@ var (
 func handler(msg *Msg) {
 	for _, k := range msg.Reports {
 		switch k.(type) {
-
 		case *NetworkIssue:
 			kk := k.(*NetworkIssue)
 			switch kk.Type {

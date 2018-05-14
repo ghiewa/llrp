@@ -301,6 +301,7 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 		nc.mu.Unlock()
 
 		if conn == nil {
+			log.Errorf("conn is nil")
 			break
 		}
 		n, err := conn.Read(b)

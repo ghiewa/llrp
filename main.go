@@ -18,16 +18,16 @@ var (
 func handler(msg *Msg) {
 	for _, k := range msg.Reports {
 		switch k.(type) {
-
 		case *NetworkIssue:
 			kk := k.(*NetworkIssue)
+			ip := msg.From.conn.ip
 			switch kk.Type {
 			case NETW_LOSS:
-				log.Warningf("Network loss on %s [%d] ", msg.From.Id, kk.Reconnects)
+				log.Warningf("Network loss on [%s] ", ip)
 			case NETW_CONNECTED:
-				log.Infof("Network connected %s ", msg.From.Id)
+				log.Infof("Network connected [%s]", ip)
 			default:
-				log.Warningf("Network unknow state %s ", msg.From.Id)
+				log.Warningf("Network unknow state %s %s ", msg.From.Id, ip)
 			}
 		case *EventNotificationResponse:
 			//log.Infof("[EVT]")
@@ -117,38 +117,11 @@ func main() {
 				EnableROSpecOption(),
 			},
 		},
-		&SPReaderInfo{
-			Id:   "random_reader_id_01",
-			Host: "192.168.33.17:5084",
-			InitCommand: [][]byte{
-				ResetFactoryOpt(),
-				DelROSpecOpt(),
-				DelAccOption(),
-				ExtensionOption(),
-				SetRegion(),
-				SetEventSpecOption(),
-				AddROSpecOption(),
-				EnableROSpecOption(),
-			},
-		},
-		&SPReaderInfo{
-			Id:   "random_reader_id_02",
-			Host: "192.168.33.18:5084",
-			InitCommand: [][]byte{
-				ResetFactoryOpt(),
-				DelROSpecOpt(),
-				DelAccOption(),
-				ExtensionOption(),
-				SetRegion(),
-				SetEventSpecOption(),
-				AddROSpecOption(),
-				EnableROSpecOption(),
-			},
-		},
+
 		/*
 			&SPReaderInfo{
-				Id:   "random_reader_id_03",
-				Host: "192.168.33.19:5084",
+				Id:   "random_reader_id_01",
+				Host: "192.168.33.17:5084",
 				InitCommand: [][]byte{
 					ResetFactoryOpt(),
 					DelROSpecOpt(),
@@ -161,8 +134,8 @@ func main() {
 				},
 			},
 			&SPReaderInfo{
-				Id:   "random_reader_id_04",
-				Host: "192.168.33.20:5084",
+				Id:   "random_reader_id_02",
+				Host: "192.168.33.18:5084",
 				InitCommand: [][]byte{
 					ResetFactoryOpt(),
 					DelROSpecOpt(),
@@ -174,76 +147,104 @@ func main() {
 					EnableROSpecOption(),
 				},
 			},
-			&SPReaderInfo{
-				Id:   "random_reader_id_05",
-				Host: "192.168.33.21:5084",
-				InitCommand: [][]byte{
-					ResetFactoryOpt(),
-					DelROSpecOpt(),
-					DelAccOption(),
-					ExtensionOption(),
-					SetRegion(),
-					SetEventSpecOption(),
-					AddROSpecOption(),
-					EnableROSpecOption(),
+				&SPReaderInfo{
+					Id:   "random_reader_id_03",
+					Host: "192.168.33.19:5084",
+					InitCommand: [][]byte{
+						ResetFactoryOpt(),
+						DelROSpecOpt(),
+						DelAccOption(),
+						ExtensionOption(),
+						SetRegion(),
+						SetEventSpecOption(),
+						AddROSpecOption(),
+						EnableROSpecOption(),
+					},
 				},
-			},
-			&SPReaderInfo{
-				Id:   "random_reader_id_06",
-				Host: "192.168.33.22:5084",
-				InitCommand: [][]byte{
-					ResetFactoryOpt(),
-					DelROSpecOpt(),
-					DelAccOption(),
-					ExtensionOption(),
-					SetRegion(),
-					SetEventSpecOption(),
-					AddROSpecOption(),
-					EnableROSpecOption(),
+				&SPReaderInfo{
+					Id:   "random_reader_id_04",
+					Host: "192.168.33.20:5084",
+					InitCommand: [][]byte{
+						ResetFactoryOpt(),
+						DelROSpecOpt(),
+						DelAccOption(),
+						ExtensionOption(),
+						SetRegion(),
+						SetEventSpecOption(),
+						AddROSpecOption(),
+						EnableROSpecOption(),
+					},
 				},
-			},
-			&SPReaderInfo{
-				Id:   "random_reader_id_07",
-				Host: "192.168.33.23:5084",
-				InitCommand: [][]byte{
-					ResetFactoryOpt(),
-					DelROSpecOpt(),
-					DelAccOption(),
-					ExtensionOption(),
-					SetRegion(),
-					SetEventSpecOption(),
-					AddROSpecOption(),
-					EnableROSpecOption(),
+				&SPReaderInfo{
+					Id:   "random_reader_id_05",
+					Host: "192.168.33.21:5084",
+					InitCommand: [][]byte{
+						ResetFactoryOpt(),
+						DelROSpecOpt(),
+						DelAccOption(),
+						ExtensionOption(),
+						SetRegion(),
+						SetEventSpecOption(),
+						AddROSpecOption(),
+						EnableROSpecOption(),
+					},
 				},
-			},
-			&SPReaderInfo{
-				Id:   "random_reader_id_08",
-				Host: "192.168.33.24:5084",
-				InitCommand: [][]byte{
-					ResetFactoryOpt(),
-					DelROSpecOpt(),
-					DelAccOption(),
-					ExtensionOption(),
-					SetRegion(),
-					SetEventSpecOption(),
-					AddROSpecOption(),
-					EnableROSpecOption(),
+				&SPReaderInfo{
+					Id:   "random_reader_id_06",
+					Host: "192.168.33.22:5084",
+					InitCommand: [][]byte{
+						ResetFactoryOpt(),
+						DelROSpecOpt(),
+						DelAccOption(),
+						ExtensionOption(),
+						SetRegion(),
+						SetEventSpecOption(),
+						AddROSpecOption(),
+						EnableROSpecOption(),
+					},
 				},
-			},
-			&SPReaderInfo{
-				Id:   "random_reader_id_09",
-				Host: "192.168.33.25:5084",
-				InitCommand: [][]byte{
-					ResetFactoryOpt(),
-					DelROSpecOpt(),
-					DelAccOption(),
-					ExtensionOption(),
-					SetRegion(),
-					SetEventSpecOption(),
-					AddROSpecOption(),
-					EnableROSpecOption(),
+				&SPReaderInfo{
+					Id:   "random_reader_id_07",
+					Host: "192.168.33.23:5084",
+					InitCommand: [][]byte{
+						ResetFactoryOpt(),
+						DelROSpecOpt(),
+						DelAccOption(),
+						ExtensionOption(),
+						SetRegion(),
+						SetEventSpecOption(),
+						AddROSpecOption(),
+						EnableROSpecOption(),
+					},
 				},
-			},
+				&SPReaderInfo{
+					Id:   "random_reader_id_08",
+					Host: "192.168.33.24:5084",
+					InitCommand: [][]byte{
+						ResetFactoryOpt(),
+						DelROSpecOpt(),
+						DelAccOption(),
+						ExtensionOption(),
+						SetRegion(),
+						SetEventSpecOption(),
+						AddROSpecOption(),
+						EnableROSpecOption(),
+					},
+				},
+				&SPReaderInfo{
+					Id:   "random_reader_id_09",
+					Host: "192.168.33.25:5084",
+					InitCommand: [][]byte{
+						ResetFactoryOpt(),
+						DelROSpecOpt(),
+						DelAccOption(),
+						ExtensionOption(),
+						SetRegion(),
+						SetEventSpecOption(),
+						AddROSpecOption(),
+						EnableROSpecOption(),
+					},
+				},
 		*/
 	}
 
