@@ -87,7 +87,7 @@ func main() {
 	log.Info("loop")
 	opt := GetDefaultOptions()
 	host := opt.NewConn()
-	log.SetLevel(log.DebugLevel)
+	//log.SetLevel(log.DebugLevel)
 	readers := []*SPReaderInfo{
 		&SPReaderInfo{
 			Id:   "random_reader_id",
@@ -117,7 +117,7 @@ func main() {
 	var err error
 	for {
 		err = nil
-		log.Infof("Please enter command\nreader - list of readers\nnce - disable card event log\nce - enable card event log \nio - control gpo/get gpi state\nam - long run to test card logs")
+		log.Infof("Please enter command\nlist - list of readers\nd - disable card event log\ne - enable card event log \nio - control gpo/get gpi state\nam - long run to test card logs")
 		scanner := bufio.NewScanner(os.Stdin)
 		scanner.Scan()
 		text = scanner.Text()
@@ -128,12 +128,12 @@ func main() {
 		case "am":
 			log.Infof("starting non-stop cards log")
 			am = true
-		case "reader":
+		case "list":
 			log.Infof("List Readers : %v", host.ListReader())
-		case "ne":
+		case "d":
 			// disable card logs
 			card_evt = false
-		case "ce":
+		case "e":
 			// enable card logs
 			card_evt = true
 		case "io":
