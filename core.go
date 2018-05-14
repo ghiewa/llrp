@@ -441,7 +441,8 @@ func (nc *RConn) processConnectInit() (err error) {
 	defer nc.conn.SetDeadline(time.Time{})
 
 	nc.status = CONNECTING
-	log.Infof("1")
+
+	log.Infof("1", nc.mu)
 	// process init commands ( reset factory / set gpo off and so on..
 	err = nc.bw.Flush()
 	log.Infof("2")
@@ -450,7 +451,7 @@ func (nc *RConn) processConnectInit() (err error) {
 		return err
 	}
 
-	log.Infof("3")
+	log.Infof("3", nc.mu)
 	err = nc.sendPrefixCommand()
 	if err != nil {
 		log.Infof("3e")
@@ -463,9 +464,7 @@ func (nc *RConn) processConnectInit() (err error) {
 	return nil
 }
 func (nc *RConn) sendPrefixCommand() error {
-	log.Info("6")
-	nc.mu.Lock()
-	defer nc.mu.Unlock()
+	log.Info("6", mu)
 	for _, k := range nc.initCommand {
 		_, err := nc.bw.Write(k)
 		log.Info("7")
