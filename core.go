@@ -69,6 +69,7 @@ func (nc *RConn) publish(data []byte) error {
 	nc.OutMsgs++
 	nc.OutBytes += uint64(l)
 	if len(nc.fch) == 0 {
+		log.Infof("Flush command :% x", data)
 		nc.kickFlusher()
 	}
 	return nil
