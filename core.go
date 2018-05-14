@@ -43,7 +43,7 @@ func (nc *RConn) publish(data []byte) error {
 	if nc == nil {
 		return ErrInvalidConnection
 	}
-	if nc.isClosed() {
+	if nc.isClosed() || nc.bw == nil {
 		log.Errorf("can't publish channal close", nc.host)
 		return ErrConnectionClosed
 	}
