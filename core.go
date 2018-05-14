@@ -302,12 +302,10 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 
 	b := make([]byte, defaultBufSize)
 	for {
-		log.Infof("ReadLoop %+v", nc.status)
 		nc.mu.Lock()
 		conn := nc.conn
 		conn.SetReadDeadline(time.Now().Add(nc.opts.Timeout))
 		nc.mu.Unlock()
-		log.Infof("ReadLoop  Lock ")
 		if conn == nil {
 			log.Errorf("conn is nil")
 			break
@@ -328,6 +326,7 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 func (nc *RConn) processOpErr(err error) {
 	nc.mu.Lock()
 	if nc.opts.AllowReconnect {
+		log.Warnf("tried to reconnect.. %s", nc.ip)
 		nc.status = RECONNECTING
 		nc.didConnect = false
 		if nc.conn != nil {
