@@ -232,6 +232,7 @@ type MsgHandler func(msg *Msg)
 
 type Subscription struct {
 	Id         string
+	Ip         string
 	mu         sync.Mutex
 	sid        int64
 	delivered  uint64

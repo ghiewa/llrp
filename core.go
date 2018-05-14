@@ -199,6 +199,7 @@ func (cnc *Conn) subscribe(cb MsgHandler, ch chan *Msg) ([]*Subscription, error)
 		// check error condition
 		sub := &Subscription{
 			Id:   id,
+			Ip:   nc.ip,
 			mcb:  cb,
 			conn: nc,
 		}

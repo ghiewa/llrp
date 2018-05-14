@@ -20,7 +20,7 @@ func handler(msg *Msg) {
 		switch k.(type) {
 		case *NetworkIssue:
 			kk := k.(*NetworkIssue)
-			ip := msg.From.conn.ip
+			ip := msg.From.Ip
 			switch kk.Type {
 			case NETW_LOSS:
 				log.Warningf("Network loss on [%s] ", ip)
