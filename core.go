@@ -47,15 +47,18 @@ func (nc *RConn) publish(data []byte) error {
 		log.Errorf("can't publish channal close", nc.host)
 		return ErrConnectionClosed
 	}
+	log.Infof("publishing %v", nc.status)
 	nc.mu.Lock()
 	defer nc.mu.Unlock()
 	if nc.isReconnecting() {
+		log.Infof("publish reconnect %v", nc.status)
 		nc.bw.Flush()
+		log.Infof("publish reconnect flush %v", nc.status)
 		if nc.pending.Len() >= nc.opts.ReconnectBufSize {
 			return ErrReconnectBufExceeded
 		}
 	}
-
+	log.Infof("publish %v", nc.status)
 	l, err := nc.bw.Write(data)
 	if err != nil {
 		return err
