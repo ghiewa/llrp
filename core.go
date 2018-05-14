@@ -107,7 +107,6 @@ func (c *RConn) createConn() (err error) {
 	}
 	log.Infof("create buffer %s", c.host)
 	c.bw = bufio.NewWriterSize(c.conn, defaultBufSize)
-	c.status = CONNECTED
 	return nil
 }
 
@@ -186,7 +185,7 @@ func (nc *RConn) connect() error {
 		nc.close(DISCONNECTED, false)
 		return err
 	}
-	///nc.status = CONNECTED
+	nc.status = CONNECTED
 	nc.didConnect = true
 	nc.reconnects = 0
 	log.Infof("Establish connection %s %v", nc.host, nc.status)
