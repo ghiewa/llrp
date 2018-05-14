@@ -4,6 +4,7 @@ import (
 	//"bytes"
 	"encoding/binary"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	//"strconv"
 )
 
@@ -136,7 +137,8 @@ func parseTagData(b []byte, walk int) (*TagReportData, int) {
 			step = walk + crumb
 			tag.AccessSpecId = binary.BigEndian.Uint32(b[walk:step])
 		default:
-			panic(fmt.Sprintf("Cann't detect header %d on TagReportData", code))
+			log.Errorf("Cann't detect header %d on TagReportData", code)
+			return tag, walk
 		}
 		walk += crumb
 		len_p -= crumb + 1
