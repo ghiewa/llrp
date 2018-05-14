@@ -67,9 +67,9 @@ func (nc *RConn) publish(data []byte) error {
 	log.Infof(" --- P 3 %v", nc.status)
 	nc.OutMsgs++
 	nc.OutBytes += uint64(l)
-	nc.kickFlusher()
 	if len(nc.fch) == 0 {
 		log.Infof(" --- P 4 %v", nc.status)
+		nc.kickFlusher()
 	}
 	return nil
 }
@@ -466,12 +466,17 @@ func (nc *RConn) processConnectInit() (err error) {
 	return nil
 }
 func (nc *RConn) sendPrefixCommand() error {
+	log.Infof("----- 1")
+	nc.mu.Lock()
+	log.Infof("----- 2")
 	for _, k := range nc.initCommand {
 		_, err := nc.bw.Write(k)
 		if err != nil {
+			nc.mu.Unlock()
 			return err
 		}
 	}
+	nc.mu.Unlock()
 	return nil
 }
 
