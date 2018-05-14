@@ -155,7 +155,7 @@ func (nc *RConn) flusher(wg *sync.WaitGroup) {
 			return
 		}
 		nc.mu.Lock()
-		if !nc.isConnecting() || nc.isConnected || bw != nc.bw || conn != nc.conn {
+		if !nc.isConnecting() || nc.isConnected() || bw != nc.bw || conn != nc.conn {
 			nc.mu.Unlock()
 			return
 		}
