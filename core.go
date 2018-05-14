@@ -60,7 +60,7 @@ func (nc *RConn) publish(data []byte) error {
 			return ErrReconnectBufExceeded
 		}
 	}
-	log.Infof("start write command", data)
+	log.Infof("start write command :% x", data)
 	l, err := nc.bw.Write(data)
 	if err != nil {
 		nc.mu.Unlock()
@@ -71,6 +71,7 @@ func (nc *RConn) publish(data []byte) error {
 	if len(nc.fch) == 0 {
 		nc.kickFlusher()
 	}
+	nc.mu.Unlock()
 	return nil
 }
 
@@ -140,31 +141,36 @@ func (nc *RConn) spinUpGoRoutines() {
 }
 func (nc *RConn) flusher(wg *sync.WaitGroup) {
 	defer wg.Done()
-
-	if nc.conn == nil || nc.bw == nil {
+	nc.mu.Lock()
+	bw := nc.bw
+	conn := conn
+	fch := nc.fch
+	flusherTimeout := nc.opts.FlusherTimeout
+	nc.mu.Unlock()
+	if conn == nil || bw == nil {
 		return
 	}
 	for {
-		if _, ok := <-nc.fch; !ok {
-			return
-		}
-		if !nc.isConnecting() || nc.isConnected() {
-			nc.mu.Unlock()
+		if _, ok := <-fch; !ok {
 			return
 		}
 		nc.mu.Lock()
-		log.Debugf("fluser check", nc.mu)
-		if nc.bw.Buffered() > 0 {
-			if nc.opts.FlusherTimeout > 0 {
-				nc.conn.SetWriteDeadline(time.Now().Add(nc.opts.FlusherTimeout))
+		if !nc.isConnecting() || nc.isConnected || bw != nc.bw || conn != nc.conn {
+			nc.mu.Unlock()
+			return
+		}
+		log.Infof("fluser check", nc.mu)
+		if bw.Buffered() > 0 {
+			if flusherTimeout > 0 {
+				conn.SetWriteDeadline(time.Now().Add(nc.opts.FlusherTimeout))
 			}
-			if err := nc.bw.Flush(); err != nil {
+			if err := bw.Flush(); err != nil {
 				if nc.err == nil {
 					nc.err = err
 				}
 			}
-			nc.conn.SetWriteDeadline(time.Time{})
-			log.Debugf("fluser opt", nc.mu)
+			conn.SetWriteDeadline(time.Time{})
+			log.Infof("fluser opt", nc.mu)
 		}
 		nc.mu.Unlock()
 	}
