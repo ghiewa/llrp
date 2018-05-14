@@ -449,7 +449,7 @@ func (nc *RConn) sendPrefixCommand() error {
 	nc.mu.Lock()
 	defer nc.mu.Unlock()
 	for _, k := range nc.initCommand {
-		i, err := nc.bw.Write(k)
+		_, err := nc.bw.Write(k)
 		if err != nil {
 			return err
 		}
