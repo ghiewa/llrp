@@ -194,7 +194,9 @@ func (nc *RConn) process(b []byte, len_data int) error {
 	}
 
 	if vaild {
+		nc.mu.Lock()
 		nc.sendReport(reports, len_data)
+		nc.mu.Unlock()
 	}
 	return nil
 }

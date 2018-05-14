@@ -300,9 +300,11 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 	// Stack based buffer.
 
 	b := make([]byte, defaultBufSize)
-	conn := nc.conn
-
 	for {
+		nc.mu.Lock()
+		conn := nc.conn
+		nc.mu.Unlock()
+
 		if conn == nil {
 			break
 		}
@@ -347,10 +349,9 @@ func (nc *RConn) processOpErr(err error) {
 		}
 		nc.pending.Reset()
 		nc.bw.Reset(nc.pending)
-
+		nc.mu.Unlock()
 		log.Debugf("starting doReconnect")
 		go nc.doReconnect()
-		nc.mu.Unlock()
 		return
 	}
 
@@ -391,6 +392,7 @@ func (nc *RConn) doReconnect() {
 	}
 	nc.mu.Lock()
 	if nc.isClosed() {
+		nc.mu.Unlock()
 		return
 	}
 
@@ -404,6 +406,7 @@ func (nc *RConn) doReconnect() {
 	}
 	nc.didConnect = true
 	nc.reconnects = 0
+	nc.mu.Unlock()
 
 }
 
@@ -444,6 +447,8 @@ func (nc *RConn) processConnectInit() (err error) {
 }
 func (nc *RConn) sendPrefixCommand() error {
 	log.Debugf("send init command")
+	nc.mu.Lock()
+	defer nc.mu.Unlock()
 	for _, k := range nc.initCommand {
 		i, err := nc.bw.Write(k)
 		log.Debugf("write command %d", i)
@@ -451,7 +456,6 @@ func (nc *RConn) sendPrefixCommand() error {
 			return err
 		}
 	}
-
 	return nil
 }
 
@@ -472,10 +476,6 @@ func (nc *RConn) close(status Status, doCBs bool) {
 	nc.mu.Unlock()
 
 	nc.mu.Lock()
-
-	if nc.ptmr != nil {
-		nc.ptmr.Stop()
-	}
 
 	// Go ahead and make sure we have flushed the outbound
 	if nc.conn != nil {

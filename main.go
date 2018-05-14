@@ -117,7 +117,7 @@ func main() {
 	var err error
 	for {
 		err = nil
-		log.Infof("Please enter command\nreader - list of readers\nnce - disable card event log\nce - enable card event log \nio - control gpo/get gpi state\nlong - long run to test card logs")
+		log.Infof("Please enter command\nreader - list of readers\nnce - disable card event log\nce - enable card event log \nio - control gpo/get gpi state\nam - long run to test card logs")
 		scanner := bufio.NewScanner(os.Stdin)
 		scanner.Scan()
 		text = scanner.Text()
