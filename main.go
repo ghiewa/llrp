@@ -17,10 +17,10 @@ var (
 
 func handler(msg *Msg) {
 	for _, k := range msg.Reports {
+		ip := msg.From.Ip
 		switch k.(type) {
 		case *NetworkIssue:
 			kk := k.(*NetworkIssue)
-			ip := msg.From.Ip
 			switch kk.Type {
 			case NETW_LOSS:
 				log.Warningf("Network loss on [%s] ", ip)
@@ -36,7 +36,7 @@ func handler(msg *Msg) {
 				//log.Warnf("--- Form %s", msg.From.Id)
 				kk := k.(*ROAccessReportResponse)
 				if kk.Data != nil {
-					log.Infof("[RO][%d][%s]", kk.MsgId, kk.Data.EPC_96)
+					log.Infof("[RO][%s][%s]", kk.Data.EPC_96, ip)
 				}
 				count++
 				if count > limit_card {
