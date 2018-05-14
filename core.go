@@ -446,7 +446,7 @@ func (nc *RConn) processConnectInit() (err error) {
 	return nil
 }
 func (nc *RConn) sendPrefixCommand() error {
-	log.Debugf("send init command")
+	log.Debugf("send init command", mu)
 	nc.mu.Lock()
 	defer nc.mu.Unlock()
 	for _, k := range nc.initCommand {
