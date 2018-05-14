@@ -334,6 +334,7 @@ func (nc *RConn) processOpErr(err error) {
 	}
 	if nc.opts.AllowReconnect {
 		nc.status = RECONNECTING
+		nc.didConnect = false
 		if nc.conn != nil {
 			nc.bw.Flush()
 			nc.conn.Close()
