@@ -128,10 +128,11 @@ func main() {
 	}
 	host.Subscription(handler)
 	var err error
-	reader := bufio.NewReader(os.Stdin)
+	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		log.Infof("Please enter command\nlist - list of readers\nd - disable card event log\ne - enable card event log \nio - control gpo/get gpi state\nam - long run to test card logs")
-		text, _ := reader.ReadString('\n')
+		scanner.Scan()
+		text := scanner.Text()
 		if text == "q" {
 			break
 		}
@@ -152,7 +153,8 @@ func main() {
 			card_evt = true
 		case "io":
 			log.Infof("sample command please enter number(0-2)")
-			text, _ = reader.ReadString('\n')
+			scanner.Scan()
+			text = scanner.Text()
 			switch text {
 			case "0":
 				// set gpo all open state // 0 = close , 1 = open , 2 = igonre
