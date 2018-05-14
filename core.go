@@ -169,9 +169,10 @@ func (nc *RConn) flusher(wg *sync.WaitGroup) {
 func (nc *RConn) connect() error {
 	// create conn
 	if err := nc.createConn(); err != nil {
-		log.Errorf("can't connecting")
+		log.Errorf("Can't connecting")
 		return err
 	}
+	log.Infof("Setup initCommand")
 	err := nc.processConnectInit()
 	if err != nil {
 		log.Errorf("processConnectInit not success : %v", err)
