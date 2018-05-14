@@ -143,7 +143,7 @@ func (nc *RConn) flusher(wg *sync.WaitGroup) {
 	defer wg.Done()
 	nc.mu.Lock()
 	bw := nc.bw
-	conn := conn
+	conn := nc.conn
 	fch := nc.fch
 	flusherTimeout := nc.opts.FlusherTimeout
 	nc.mu.Unlock()
