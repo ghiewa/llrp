@@ -107,6 +107,7 @@ func (c *RConn) createConn() (err error) {
 	}
 	log.Infof("create buffer %s", c.host)
 	c.bw = bufio.NewWriterSize(c.conn, defaultBufSize)
+	c.status = CONNECTED
 	return nil
 }
 
