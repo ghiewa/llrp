@@ -98,8 +98,10 @@ func (c *RConn) createConn() (err error) {
 	log.Infof("dial to %s", c.host)
 	if c.pending != nil && c.bw != nil {
 		// move to pending buffer.
+		log.Infof("fluse bw %s", c.host)
 		c.bw.Flush()
 	}
+	log.Infof("create buffer %s", c.host)
 	c.bw = bufio.NewWriterSize(c.conn, defaultBufSize)
 	return nil
 }
