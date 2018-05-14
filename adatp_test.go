@@ -30,7 +30,6 @@ func handler(msg *Msg) {
 			default:
 				log.Warningf("Network unknow state %s ", msg.From.Id)
 			}
-
 		case *EventNotificationResponse:
 			//log.Infof("[EVT]")
 		case *ROAccessReportResponse:
@@ -104,6 +103,7 @@ func loop(t *testing.T) {
 	log.Info("loop")
 	opt := GetDefaultOptions()
 	host := opt.NewConn()
+	log.SetOutput(os.Stdout)
 	//log.SetLevel(log.DebugLevel)
 	var valid bool
 	readers := []*SPReaderInfo{
@@ -131,69 +131,63 @@ func loop(t *testing.T) {
 		}
 	}
 	host.Subscription(handler)
-	var text string
 	var err error
-	log.Infof("Please enter command\nlist - list of readers\nd - disable card event log\ne - enable card event log \nio - control gpo/get gpi state\nam - long run to test card logs")
-	go func() {
-		for {
-			scanner := bufio.NewScanner(os.Stdin)
-			scanner.Scan()
-			text = scanner.Text()
-			if text == "q" {
-				break
-			}
-			err = nil
-			valid = true
+	reader := bufio.NewReader(os.Stdin)
+	for {
+		log.Infof("Please enter command\nlist - list of readers\nd - disable card event log\ne - enable card event log \nio - control gpo/get gpi state\nam - long run to test card logs")
+		text, _ := reader.ReadString('\n')
+		if text == "q" {
+			break
+		}
+		err = nil
+		valid = true
 
+		switch text {
+		case "am":
+			log.Infof("starting non-stop cards log")
+			am = true
+		case "list":
+			log.Infof("List Readers : %v", host.ListReader())
+		case "d":
+			// disable card logs
+			card_evt = false
+		case "e":
+			// enable card logs
+			card_evt = true
+		case "io":
+			log.Infof("sample command please enter number(0-2)")
+			text, _ = reader.ReadString('\n')
 			switch text {
-			case "am":
-				log.Infof("starting non-stop cards log")
-				am = true
-			case "list":
-				log.Infof("List Readers : %v", host.ListReader())
-			case "d":
-				// disable card logs
-				card_evt = false
-			case "e":
-				// enable card logs
-				card_evt = true
-			case "io":
-				log.Infof("sample command please enter number(0-2)")
-				scanner.Scan()
-				text = scanner.Text()
-				switch text {
-				case "0":
-					// set gpo all open state // 0 = close , 1 = open , 2 = igonre
-					// GPOset(id,port_state ...)  - set 4 port open state
-					log.Infof("set gpo all on")
-					err = host.GPOset(123, "random_reader_id", true, true, true, true)
-				case "1":
-					// set gpo spectfic port eg. port no.1 will open
-					log.Infof("set gpo port 1 on")
-					err = host.GPOsetp(222, "random_reader_id", 1, true)
-				case "2":
-					log.Infof("set gpo port 1 on")
-					err = host.GPOset(123, "random_reader_id", false, true, false, true)
-				case "3":
-					// get all gpi port
-					log.Infof("get gpi")
-					err = host.GPIget(333, "random_reader_id")
-				default:
-					valid = false
-				}
+			case "0":
+				// set gpo all open state // 0 = close , 1 = open , 2 = igonre
+				// GPOset(id,port_state ...)  - set 4 port open state
+				log.Infof("set gpo all on")
+				err = host.GPOset(123, "random_reader_id", true, true, true, true)
+			case "1":
+				// set gpo spectfic port eg. port no.1 will open
+				log.Infof("set gpo port 1 on")
+				err = host.GPOsetp(222, "random_reader_id", 1, true)
+			case "2":
+				log.Infof("set gpo port 1 on")
+				err = host.GPOset(123, "random_reader_id", false, true, false, true)
+			case "3":
+				// get all gpi port
+				log.Infof("get gpi")
+				err = host.GPIget(333, "random_reader_id")
 			default:
 				valid = false
 			}
-			if valid {
-				if err != nil {
-					log.Warnf("Send command not success. %v", err)
-				} else {
-					log.Infof("Send command success. ")
-				}
+		default:
+			valid = false
+		}
+		if valid {
+			if err != nil {
+				log.Warnf("Send command not success. %v", err)
+			} else {
+				log.Infof("Send command success. ")
 			}
 		}
-	}()
-	select {}
+	}
 	// close connection
 	host.Close()
 

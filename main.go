@@ -18,11 +18,22 @@ var (
 func handler(msg *Msg) {
 	for _, k := range msg.Reports {
 		switch k.(type) {
+
+		case *NetworkIssue:
+			kk := k.(*NetworkIssue)
+			switch kk.Type {
+			case NETW_LOSS:
+				log.Warningf("Network loss on %s [%d] ", msg.From.Id, kk.Reconnects)
+			case NETW_CONNECTED:
+				log.Infof("Network connected %s ", msg.From.Id)
+			default:
+				log.Warningf("Network unknow state %s ", msg.From.Id)
+			}
 		case *EventNotificationResponse:
 			//log.Infof("[EVT]")
 		case *ROAccessReportResponse:
 			if card_evt || am {
-				log.Warnf("--- Form %s", msg.From.Id)
+				//log.Warnf("--- Form %s", msg.From.Id)
 				kk := k.(*ROAccessReportResponse)
 				if kk.Data != nil {
 					log.Infof("[RO][%d][%s]", kk.MsgId, kk.Data.EPC_96)
@@ -81,16 +92,19 @@ func handler(msg *Msg) {
 
 	}
 	// msg.From - reader id
+
 }
 
 func main() {
 	log.Info("loop")
 	opt := GetDefaultOptions()
 	host := opt.NewConn()
+	log.SetOutput(os.Stdout)
 	//log.SetLevel(log.DebugLevel)
+	var valid bool
 	readers := []*SPReaderInfo{
 		&SPReaderInfo{
-			Id:   "random_reader_id",
+			Id:   "random_reader_id1",
 			Host: "192.168.33.16:5084",
 			InitCommand: [][]byte{
 				ResetFactoryOpt(),
@@ -104,7 +118,7 @@ func main() {
 			},
 		},
 	}
-	log.Info("registry")
+
 	for _, reader := range readers {
 		// doReconnected when loss signal
 		err := host.Registry(reader)
@@ -113,17 +127,17 @@ func main() {
 		}
 	}
 	host.Subscription(handler)
-	var text string
 	var err error
+	reader := bufio.NewReader(os.Stdin)
 	for {
-		err = nil
 		log.Infof("Please enter command\nlist - list of readers\nd - disable card event log\ne - enable card event log \nio - control gpo/get gpi state\nam - long run to test card logs")
-		scanner := bufio.NewScanner(os.Stdin)
-		scanner.Scan()
-		text = scanner.Text()
+		text, _ := reader.ReadString('\n')
 		if text == "q" {
 			break
 		}
+		err = nil
+		valid = true
+
 		switch text {
 		case "am":
 			log.Infof("starting non-stop cards log")
@@ -138,8 +152,7 @@ func main() {
 			card_evt = true
 		case "io":
 			log.Infof("sample command please enter number(0-2)")
-			scanner.Scan()
-			text = scanner.Text()
+			text, _ = reader.ReadString('\n')
 			switch text {
 			case "0":
 				// set gpo all open state // 0 = close , 1 = open , 2 = igonre
@@ -158,17 +171,20 @@ func main() {
 				log.Infof("get gpi")
 				err = host.GPIget(333, "random_reader_id")
 			default:
-				log.Infof("not found cmd here")
+				valid = false
 			}
 		default:
-			log.Infof("not found cmd here")
+			valid = false
 		}
-		if err != nil {
-			log.Warnf("Send command not success. %v", err)
-		} else {
-			log.Infof("Send command success. ")
+		if valid {
+			if err != nil {
+				log.Warnf("Send command not success. %v", err)
+			} else {
+				log.Infof("Send command success. ")
+			}
 		}
 	}
 	// close connection
 	host.Close()
+
 }
