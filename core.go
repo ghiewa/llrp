@@ -401,14 +401,14 @@ func (nc *RConn) doReconnect() {
 		return
 	}
 	nc.Reconnects++
-
+	log.Infof("tried to createConn")
 	if err := nc.createConn(); err != nil {
 		log.Errorf("createConn error")
 		nc.reconnects++
 		nc.mu.Unlock()
 		return
 	}
-
+	log.Infof("tried to processConnectInit")
 	if nc.err = nc.processConnectInit(); nc.err != nil {
 		log.Errorf("processConnectInit error")
 		nc.status = RECONNECTING
@@ -416,7 +416,7 @@ func (nc *RConn) doReconnect() {
 		return
 	}
 
-	log.Errorf("didConnect %s %v", nc.host, nc.status)
+	log.Infof("didConnect %s %v", nc.host, nc.status)
 	nc.didConnect = true
 	nc.reconnects = 0
 	nc.mu.Unlock()
