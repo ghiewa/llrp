@@ -87,7 +87,7 @@ func main() {
 	log.Info("loop")
 	opt := GetDefaultOptions()
 	host := opt.NewConn()
-	//log.SetLevel(log.DebugLevel)
+	log.SetLevel(log.DebugLevel)
 	readers := []*SPReaderInfo{
 		&SPReaderInfo{
 			Id:   "random_reader_id",
