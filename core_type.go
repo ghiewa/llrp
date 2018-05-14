@@ -49,8 +49,8 @@ const (
 	BufferSize           = 512
 	port_default         = "5084"
 	DefaultMaxReconnect  = 60
-	DefaultReconnectWait = 5 * time.Second
-	DefaultTimeout       = 10 * time.Second
+	DefaultReconnectWait = 2 * time.Minute
+	DefaultTimeout       = 2 * time.Minute
 	DefaultPingInterval  = 2 * time.Minute
 )
 
