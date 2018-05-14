@@ -12,30 +12,30 @@ import (
 var (
 	card_evt   bool = true
 	count           = 0
-	limit_card      = 100
+	limit_card      = 50
 	am         bool
 )
 
 func handler(msg *Msg) {
 	for _, k := range msg.Reports {
 		switch k.(type) {
-		/*
-			case *NetworkIssue:
-				kk := k.(*NetworkIssue)
-				switch kk.Type {
-				case NETW_LOSS:
-					log.Warningf("Network loss on %s [%d] ", msg.From.Id, kk.Reconnects)
-				case NETW_CONNECTED:
-					log.Infof("Network connected %s ", msg.From.Id)
-				default:
-					log.Warningf("Network unknow state %s ", msg.From.Id)
-				}
-		*/
+
+		case *NetworkIssue:
+			kk := k.(*NetworkIssue)
+			switch kk.Type {
+			case NETW_LOSS:
+				log.Warningf("Network loss on %s [%d] ", msg.From.Id, kk.Reconnects)
+			case NETW_CONNECTED:
+				log.Infof("Network connected %s ", msg.From.Id)
+			default:
+				log.Warningf("Network unknow state %s ", msg.From.Id)
+			}
+
 		case *EventNotificationResponse:
 			//log.Infof("[EVT]")
 		case *ROAccessReportResponse:
 			if card_evt || am {
-				log.Warnf("--- Form %s", msg.From.Id)
+				//log.Warnf("--- Form %s", msg.From.Id)
 				kk := k.(*ROAccessReportResponse)
 				if kk.Data != nil {
 					log.Infof("[RO][%d][%s]", kk.MsgId, kk.Data.EPC_96)
