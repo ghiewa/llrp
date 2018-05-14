@@ -5,7 +5,7 @@ Official golang implement Low Level Reader Protocol(LLRP)
 ## Document and referent
 You can get there in this repo.
 ## How to run test
-structor of envoriment must move main.go to upper folder of llrp package folder e.g.
+structure of dev envoriment must move main.go to upper folder of llrp package folder e.g.
 ```
 sample-llrp/
     main.go
