@@ -302,6 +302,7 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 
 	b := make([]byte, defaultBufSize)
 	for {
+		log.Infof("ReadLoop %+v", nc.status)
 		nc.mu.Lock()
 		conn := nc.conn
 		nc.mu.Unlock()
@@ -313,6 +314,7 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 		n, err := conn.Read(b)
 		if err != nil {
 			log.Errorf("readLoop op error %d", n)
+			nc.close(CLOSED, true)
 			nc.processOpErr(err)
 			break
 		}
