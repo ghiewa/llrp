@@ -39,12 +39,14 @@ func (nc *RConn) publish(data []byte) error {
 	if nc == nil {
 		return ErrInvalidConnection
 	}
+	log.Infof("publish")
 	nc.mu.Lock()
 	if nc.isClosed() {
 		nc.mu.Unlock()
 		return ErrConnectionClosed
 	}
 
+	log.Infof("not close")
 	if nc.isReconnecting() {
 		nc.bw.Flush()
 		if nc.pending.Len() >= nc.opts.ReconnectBufSize {
@@ -52,7 +54,7 @@ func (nc *RConn) publish(data []byte) error {
 			return ErrReconnectBufExceeded
 		}
 	}
-
+	log.Infof("start write command")
 	l, err := nc.bw.Write(data)
 	if err != nil {
 		nc.mu.Unlock()

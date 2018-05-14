@@ -139,16 +139,23 @@ func main() {
 		case "io":
 			log.Infof("sample command please enter number(0-2)")
 			scanner.Scan()
-			switch scanner.Text() {
+			text = scanner.Text()
+			switch text {
 			case "0":
 				// set gpo all open state // 0 = close , 1 = open , 2 = igonre
 				// GPOset(id,port_state ...)  - set 4 port open state
+				log.Infof("set gpo all on")
 				err = host.GPOset(123, "random_reader_id", true, true, true, true)
 			case "1":
 				// set gpo spectfic port eg. port no.1 will open
+				log.Infof("set gpo port 1 on")
 				err = host.GPOsetp(222, "random_reader_id", 1, true)
 			case "2":
+				log.Infof("set gpo port 1 on")
+				err = host.GPOset(123, "random_reader_id", false, true, false, true)
+			case "3":
 				// get all gpi port
+				log.Infof("get gpi")
 				err = host.GPIget(333, "random_reader_id")
 			default:
 				log.Infof("not found cmd here")
