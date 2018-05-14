@@ -71,6 +71,7 @@ func (nc *RConn) publish(data []byte) error {
 		log.Infof(" --- P 4 %v", nc.status)
 		nc.kickFlusher()
 	}
+	log.Infof(" --- P 4 %v", nc.bw.Available())
 	return nil
 }
 
