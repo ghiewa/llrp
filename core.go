@@ -132,11 +132,9 @@ func (nc *RConn) waitForExits(wg *sync.WaitGroup) {
 // We also use a WaitGroup to make sure we only start them on a
 // reconnect when the previous ones have exited.
 func (nc *RConn) spinUpGoRoutines() {
-	log.Debugf("set waitForExits", nc.mu)
 	nc.waitForExits(nc.wg)
 	nc.wg = &sync.WaitGroup{}
 	nc.wg.Add(2)
-	log.Debugf("starting readLoop", nc.mu)
 	// spin
 	go nc.readLoop(nc.wg)
 	go nc.flusher(nc.wg)
@@ -161,7 +159,6 @@ func (nc *RConn) flusher(wg *sync.WaitGroup) {
 			nc.mu.Unlock()
 			return
 		}
-		log.Infof("fluser check", nc.mu)
 		if bw.Buffered() > 0 {
 			if flusherTimeout > 0 {
 				conn.SetWriteDeadline(time.Now().Add(nc.opts.FlusherTimeout))
@@ -172,7 +169,6 @@ func (nc *RConn) flusher(wg *sync.WaitGroup) {
 				}
 			}
 			conn.SetWriteDeadline(time.Time{})
-			log.Infof("fluser opt", nc.mu)
 		}
 		nc.mu.Unlock()
 	}
@@ -240,7 +236,6 @@ func (nc *RConn) waitForMsgs(s *Subscription) {
 		if s.pHead == nil && !s.closed {
 			s.pCond.Wait()
 		}
-		log.Debugf("flow ")
 		// pop msg from list
 		m := s.pHead
 		if m != nil {
@@ -321,14 +316,12 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 		if conn == nil {
 			break
 		}
-		log.Debugf("reading loop")
 		n, err := conn.Read(b)
 		if err != nil {
 			log.Errorf("readLoop op error %d", n)
 			nc.processOpErr(err)
 			break
 		}
-		log.Debugf("start process.")
 		// process
 		if err := nc.process(b[:n], n); err != nil {
 			nc.processOpErr(err)
@@ -358,7 +351,6 @@ func (nc *RConn) processOpErr(err error) {
 			nc.bw.Reset(nc.pending)
 		}
 		nc.mu.Unlock()
-		log.Debugf("starting doReconnect")
 		go func() {
 			for {
 				nc.doReconnect()
@@ -379,7 +371,6 @@ func (nc *RConn) processOpErr(err error) {
 		return
 	}
 
-	log.Debugf("set state to disconnected")
 	nc.status = DISCONNECTED
 	nc.err = err
 	nc.mu.Unlock()
@@ -461,12 +452,10 @@ func (nc *RConn) processConnectInit() (err error) {
 	nc.status = CONNECTING
 
 	// process init commands ( reset factory / set gpo off and so on..
-	log.Debugf("flush on init", nc.mu)
 	err = nc.bw.Flush()
 	if err != nil {
 		return err
 	}
-	log.Debugf("sendPrefixCommand", nc.mu)
 	err = nc.sendPrefixCommand()
 	if err != nil {
 		log.Errorf("Can't sendPrefixCommand ")
@@ -477,7 +466,6 @@ func (nc *RConn) processConnectInit() (err error) {
 	return nil
 }
 func (nc *RConn) sendPrefixCommand() error {
-	log.Debugf("send init command", nc.mu)
 	nc.mu.Lock()
 	defer nc.mu.Unlock()
 	for _, k := range nc.initCommand {

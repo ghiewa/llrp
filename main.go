@@ -117,6 +117,20 @@ func main() {
 				EnableROSpecOption(),
 			},
 		},
+		&SPReaderInfo{
+			Id:   "random_reader_id_01",
+			Host: "192.168.33.17:5084",
+			InitCommand: [][]byte{
+				ResetFactoryOpt(),
+				DelROSpecOpt(),
+				DelAccOption(),
+				ExtensionOption(),
+				SetRegion(),
+				SetEventSpecOption(),
+				AddROSpecOption(),
+				EnableROSpecOption(),
+			},
+		},
 	}
 
 	for _, reader := range readers {
@@ -130,7 +144,7 @@ func main() {
 	var err error
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
-		log.Infof("Please enter command\nlist - list of readers\nd - disable card event log\ne - enable card event log \nio - control gpo/get gpi state\nam - long run to test card logs")
+		log.Infof("\n***\tPlease enter command\nlist - list of readers\nd - disable card event log\ne - enable card event log \nio - control gpo/get gpi state\nam - long run to test card logs")
 		scanner.Scan()
 		text := scanner.Text()
 		if text == "q" {
@@ -158,7 +172,7 @@ func main() {
 			switch text {
 			case "0":
 				// set gpo all open state // 0 = close , 1 = open , 2 = igonre
-				// GPOset(id,port_state ...)  - set 4 port open state
+				// GPOset(messageId,id,port_state ...)  - set 4 port open state
 				log.Infof("set gpo all on")
 				err = host.GPOset(123, "random_reader_id", true, true, true, true)
 			case "1":
