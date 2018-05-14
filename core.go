@@ -39,7 +39,9 @@ func (nc *RConn) publish(data []byte) error {
 	if nc == nil {
 		return ErrInvalidConnection
 	}
-	log.Infof("publish")
+	log.Infof("publish", nc.mu)
+	nc.mu.Unlock()
+	log.Infof("publish", nc.mu)
 	nc.mu.Lock()
 	if nc.isClosed() {
 		nc.mu.Unlock()
