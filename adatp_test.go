@@ -161,6 +161,7 @@ func loop(t *testing.T) {
 			case "0":
 				// set gpo all open state // 0 = close , 1 = open , 2 = igonre
 				// GPOset(id,port_state ...)  - set 4 port open state
+
 				log.Infof("set gpo all on")
 				err = host.GPOset(123, "random_reader_id", true, true, true, true)
 			case "1":
