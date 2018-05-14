@@ -20,7 +20,15 @@ func handler(msg *Msg) {
 	for _, k := range msg.Reports {
 		switch k.(type) {
 		case *NetworkIssue:
-			//kk := k.(*NetworkLoss)
+			kk := k.(*NetworkIssue)
+			switch kk.Type {
+			case NETW_LOSS:
+				log.Warningf("Network loss on %s [%d] ", msg.From.Id, kk.Reconnects)
+			case NETW_CONNECTED:
+				log.Infof("Network connected %s ", msg.From.Id)
+			default:
+				log.Warningf("Network unknow state %s ", msg.From.Id)
+			}
 		case *EventNotificationResponse:
 			//log.Infof("[EVT]")
 		case *ROAccessReportResponse:
@@ -94,7 +102,7 @@ func loop(t *testing.T) {
 	log.Info("loop")
 	opt := GetDefaultOptions()
 	host := opt.NewConn()
-	log.SetLevel(log.DebugLevel)
+	//log.SetLevel(log.DebugLevel)
 	var valid bool
 	readers := []*SPReaderInfo{
 		&SPReaderInfo{

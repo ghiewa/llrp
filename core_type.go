@@ -9,6 +9,11 @@ import (
 	"time"
 )
 
+const (
+	NETW_LOSS = iota
+	NETW_CONNECTED
+)
+
 // Errors
 var (
 	ErrConnectionClosed     = errors.New("llrp: connection closed")
@@ -44,8 +49,8 @@ const (
 	BufferSize           = 512
 	port_default         = "5084"
 	DefaultMaxReconnect  = 60
-	DefaultReconnectWait = 2 * time.Second
-	DefaultTimeout       = 2 * time.Second
+	DefaultReconnectWait = 5 * time.Second
+	DefaultTimeout       = 10 * time.Second
 	DefaultPingInterval  = 2 * time.Minute
 )
 
@@ -56,7 +61,9 @@ const (
 )
 
 type NetworkIssue struct {
-	From *Subscription
+	Type       int
+	Reconnects int
+	Period     time.Duration
 }
 
 // Status represents the state of the connection.

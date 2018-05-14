@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	log "github.com/sirupsen/logrus"
-	"github.com/tatsushid/go-fastping"
 	"net"
 	"runtime"
 	"strings"
@@ -32,7 +31,7 @@ func (nc *Conn) registry(sp *SPReaderInfo) error {
 	sp.conn.ach = make(chan asyncCB, asyncCBChanSize)
 	go func() {
 		if err := sp.conn.connect(); err != nil {
-			log.Errorf("Unable to connected :%s , we will reconnect in %v[%d]", sp.Host, DefaultPingInterval, sp.conn.reconnects)
+			log.Errorf("Unable to connected :%s , we will reconnect every %v[%d]", sp.Host, sp.conn.opts.ReconnectWait, sp.conn.reconnects)
 			sp.conn.processOpErr(err)
 		}
 	}()
@@ -91,30 +90,14 @@ func (nc *RConn) asyncDispatch() {
 // connection is in place.
 func (c *RConn) createConn() (err error) {
 	c.lastAttempt = time.Now()
-	// ping
-	p := fastping.NewPinger()
-	log.Infof("try to ping %s", c.ip)
-	ra, err := net.ResolveIPAddr("ip4:icmp", c.ip)
-
+	log.Infof("try to dial %s | %v", c.host, c.opts.Timeout)
+	c.conn, err = net.DialTimeout("tcp", c.host, c.opts.Timeout)
 	if err != nil {
-		log.Errorf("ping failed %s", c.ip)
-		return err
-	}
-	p.AddIPAddr(ra)
-	p.OnRecv = func(addr *net.IPAddr, rtt time.Duration) {
-		log.Debugf("--ping test %+v", rtt)
-	}
-	err = p.Run()
-	if err != nil {
-		log.Errorf("ping err %v", err)
-		return err
-	}
-
-	c.conn, err = net.Dial("tcp", c.host)
-	if err != nil {
+		log.Errorf("failed to dial on %s", c.host)
 		c.err = err
 		return err
 	}
+
 	log.Infof("dial to %s", c.host)
 	if c.pending != nil && c.bw != nil {
 		// move to pending buffer.
@@ -320,19 +303,15 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 
 	b := make([]byte, defaultBufSize)
 	for {
-		log.Debugf("loop in", nc.mu)
 		nc.mu.Lock()
 		conn := nc.conn
-		log.Debugf("loop conn", nc.mu)
 		nc.mu.Unlock()
 
 		if conn == nil {
 			break
 		}
-
 		log.Debugf("reading loop")
 		n, err := conn.Read(b)
-		log.Debugf("reading 2", len(b))
 		if err != nil {
 			log.Errorf("readLoop op error %d", n)
 			nc.processOpErr(err)
@@ -347,7 +326,6 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 	}
 }
 func (nc *RConn) processOpErr(err error) {
-	log.Debugf("process op err")
 	nc.mu.Lock()
 	if nc.isConnecting() || nc.isClosed() || nc.isReconnecting() {
 		nc.mu.Unlock()
@@ -355,7 +333,6 @@ func (nc *RConn) processOpErr(err error) {
 		return
 	}
 	if nc.opts.AllowReconnect {
-		log.Debugf("allow to connected")
 		nc.status = RECONNECTING
 		if nc.conn != nil {
 			nc.bw.Flush()
@@ -374,9 +351,17 @@ func (nc *RConn) processOpErr(err error) {
 		go func() {
 			for {
 				nc.doReconnect()
+				n := &NetworkIssue{
+					Period:     nc.opts.ReconnectWait,
+					Reconnects: nc.reconnects,
+					Type:       NETW_LOSS,
+				}
 				if nc.didConnect {
+					n.Type = NETW_CONNECTED
+					nc.sendReport(0, n)
 					break
 				}
+				nc.sendReport(0, n)
 			}
 		}()
 		return
@@ -407,7 +392,7 @@ func (nc *RConn) doReconnect() {
 	// connection attempt if connecting to same server
 	// we just got disconnected from..
 	if time.Since(nc.lastAttempt) < nc.opts.ReconnectWait {
-		sleepTime = int64(DefaultPingInterval - time.Since(nc.lastAttempt))
+		sleepTime = int64(nc.opts.ReconnectWait - time.Since(nc.lastAttempt))
 	}
 
 	nc.mu.Unlock()

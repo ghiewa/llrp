@@ -6,8 +6,11 @@ import (
 	//"strconv"
 )
 
-func (nc *RConn) sendReport(reports []interface{}, len_data int) {
-	log.Debugf("send reports")
+func (nc *RConn) sendReport(len_data int, reports ...interface{}) {
+	if nc.sub == nil {
+		log.Warningf("Subscription doesn't init yet.")
+		return
+	}
 	nc.subsMu.RLock()
 	nc.InMsgs++
 	nc.InBytes += uint64(len_data)
@@ -195,7 +198,7 @@ func (nc *RConn) process(b []byte, len_data int) error {
 
 	if vaild {
 		nc.mu.Lock()
-		nc.sendReport(reports, len_data)
+		nc.sendReport(len_data, reports)
 		nc.mu.Unlock()
 	}
 	return nil
