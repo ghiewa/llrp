@@ -318,6 +318,7 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 func (nc *RConn) processOpErr(err error) {
 	nc.mu.Lock()
 	if nc.isConnecting() || nc.isClosed() || nc.isReconnecting() {
+		log.Errorf("processOpErr")
 		nc.mu.Unlock()
 		return
 	}
