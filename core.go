@@ -133,19 +133,14 @@ func (nc *RConn) flusher(wg *sync.WaitGroup) {
 		return
 	}
 	for {
-		log.Debugf("fluser ", nc.mu)
-		nc.mu.Lock()
-		log.Debugf("fluser Lock", nc.mu)
 		if _, ok := <-nc.fch; !ok {
-			log.Debugf("fluser not fch ", nc.mu)
-			nc.mu.Unlock()
 			return
 		}
 		if !nc.isConnecting() || nc.isConnected() {
-			log.Debugf("fluser not connect", nc.mu)
 			nc.mu.Unlock()
 			return
 		}
+		nc.mu.Lock()
 		log.Debugf("fluser check", nc.mu)
 		if nc.bw.Buffered() > 0 {
 			if nc.opts.FlusherTimeout > 0 {
@@ -159,6 +154,7 @@ func (nc *RConn) flusher(wg *sync.WaitGroup) {
 			nc.conn.SetWriteDeadline(time.Time{})
 			log.Debugf("fluser opt", nc.mu)
 		}
+		nc.mu.Unlock()
 	}
 
 }
