@@ -67,11 +67,7 @@ func (nc *RConn) publish(data []byte) error {
 	log.Infof(" --- P 3 %v", nc.status)
 	nc.OutMsgs++
 	nc.OutBytes += uint64(l)
-	if len(nc.fch) == 0 {
-		log.Infof(" --- P 5 %v", nc.status)
-		nc.kickFlusher()
-	}
-	log.Infof(" --- P 4 %v %v", nc.bw.Available(), nc.fch)
+	nc.kickFlusher()
 	return nil
 }
 
