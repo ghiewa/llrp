@@ -450,21 +450,19 @@ func (nc *RConn) processConnectInit() (err error) {
 		return err
 	}
 
-	log.Infof("4")
+	log.Infof("3")
 	err = nc.sendPrefixCommand()
 	if err != nil {
-		log.Infof("4e")
+		log.Infof("3e")
 		return err
 	}
-	log.Infof("5")
+	log.Infof("4")
 	nc.kickFlusher()
-	log.Infof("6")
+	log.Infof("5")
 	go nc.spinUpGoRoutines()
 	return nil
 }
 func (nc *RConn) sendPrefixCommand() error {
-	nc.mu.Lock()
-	defer nc.mu.Unlock()
 	for _, k := range nc.initCommand {
 		_, err := nc.bw.Write(k)
 		if err != nil {
