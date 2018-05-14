@@ -307,7 +307,7 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 	for {
 		nc.mu.Lock()
 		conn := nc.conn
-		conn.SetReadDeadline(time.Now().Add(nc.opts.Timeout))
+		//conn.SetReadDeadline(time.Now().Add(nc.opts.Timeout))
 		nc.mu.Unlock()
 		if conn == nil {
 			log.Errorf("conn is nil")
@@ -466,17 +466,12 @@ func (nc *RConn) processConnectInit() (err error) {
 	return nil
 }
 func (nc *RConn) sendPrefixCommand() error {
-	log.Infof("----- 1")
-	nc.mu.Lock()
-	log.Infof("----- 2")
 	for _, k := range nc.initCommand {
 		_, err := nc.bw.Write(k)
 		if err != nil {
-			nc.mu.Unlock()
 			return err
 		}
 	}
-	nc.mu.Unlock()
 	return nil
 }
 
