@@ -61,9 +61,9 @@ func (nc *RConn) publish(data []byte) error {
 		}
 	}
 	log.Infof("start write command :% x", data)
+
 	l, err := nc.bw.Write(data)
 	if err != nil {
-		nc.mu.Unlock()
 		return err
 	}
 	nc.OutMsgs++
@@ -71,7 +71,6 @@ func (nc *RConn) publish(data []byte) error {
 	if len(nc.fch) == 0 {
 		nc.kickFlusher()
 	}
-	nc.mu.Unlock()
 	return nil
 }
 
