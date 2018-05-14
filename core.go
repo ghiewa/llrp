@@ -188,7 +188,7 @@ func (nc *RConn) connect() error {
 	///nc.status = CONNECTED
 	nc.didConnect = true
 	nc.reconnects = 0
-	log.Infof("Establish connection %s", nc.host)
+	log.Infof("Establish connection %s %v", nc.host, nc.status)
 	return nil
 }
 
