@@ -9,19 +9,29 @@ import (
 )
 
 var (
-	card_evt bool = true
+	card_evt   bool = true
+	count           = 0
+	limit_card      = 100
+	am         bool
 )
 
 func handler(msg *Msg) {
 	for _, k := range msg.Reports {
 		switch k.(type) {
+		case *EventNotificationResponse:
+			//log.Infof("[EVT]")
 		case *ROAccessReportResponse:
-			log.Warnf("--- Form %s", msg.From.Id)
-			kk := k.(*ROAccessReportResponse)
-			if kk.Data != nil {
-				log.Infof("[RO][%d][%s]", kk.MsgId, kk.Data.EPC_96)
-			} else {
-				log.Infof("\n[RO]")
+			if card_evt || am {
+				log.Warnf("--- Form %s", msg.From.Id)
+				kk := k.(*ROAccessReportResponse)
+				if kk.Data != nil {
+					log.Infof("[RO][%d][%s]", kk.MsgId, kk.Data.EPC_96)
+				}
+				if count > limit_card {
+					count = 0
+					card_evt = false
+					log.Warningf("----We stop logs card here to do another operation")
+				}
 			}
 		case *DELETE_ROSPEC_RESPONSE:
 			kk := k.(*DELETE_ROSPEC_RESPONSE)
@@ -58,8 +68,6 @@ func handler(msg *Msg) {
 		case *ENABLE_ROSPEC_RESPONSE:
 			kk := k.(*ENABLE_ROSPEC_RESPONSE)
 			log.Infof("[ENA_RO] Success=%v", kk.Status.Success)
-		case *EventNotificationResponse:
-			log.Infof("[EVT]")
 		case *ERROR_MESSAGE:
 			kk := k.(*ERROR_MESSAGE)
 			log.Infof("[ERROR] code=%d ,msg=%s", kk.Status.StatusCode, kk.Status.ErrMsg)
@@ -116,7 +124,9 @@ func main() {
 			break
 		}
 		switch text {
-		case "long":
+		case "am":
+			log.Infof("starting non-stop cards log")
+			am = true
 		case "reader":
 			log.Infof("List Readers : %v", host.ListReader())
 		case "ne":
