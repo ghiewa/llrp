@@ -352,11 +352,17 @@ func (nc *RConn) processOpErr(err error) {
 					Type:       NETW_LOSS,
 				}
 				if nc.didConnect {
+					nc.mu.Lock()
 					nc.status = CONNECTED
+					nc.mu.Unlock()
 					n.Type = NETW_CONNECTED
 					nc.sendReport(0, n)
 					break
 				}
+				nc.mu.Lock()
+				nc.status = DISCONNECTED
+				nc.mu.Unlock()
+
 				nc.sendReport(0, n)
 			}
 		}()
