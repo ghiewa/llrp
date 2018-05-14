@@ -42,6 +42,7 @@ func (nc *Conn) registry(sp *SPReaderInfo) error {
 
 // logic of pushing msg to reader
 func (nc *RConn) publish(data []byte) error {
+	log.Infof("start publish", nc.mu)
 	if nc == nil {
 		return ErrInvalidConnection
 	}
