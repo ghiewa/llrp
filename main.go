@@ -285,7 +285,47 @@ func main() {
 			text = scanner.Text()
 			id := text
 			log.Infof("reader [%s] selected", id)
-			log.Infof("Please set command gpo/gpi [gpo/gpi]")
+			reader_id := "random_reader_id_" + id
+			log.Infof("Please set command [gpo | gpi]")
+			scanner.Scan()
+			cmd := scanner.Text()
+			switch cmd {
+			case "gpi":
+				log.Infof("[GPI] get gpi port on reader [%s]", id)
+				err = host.GPIget(333, reader_id)
+			case "gpo":
+				log.Infof("[GPO] Please set state [ on | off ]")
+				state := false
+				scanner.Scan()
+				switch scanner.Text() {
+				case "on":
+					state = true
+				case "off":
+				default:
+					valid = false
+					continue
+				}
+				log.Infof("[GPO] Please set port to command [ all | [1-4]]")
+				scanner.Scan()
+				switch scanner.Text() {
+				case "all":
+					err = host.GPOset(123, reader_id, state, state, state, state)
+				case "1":
+					err = host.GPOsetp(222, reader_id, 1, state)
+				case "2":
+					err = host.GPOsetp(222, reader_id, 2, state)
+				case "3":
+					err = host.GPOsetp(222, reader_id, 3, state)
+				case "4":
+					err = host.GPOsetp(222, reader_id, 4, state)
+				default:
+					valid = false
+					continue
+				}
+			default:
+				valid = false
+				continue
+			}
 			/*
 				switch text {
 				case "0":
