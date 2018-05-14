@@ -117,12 +117,12 @@ func (nc *RConn) waitForExits(wg *sync.WaitGroup) {
 // We also use a WaitGroup to make sure we only start them on a
 // reconnect when the previous ones have exited.
 func (nc *RConn) spinUpGoRoutines() {
+	log.Debugf("set waitForExits", nc.mu)
 	nc.waitForExits(nc.wg)
 	nc.wg = &sync.WaitGroup{}
 	nc.wg.Add(2)
-	log.Debugf("starting readLoop")
+	log.Debugf("starting readLoop", nc.mu)
 	// spin
-	log.Debugf("starting readLoop")
 	go nc.readLoop(nc.wg)
 	go nc.flusher(nc.wg)
 }
