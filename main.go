@@ -104,7 +104,7 @@ func main() {
 	var valid bool
 	readers := []*SPReaderInfo{
 		&SPReaderInfo{
-			Id:   "random_reader_id",
+			Id:   "random_reader_id_00",
 			Host: "192.168.33.16:5084",
 			InitCommand: [][]byte{
 				ResetFactoryOpt(),
@@ -120,6 +120,118 @@ func main() {
 		&SPReaderInfo{
 			Id:   "random_reader_id_01",
 			Host: "192.168.33.17:5084",
+			InitCommand: [][]byte{
+				ResetFactoryOpt(),
+				DelROSpecOpt(),
+				DelAccOption(),
+				ExtensionOption(),
+				SetRegion(),
+				SetEventSpecOption(),
+				AddROSpecOption(),
+				EnableROSpecOption(),
+			},
+		},
+		&SPReaderInfo{
+			Id:   "random_reader_id_02",
+			Host: "192.168.33.18:5084",
+			InitCommand: [][]byte{
+				ResetFactoryOpt(),
+				DelROSpecOpt(),
+				DelAccOption(),
+				ExtensionOption(),
+				SetRegion(),
+				SetEventSpecOption(),
+				AddROSpecOption(),
+				EnableROSpecOption(),
+			},
+		},
+		&SPReaderInfo{
+			Id:   "random_reader_id_03",
+			Host: "192.168.33.19:5084",
+			InitCommand: [][]byte{
+				ResetFactoryOpt(),
+				DelROSpecOpt(),
+				DelAccOption(),
+				ExtensionOption(),
+				SetRegion(),
+				SetEventSpecOption(),
+				AddROSpecOption(),
+				EnableROSpecOption(),
+			},
+		},
+		&SPReaderInfo{
+			Id:   "random_reader_id_04",
+			Host: "192.168.33.20:5084",
+			InitCommand: [][]byte{
+				ResetFactoryOpt(),
+				DelROSpecOpt(),
+				DelAccOption(),
+				ExtensionOption(),
+				SetRegion(),
+				SetEventSpecOption(),
+				AddROSpecOption(),
+				EnableROSpecOption(),
+			},
+		},
+		&SPReaderInfo{
+			Id:   "random_reader_id_05",
+			Host: "192.168.33.21:5084",
+			InitCommand: [][]byte{
+				ResetFactoryOpt(),
+				DelROSpecOpt(),
+				DelAccOption(),
+				ExtensionOption(),
+				SetRegion(),
+				SetEventSpecOption(),
+				AddROSpecOption(),
+				EnableROSpecOption(),
+			},
+		},
+		&SPReaderInfo{
+			Id:   "random_reader_id_06",
+			Host: "192.168.33.22:5084",
+			InitCommand: [][]byte{
+				ResetFactoryOpt(),
+				DelROSpecOpt(),
+				DelAccOption(),
+				ExtensionOption(),
+				SetRegion(),
+				SetEventSpecOption(),
+				AddROSpecOption(),
+				EnableROSpecOption(),
+			},
+		},
+		&SPReaderInfo{
+			Id:   "random_reader_id_07",
+			Host: "192.168.33.23:5084",
+			InitCommand: [][]byte{
+				ResetFactoryOpt(),
+				DelROSpecOpt(),
+				DelAccOption(),
+				ExtensionOption(),
+				SetRegion(),
+				SetEventSpecOption(),
+				AddROSpecOption(),
+				EnableROSpecOption(),
+			},
+		},
+		&SPReaderInfo{
+			Id:   "random_reader_id_08",
+			Host: "192.168.33.24:5084",
+			InitCommand: [][]byte{
+				ResetFactoryOpt(),
+				DelROSpecOpt(),
+				DelAccOption(),
+				ExtensionOption(),
+				SetRegion(),
+				SetEventSpecOption(),
+				AddROSpecOption(),
+				EnableROSpecOption(),
+			},
+		},
+		&SPReaderInfo{
+			Id:   "random_reader_id_09",
+			Host: "192.168.33.25:5084",
 			InitCommand: [][]byte{
 				ResetFactoryOpt(),
 				DelROSpecOpt(),
@@ -166,7 +278,7 @@ func main() {
 			// enable card logs
 			card_evt = true
 		case "io":
-			log.Infof("sample command please enter number(0-2)")
+			log.Infof("sample command please enter number(0-5)")
 			scanner.Scan()
 			text = scanner.Text()
 			switch text {
@@ -174,18 +286,25 @@ func main() {
 				// set gpo all open state // 0 = close , 1 = open , 2 = igonre
 				// GPOset(messageId,id,port_state ...)  - set 4 port open state
 				log.Infof("set gpo all on")
-				err = host.GPOset(123, "random_reader_id", true, true, true, true)
+				err = host.GPOset(123, "random_reader_id_00", true, true, true, true)
 			case "1":
 				// set gpo spectfic port eg. port no.1 will open
 				log.Infof("set gpo port 1 on")
-				err = host.GPOsetp(222, "random_reader_id", 1, true)
+				err = host.GPOsetp(222, "random_reader_id_00", 1, true)
 			case "2":
 				log.Infof("set gpo port 1 on")
-				err = host.GPOset(123, "random_reader_id", false, true, false, true)
+				err = host.GPOset(123, "random_reader_id_00", false, true, false, true)
 			case "3":
 				// get all gpi port
 				log.Infof("get gpi")
-				err = host.GPIget(333, "random_reader_id")
+				err = host.GPIget(333, "random_reader_id_00")
+			case "4":
+				// get all gpi port
+				log.Infof("tried to get gpi on bad reader")
+				err = host.GPIget(333, "random_reader_id_01")
+			case "5":
+				log.Infof("tried to set gpo on bad reader")
+				err = host.GPOset(123, "random_reader_id_01", false, true, false, true)
 			default:
 				valid = false
 			}

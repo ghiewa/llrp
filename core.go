@@ -14,11 +14,9 @@ import (
 
 // register reader to main conn
 func (nc *Conn) registry(sp *SPReaderInfo) error {
-	log.Debugf("registry : %s", sp.Host)
 	if sp.Host == "" || sp.Id == "" || nc.readers[sp.Id] != nil {
 		return ErrInvalidContext
 	}
-	log.Debugf("start registry")
 	// add to Conn
 	nc.readers[sp.Id] = sp
 	sp.conn = &RConn{
@@ -36,24 +34,19 @@ func (nc *Conn) registry(sp *SPReaderInfo) error {
 			sp.conn.processOpErr(err)
 		}
 	}()
-	log.Debugf("start asyncDispatch")
 	go sp.conn.asyncDispatch()
 	return nil
 }
 
 // logic of pushing msg to reader
 func (nc *RConn) publish(data []byte) error {
-	log.Infof("start publish", nc.mu)
 	if nc == nil {
 		return ErrInvalidConnection
 	}
-	log.Infof("publish", nc.mu)
-
 	if nc.isClosed() {
 		log.Errorf("can't publish channal close", nc.host)
 		return ErrConnectionClosed
 	}
-	log.Infof("not close")
 	nc.mu.Lock()
 	defer nc.mu.Unlock()
 	if nc.isReconnecting() {
@@ -62,7 +55,6 @@ func (nc *RConn) publish(data []byte) error {
 			return ErrReconnectBufExceeded
 		}
 	}
-	log.Infof("start write command :% x", data)
 
 	l, err := nc.bw.Write(data)
 	if err != nil {
@@ -71,7 +63,6 @@ func (nc *RConn) publish(data []byte) error {
 	nc.OutMsgs++
 	nc.OutBytes += uint64(l)
 	if len(nc.fch) == 0 {
-		log.Infof("Flush command :% x", data)
 		nc.kickFlusher()
 	}
 	return nil
@@ -109,7 +100,6 @@ func (c *RConn) createConn() (err error) {
 		// move to pending buffer.
 		c.bw.Flush()
 	}
-	log.Debugf("create bufio")
 	c.bw = bufio.NewWriterSize(c.conn, defaultBufSize)
 	return nil
 }
@@ -177,13 +167,11 @@ func (nc *RConn) flusher(wg *sync.WaitGroup) {
 
 // connect to reader
 func (nc *RConn) connect() error {
-	log.Debugf("start connecting")
 	// create conn
 	if err := nc.createConn(); err != nil {
 		log.Errorf("can't connecting")
 		return err
 	}
-	log.Debugf("process connect init")
 	err := nc.processConnectInit()
 	if err != nil {
 		log.Errorf("processConnectInit not success : %v", err)
@@ -208,7 +196,6 @@ func (cnc *Conn) subscribe(cb MsgHandler, ch chan *Msg) ([]*Subscription, error)
 		nc := ncc.conn
 		defer nc.kickFlusher()
 		// check error condition
-		log.Debugf("subscribe : %s", id)
 		sub := &Subscription{
 			Id:   id,
 			mcb:  cb,
@@ -231,7 +218,6 @@ func (nc *RConn) waitForMsgs(s *Subscription) {
 		delivered, max uint64
 	)
 	for {
-		log.Debugf("waitForMsgs")
 		s.mu.Lock()
 		if s.pHead == nil && !s.closed {
 			s.pCond.Wait()
@@ -333,7 +319,6 @@ func (nc *RConn) processOpErr(err error) {
 	nc.mu.Lock()
 	if nc.isConnecting() || nc.isClosed() || nc.isReconnecting() {
 		nc.mu.Unlock()
-		log.Debugf("process op is reconneting or closed")
 		return
 	}
 	if nc.opts.AllowReconnect {
@@ -400,10 +385,8 @@ func (nc *RConn) doReconnect() {
 
 	nc.mu.Unlock()
 	if sleepTime <= 0 {
-		log.Debug("start sleep 1")
 		runtime.Gosched()
 	} else {
-		log.Debug("start sleep 2")
 		time.Sleep(time.Duration(sleepTime))
 	}
 	nc.mu.Lock()
@@ -411,7 +394,6 @@ func (nc *RConn) doReconnect() {
 		nc.mu.Unlock()
 		return
 	}
-	log.Debug("start reconnecting")
 	nc.Reconnects++
 
 	if err := nc.createConn(); err != nil {
@@ -421,7 +403,6 @@ func (nc *RConn) doReconnect() {
 	}
 
 	if nc.err = nc.processConnectInit(); nc.err != nil {
-		log.Debug("start processConnectInit")
 		nc.status = RECONNECTING
 		nc.mu.Unlock()
 		return
@@ -458,7 +439,6 @@ func (nc *RConn) processConnectInit() (err error) {
 	}
 	err = nc.sendPrefixCommand()
 	if err != nil {
-		log.Errorf("Can't sendPrefixCommand ")
 		return err
 	}
 	nc.kickFlusher()
@@ -470,7 +450,6 @@ func (nc *RConn) sendPrefixCommand() error {
 	defer nc.mu.Unlock()
 	for _, k := range nc.initCommand {
 		i, err := nc.bw.Write(k)
-		log.Debugf("write command %d", i)
 		if err != nil {
 			return err
 		}
