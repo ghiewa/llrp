@@ -27,6 +27,7 @@ func handler(msg *Msg) {
 				if kk.Data != nil {
 					log.Infof("[RO][%d][%s]", kk.MsgId, kk.Data.EPC_96)
 				}
+				count++
 				if count > limit_card {
 					count = 0
 					card_evt = false
