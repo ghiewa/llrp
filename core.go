@@ -441,17 +441,24 @@ func (nc *RConn) processConnectInit() (err error) {
 	defer nc.conn.SetDeadline(time.Time{})
 
 	nc.status = CONNECTING
-
+	log.Infof("1")
 	// process init commands ( reset factory / set gpo off and so on..
 	err = nc.bw.Flush()
+	log.Infof("2")
 	if err != nil {
+		log.Infof("2e")
 		return err
 	}
+
+	log.Infof("4")
 	err = nc.sendPrefixCommand()
 	if err != nil {
+		log.Infof("4e")
 		return err
 	}
+	log.Infof("5")
 	nc.kickFlusher()
+	log.Infof("6")
 	go nc.spinUpGoRoutines()
 	return nil
 }
