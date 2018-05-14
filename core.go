@@ -40,11 +40,7 @@ func (nc *RConn) publish(data []byte) error {
 		return ErrInvalidConnection
 	}
 	log.Infof("publish", nc.mu)
-	nc.mu.Unlock()
-	log.Infof("publish", nc.mu)
-	nc.mu.Lock()
 	if nc.isClosed() {
-		nc.mu.Unlock()
 		return ErrConnectionClosed
 	}
 
@@ -52,7 +48,6 @@ func (nc *RConn) publish(data []byte) error {
 	if nc.isReconnecting() {
 		nc.bw.Flush()
 		if nc.pending.Len() >= nc.opts.ReconnectBufSize {
-			nc.mu.Unlock()
 			return ErrReconnectBufExceeded
 		}
 	}
@@ -67,7 +62,6 @@ func (nc *RConn) publish(data []byte) error {
 	if len(nc.fch) == 0 {
 		nc.kickFlusher()
 	}
-	nc.mu.Unlock()
 	return nil
 }
 
