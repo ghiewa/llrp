@@ -463,6 +463,8 @@ func (nc *RConn) processConnectInit() (err error) {
 	return nil
 }
 func (nc *RConn) sendPrefixCommand() error {
+	nc.mu.Lock()
+	defer nc.mu.Unlock()
 	for _, k := range nc.initCommand {
 		_, err := nc.bw.Write(k)
 		if err != nil {
