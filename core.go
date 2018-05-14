@@ -68,10 +68,9 @@ func (nc *RConn) publish(data []byte) error {
 	nc.OutMsgs++
 	nc.OutBytes += uint64(l)
 	if len(nc.fch) == 0 {
-		log.Infof(" --- P 4 %v", nc.status)
+		log.Infof(" --- P 5 %v", nc.status)
 		nc.kickFlusher()
 	}
-	nc.bw.Flush()
 	log.Infof(" --- P 4 %v", nc.bw.Available())
 	return nil
 }
@@ -155,7 +154,7 @@ func (nc *RConn) flusher(wg *sync.WaitGroup) {
 			return
 		}
 		nc.mu.Lock()
-		if !nc.isConnecting() || nc.isConnected() || bw != nc.bw || conn != nc.conn {
+		if !nc.isConnecting() || bw != nc.bw || conn != nc.conn {
 			nc.mu.Unlock()
 			return
 		}
