@@ -158,7 +158,6 @@ func (nc *RConn) flusher(wg *sync.WaitGroup) {
 
 // connect to reader
 func (nc *RConn) connect(host string) error {
-	nc.mu.Lock()
 	log.Debugf("start connecting")
 	if err := nc.createConn(host); err != nil {
 		nc.mu.Unlock()
@@ -169,13 +168,12 @@ func (nc *RConn) connect(host string) error {
 	err := nc.processConnectInit()
 	if err != nil {
 		log.Errorf("processConnectInit not success : %v", err)
-		nc.mu.Unlock()
 		nc.close(DISCONNECTED, false)
 		return err
 	}
+
 	nc.didConnect = true
 	nc.reconnects = 0
-	nc.mu.Unlock()
 	log.Infof("Establish connection %s", host)
 	return nil
 }
