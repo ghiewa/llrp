@@ -477,6 +477,7 @@ func (nc *RConn) sendPrefixCommand() error {
 			return err
 		}
 	}
+	nc.bw.Flush()
 	return nil
 }
 
