@@ -4,8 +4,10 @@ import (
 	"bufio"
 	"bytes"
 	log "github.com/sirupsen/logrus"
+	"github.com/tatsushid/go-fastping"
 	"net"
 	"runtime"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -13,6 +15,7 @@ import (
 
 // register reader to main conn
 func (nc *Conn) registry(sp *SPReaderInfo) error {
+	log.Debugf("registry : %s", sp.Host)
 	if sp.Host == "" || sp.Id == "" || nc.readers[sp.Id] != nil {
 		return ErrInvalidContext
 	}
@@ -22,13 +25,17 @@ func (nc *Conn) registry(sp *SPReaderInfo) error {
 	sp.conn = &RConn{
 		opts:        &nc.Opts,
 		initCommand: sp.InitCommand,
+		host:        sp.Host,
+		ip:          sp.Host[:strings.Index(sp.Host, ":")],
 	}
 
 	sp.conn.ach = make(chan asyncCB, asyncCBChanSize)
-	if err := sp.conn.connect(sp.Host); err != nil {
-		log.Errorf("Unable to connected :%s", sp.Host)
-		return err
-	}
+	go func() {
+		if err := sp.conn.connect(); err != nil {
+			log.Errorf("Unable to connected :%s , we will reconnect in %v[%d]", sp.Host, DefaultPingInterval, sp.conn.reconnects)
+			sp.conn.processOpErr(err)
+		}
+	}()
 	log.Debugf("start asyncDispatch")
 	go sp.conn.asyncDispatch()
 	return nil
@@ -82,14 +89,33 @@ func (nc *RConn) asyncDispatch() {
 // createConn will connect to the reader and wrap the appropriate
 // bufio structures. It will do the right thing when an existing
 // connection is in place.
-func (c *RConn) createConn(host string) (err error) {
+func (c *RConn) createConn() (err error) {
 	c.lastAttempt = time.Now()
-	c.conn, err = net.Dial("tcp", host)
+	// ping
+	p := fastping.NewPinger()
+	log.Infof("try to ping %s", c.ip)
+	ra, err := net.ResolveIPAddr("ip4:icmp", c.ip)
+
+	if err != nil {
+		log.Errorf("ping failed %s", c.ip)
+		return err
+	}
+	p.AddIPAddr(ra)
+	p.OnRecv = func(addr *net.IPAddr, rtt time.Duration) {
+		log.Debugf("--ping test %+v", rtt)
+	}
+	err = p.Run()
+	if err != nil {
+		log.Errorf("ping err %v", err)
+		return err
+	}
+
+	c.conn, err = net.Dial("tcp", c.host)
 	if err != nil {
 		c.err = err
 		return err
 	}
-	log.Infof("dial to %s", host)
+	log.Infof("dial to %s", c.host)
 	if c.pending != nil && c.bw != nil {
 		// move to pending buffer.
 		c.bw.Flush()
@@ -160,10 +186,10 @@ func (nc *RConn) flusher(wg *sync.WaitGroup) {
 }
 
 // connect to reader
-func (nc *RConn) connect(host string) error {
+func (nc *RConn) connect() error {
 	log.Debugf("start connecting")
-	if err := nc.createConn(host); err != nil {
-		nc.mu.Unlock()
+	// create conn
+	if err := nc.createConn(); err != nil {
 		log.Errorf("can't connecting")
 		return err
 	}
@@ -177,19 +203,17 @@ func (nc *RConn) connect(host string) error {
 
 	nc.didConnect = true
 	nc.reconnects = 0
-	log.Infof("Establish connection %s", host)
+	log.Infof("Establish connection %s", nc.host)
 	return nil
 }
 
 func (cnc *Conn) subscribe(cb MsgHandler, ch chan *Msg) ([]*Subscription, error) {
-	log.Debugf("sbfn")
 	if cb == nil {
 		return nil, ErrBadSubscription
 	}
 	var (
 		subs []*Subscription
 	)
-	log.Debugf("subscribe fn")
 	for id, ncc := range cnc.readers {
 		nc := ncc.conn
 		defer nc.kickFlusher()
@@ -205,12 +229,6 @@ func (cnc *Conn) subscribe(cb MsgHandler, ch chan *Msg) ([]*Subscription, error)
 		sub.pCond = sync.NewCond(&sub.mu)
 		nc.sub = sub
 		go nc.waitForMsgs(sub)
-
-		log.Debugf("loc  2k")
-		nc.mu.Lock()
-		log.Debugf("in")
-		nc.mu.Unlock()
-		log.Debugf("Unlock")
 
 		subs = append(subs, sub)
 	}
@@ -336,12 +354,9 @@ func (nc *RConn) processOpErr(err error) {
 		log.Debugf("process op is reconneting or closed")
 		return
 	}
-	if nc.opts.AllowReconnect && nc.status == CONNECTED {
+	if nc.opts.AllowReconnect {
 		log.Debugf("allow to connected")
 		nc.status = RECONNECTING
-		if nc.ptmr != nil {
-			nc.ptmr.Stop()
-		}
 		if nc.conn != nil {
 			nc.bw.Flush()
 			nc.conn.Close()
@@ -351,10 +366,19 @@ func (nc *RConn) processOpErr(err error) {
 			nc.pending = new(bytes.Buffer)
 		}
 		nc.pending.Reset()
-		nc.bw.Reset(nc.pending)
+		if nc.bw != nil {
+			nc.bw.Reset(nc.pending)
+		}
 		nc.mu.Unlock()
 		log.Debugf("starting doReconnect")
-		go nc.doReconnect()
+		go func() {
+			for {
+				nc.doReconnect()
+				if nc.didConnect {
+					break
+				}
+			}
+		}()
 		return
 	}
 
@@ -383,14 +407,15 @@ func (nc *RConn) doReconnect() {
 	// connection attempt if connecting to same server
 	// we just got disconnected from..
 	if time.Since(nc.lastAttempt) < nc.opts.ReconnectWait {
-		sleepTime = int64(nc.opts.ReconnectWait - time.Since(nc.lastAttempt))
+		sleepTime = int64(DefaultPingInterval - time.Since(nc.lastAttempt))
 	}
 
 	nc.mu.Unlock()
-	log.Debug("start sleep")
 	if sleepTime <= 0 {
+		log.Debug("start sleep 1")
 		runtime.Gosched()
 	} else {
+		log.Debug("start sleep 2")
 		time.Sleep(time.Duration(sleepTime))
 	}
 	nc.mu.Lock()
@@ -398,9 +423,15 @@ func (nc *RConn) doReconnect() {
 		nc.mu.Unlock()
 		return
 	}
-
 	log.Debug("start reconnecting")
 	nc.Reconnects++
+
+	if err := nc.createConn(); err != nil {
+		nc.reconnects++
+		nc.mu.Unlock()
+		return
+	}
+
 	if nc.err = nc.processConnectInit(); nc.err != nil {
 		log.Debug("start processConnectInit")
 		nc.status = RECONNECTING

@@ -55,6 +55,10 @@ const (
 	_SPC_   = " "
 )
 
+type NetworkIssue struct {
+	From *Subscription
+}
+
 // Status represents the state of the connection.
 type Status int
 
@@ -165,7 +169,9 @@ const (
 
 type RConn struct {
 	Statistics
+	ip          string
 	opts        *Options
+	host        string
 	didConnect  bool
 	reconnects  int
 	lastAttempt time.Time
