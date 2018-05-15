@@ -102,9 +102,9 @@ func TestM(t *testing.T) {
 func loop(t *testing.T) {
 	log.Info("loop")
 	opt := GetDefaultOptions()
-	opt.Timeout = time.Minute * 1
+	opt.Timeout = time.Minute * 2
 	opt.MaxReconnect = 10000
-	opt.ReconnectWait = time.Second * 15
+	opt.ReconnectWait = time.Minute * 2
 	host := opt.NewConn()
 	log.SetOutput(os.Stdout)
 	//log.SetLevel(log.DebugLevel)
