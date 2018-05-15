@@ -32,7 +32,6 @@ func (nc *Conn) registry(sp *SPReaderInfo) error {
 		if err := sp.conn.connect(); err != nil {
 			log.Errorf("Unable to connected :%s , we will reconnect every %v[%d]", sp.Host, sp.conn.opts.ReconnectWait, sp.conn.reconnects)
 			sp.conn.processOpErr(err)
-			log.Errorf("send to op errors")
 		}
 	}()
 	go sp.conn.asyncDispatch()
@@ -57,13 +56,11 @@ func (nc *RConn) publish(data []byte) error {
 			return ErrReconnectBufExceeded
 		}
 	}
-	log.Infof(" --- P 2 %v", nc.status)
 	l, err := nc.bw.Write(data)
 	if err != nil {
 		nc.mu.Unlock()
 		return err
 	}
-	log.Infof(" --- P 3 %v", nc.status)
 	nc.OutMsgs++
 	nc.OutBytes += uint64(l)
 	if len(nc.fch) == 0 {
@@ -404,22 +401,17 @@ func (nc *RConn) doReconnect() {
 		return
 	}
 	nc.Reconnects++
-	log.Infof("tried to createConn")
 	if err := nc.createConn(); err != nil {
-		log.Errorf("createConn error")
 		nc.reconnects++
 		nc.mu.Unlock()
 		return
 	}
-	log.Infof("tried to processConnectInit")
 	if nc.err = nc.processConnectInit(); nc.err != nil {
-		log.Errorf("processConnectInit error")
 		nc.status = RECONNECTING
 		nc.mu.Unlock()
 		return
 	}
 
-	log.Infof("didConnect %s %v", nc.host, nc.status)
 	nc.didConnect = true
 	nc.reconnects = 0
 	nc.flushReconnectPendingItems()
