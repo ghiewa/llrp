@@ -40,7 +40,7 @@ func (nc *Conn) registry(sp *SPReaderInfo) error {
 
 // logic of pushing msg to reader
 func (nc *RConn) publish(data []byte) error {
-	if nc == nil || !nc.didConnect {
+	if nc == nil || !nc.didConnect || nc.isReconnecting() {
 		log.Errorf("invalid connection")
 		return ErrInvalidConnection
 	}

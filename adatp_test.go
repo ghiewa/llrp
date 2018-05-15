@@ -6,6 +6,7 @@ import (
 	"os"
 	"reflect"
 	"testing"
+	"time"
 	//"time"
 )
 
@@ -101,6 +102,9 @@ func TestM(t *testing.T) {
 func loop(t *testing.T) {
 	log.Info("loop")
 	opt := GetDefaultOptions()
+	opt.Timeout = time.Minute * 1
+	opt.MaxReconnect = 10000
+	opt.ReconnectWait = time.Second * 15
 	host := opt.NewConn()
 	log.SetOutput(os.Stdout)
 	//log.SetLevel(log.DebugLevel)
