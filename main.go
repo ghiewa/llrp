@@ -99,9 +99,9 @@ func handler(msg *Msg) {
 func main() {
 	log.Info("loop")
 	opt := GetDefaultOptions()
-	opt.Timeout = time.Minute * 1
+	opt.Timeout = time.Minute * 2
 	opt.MaxReconnect = 10000
-	opt.ReconnectWait = time.Second * 15
+	opt.ReconnectWait = time.Minute * 2
 
 	host := opt.NewConn()
 	log.SetOutput(os.Stdout)
@@ -315,8 +315,10 @@ func main() {
 				scanner.Scan()
 				switch scanner.Text() {
 				case "all":
+					// GPOset(random_message_id,reader_id , ... order_state_port 1->4)
 					err = host.GPOset(123, reader_id, state, state, state, state)
 				case "1":
+					// GPOsetp(random_message_id,reader_id , port,set_state)
 					err = host.GPOsetp(222, reader_id, 1, state)
 				case "2":
 					err = host.GPOsetp(222, reader_id, 2, state)
@@ -332,35 +334,6 @@ func main() {
 				valid = false
 				continue
 			}
-			/*
-				switch text {
-				case "0":
-					// set gpo all open state // 0 = close , 1 = open , 2 = igonre
-					// GPOset(messageId,id,port_state ...)  - set 4 port open state
-					log.Infof("set gpo all on")
-					err = host.GPOset(123, "random_reader_id_00", true, true, true, true)
-				case "1":
-					// set gpo spectfic port eg. port no.1 will open
-					log.Infof("set gpo port 1 on")
-					err = host.GPOsetp(222, "random_reader_id_00", 1, true)
-				case "2":
-					log.Infof("set gpo port 1 on")
-					err = host.GPOset(123, "random_reader_id_00", false, true, false, true)
-				case "3":
-					// get all gpi port
-					log.Infof("get gpi")
-					err = host.GPIget(333, "random_reader_id_00")
-				case "4":
-					// get all gpi port
-					log.Infof("tried to get gpi on bad reader")
-					err = host.GPIget(333, "random_reader_id_01")
-				case "5":
-					log.Infof("tried to set gpo on bad reader")
-					err = host.GPOset(123, "random_reader_id_01", false, true, false, true)
-				default:
-					valid = false
-				}
-			*/
 		default:
 			valid = false
 		}
