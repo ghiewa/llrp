@@ -32,6 +32,7 @@ func (nc *Conn) registry(sp *SPReaderInfo) error {
 		if err := sp.conn.connect(); err != nil {
 			log.Errorf("Unable to connected :%s , we will reconnect every %v[%d]", sp.Host, sp.conn.opts.ReconnectWait, sp.conn.reconnects)
 			sp.conn.processOpErr(err)
+			log.Errorf("send to op errors")
 		}
 	}()
 	go sp.conn.asyncDispatch()
@@ -176,7 +177,6 @@ func (nc *RConn) flusher(wg *sync.WaitGroup) {
 func (nc *RConn) connect() error {
 	// create conn
 	if err := nc.createConn(); err != nil {
-		log.Errorf("Can't connecting")
 		return err
 	}
 	log.Infof("Setup initCommand")
@@ -327,7 +327,7 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 }
 func (nc *RConn) processOpErr(err error) {
 	nc.mu.Lock()
-	if nc.opts.AllowReconnect && nc.status == CONNECTED {
+	if nc.opts.AllowReconnect {
 		log.Warnf("tried to reconnect.. %s", nc.ip)
 		nc.status = RECONNECTING
 		nc.didConnect = false
