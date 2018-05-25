@@ -13,6 +13,8 @@ var (
 	card_evt   bool = true
 	count           = 0
 	limit_card      = 100
+	toggle          = true
+	host       *Conn
 	am         bool
 )
 
@@ -40,6 +42,16 @@ func handler(msg *Msg) {
 					log.Infof("[RO][%s][%s]", kk.Data.EPC_96, ip)
 				}
 				count++
+				if count%11 == 0 {
+					host.Lock()
+					defer host.Unlock()
+					// toggle io on reader_01
+					err := host.GPOset(123, "random_reader_id_01", toggle, toggle, toggle, toggle)
+					toggle = !toggle
+					if err != nil {
+						log.Errorf("error on gpo test set")
+					}
+				}
 				if count > limit_card {
 					count = 0
 					card_evt = false
@@ -92,6 +104,7 @@ func handler(msg *Msg) {
 		}
 
 	}
+
 	// msg.From - reader id
 
 }
@@ -103,7 +116,7 @@ func main() {
 	opt.MaxReconnect = 10000
 	opt.ReconnectWait = time.Minute * 2
 
-	host := opt.NewConn()
+	host = opt.NewConn()
 	log.SetOutput(os.Stdout)
 	//log.SetLevel(log.DebugLevel)
 	var valid bool
@@ -152,104 +165,7 @@ func main() {
 			},
 		},
 		/*
-			&SPReaderInfo{
-				Id:   "random_reader_id_03",
-				Host: "192.168.33.19:5084",
-				InitCommand: [][]byte{
-					ResetFactoryOpt(),
-					DelROSpecOpt(),
-					DelAccOption(),
-					ExtensionOption(),
-					SetRegion(),
-					SetEventSpecOption(),
-					AddROSpecOption(),
-					EnableROSpecOption(),
-				},
-			},
-			&SPReaderInfo{
-				Id:   "random_reader_id_04",
-				Host: "192.168.33.20:5084",
-				InitCommand: [][]byte{
-					ResetFactoryOpt(),
-					DelROSpecOpt(),
-					DelAccOption(),
-					ExtensionOption(),
-					SetRegion(),
-					SetEventSpecOption(),
-					AddROSpecOption(),
-					EnableROSpecOption(),
-				},
-			},
-			&SPReaderInfo{
-				Id:   "random_reader_id_05",
-				Host: "192.168.33.21:5084",
-				InitCommand: [][]byte{
-					ResetFactoryOpt(),
-					DelROSpecOpt(),
-					DelAccOption(),
-					ExtensionOption(),
-					SetRegion(),
-					SetEventSpecOption(),
-					AddROSpecOption(),
-					EnableROSpecOption(),
-				},
-			},
-			&SPReaderInfo{
-				Id:   "random_reader_id_06",
-				Host: "192.168.33.22:5084",
-				InitCommand: [][]byte{
-					ResetFactoryOpt(),
-					DelROSpecOpt(),
-					DelAccOption(),
-					ExtensionOption(),
-					SetRegion(),
-					SetEventSpecOption(),
-					AddROSpecOption(),
-					EnableROSpecOption(),
-				},
-			},
-			&SPReaderInfo{
-				Id:   "random_reader_id_07",
-				Host: "192.168.33.23:5084",
-				InitCommand: [][]byte{
-					ResetFactoryOpt(),
-					DelROSpecOpt(),
-					DelAccOption(),
-					ExtensionOption(),
-					SetRegion(),
-					SetEventSpecOption(),
-					AddROSpecOption(),
-					EnableROSpecOption(),
-				},
-			},
-			&SPReaderInfo{
-				Id:   "random_reader_id_08",
-				Host: "192.168.33.24:5084",
-				InitCommand: [][]byte{
-					ResetFactoryOpt(),
-					DelROSpecOpt(),
-					DelAccOption(),
-					ExtensionOption(),
-					SetRegion(),
-					SetEventSpecOption(),
-					AddROSpecOption(),
-					EnableROSpecOption(),
-				},
-			},
-			&SPReaderInfo{
-				Id:   "random_reader_id_09",
-				Host: "192.168.33.25:5084",
-				InitCommand: [][]byte{
-					ResetFactoryOpt(),
-					DelROSpecOpt(),
-					DelAccOption(),
-					ExtensionOption(),
-					SetRegion(),
-					SetEventSpecOption(),
-					AddROSpecOption(),
-					EnableROSpecOption(),
-				},
-			},
+
 		*/
 	}
 

@@ -223,6 +223,7 @@ type Conn struct {
 	Opts    Options
 	readers map[string]*SPReaderInfo
 	inbox   *Msg
+	mu      sync.Mutex
 }
 
 // SubscriptionType is the type of the Subscription.

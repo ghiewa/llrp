@@ -16,6 +16,13 @@ func (nc *Conn) Registry(reader *SPReaderInfo) error {
 	return nc.registry(reader)
 }
 
+func (nc *Conn) Lock() {
+	nc.mu.Lock()
+}
+func (nc *Conn) Unlock() {
+	nc.mu.Unlock()
+}
+
 // List of readers registed
 func (nc *Conn) ListReader() map[string]*SPReaderInfo {
 	return nc.readers
