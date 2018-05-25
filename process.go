@@ -145,6 +145,8 @@ func (nc *RConn) process(b []byte, len_data int) error {
 						duticate_cards[ro_resp.Data.EPC_96] = true
 					}
 				}
+			case P_ReaderEventNotificationData:
+				evt_resp.Data, walk = parseEvtNotificationData(b, walk)
 			case P_GPIPortCurrentState:
 				var (
 					gpi *GPICurrentState
