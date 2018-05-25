@@ -31,6 +31,16 @@ func handler(msg *Msg) {
 				log.Warningf("Network unknow state %s ", msg.From.Id)
 			}
 		case *EventNotificationResponse:
+			kk := k.(*EventNotificationResponse)
+			if kk.Data != nil {
+				gpis := kk.Data.GpiEvt
+				if gpis != nil {
+					log.Infof("\nGPI state changed %s ", msg.From.Id)
+					for _, k := range gpis {
+						log.Infof("port %s  : %v", k.PortNumber, k.Evt)
+					}
+				}
+			}
 			//log.Infof("[EVT]")
 		case *ROAccessReportResponse:
 			if card_evt || am {
