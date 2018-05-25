@@ -35,7 +35,6 @@ func parseEvtNotificationData(b []byte, walk int) (*EvtData, int) {
 		default:
 			// ReaderEventNotificationData Parameters
 			// will skip
-			fmt.Printf("\nskip evt on code %d %d", code, len_-4)
 			walk += (len_ - 4)
 		}
 		//fmt.Printf("\nCODE %d %d %d", code, len_, len_p)
