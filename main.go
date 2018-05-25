@@ -49,7 +49,7 @@ func handler(msg *Msg) {
 				//log.Warnf("--- Form %s", msg.From.Id)
 				kk := k.(*ROAccessReportResponse)
 				if kk.Data != nil {
-					log.Infof("[RO][%s][%s]", kk.Data.EPC_96, ip)
+					log.Infof("[RO][%s][%s][%s]", kk.Data.EPC_96, ip, msg.From.Id)
 				}
 				count++
 				if count%11 == 0 {

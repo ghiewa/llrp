@@ -47,7 +47,7 @@ func handler(msg *Msg) {
 				//log.Warnf("--- Form %s", msg.From.Id)
 				kk := k.(*ROAccessReportResponse)
 				if kk.Data != nil {
-					log.Infof("[RO][%d][%s]", kk.MsgId, kk.Data.EPC_96)
+					log.Infof("[RO][%d][%s][%s]", kk.MsgId, kk.Data.EPC_96, msg.From.Id)
 				}
 				count++
 				if count > limit_card {
