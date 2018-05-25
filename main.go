@@ -145,37 +145,35 @@ func main() {
 				EnableROSpecOption(),
 			},
 		},
-
-		&SPReaderInfo{
-			Id:   "random_reader_id_01",
-			Host: "192.168.33.17:5084",
-			InitCommand: [][]byte{
-				ResetFactoryOpt(),
-				DelROSpecOpt(),
-				DelAccOption(),
-				ExtensionOption(),
-				SetRegion(),
-				SetEventSpecOption(),
-				AddROSpecOption(),
-				EnableROSpecOption(),
-			},
-		},
-		&SPReaderInfo{
-			Id:   "random_reader_id_02",
-			Host: "192.168.33.18:5084",
-			InitCommand: [][]byte{
-				ResetFactoryOpt(),
-				DelROSpecOpt(),
-				DelAccOption(),
-				ExtensionOption(),
-				SetRegion(),
-				SetEventSpecOption(),
-				AddROSpecOption(),
-				EnableROSpecOption(),
-			},
-		},
 		/*
-
+			&SPReaderInfo{
+				Id:   "random_reader_id_01",
+				Host: "192.168.33.17:5084",
+				InitCommand: [][]byte{
+					ResetFactoryOpt(),
+					DelROSpecOpt(),
+					DelAccOption(),
+					ExtensionOption(),
+					SetRegion(),
+					SetEventSpecOption(),
+					AddROSpecOption(),
+					EnableROSpecOption(),
+				},
+			},
+			&SPReaderInfo{
+				Id:   "random_reader_id_02",
+				Host: "192.168.33.18:5084",
+				InitCommand: [][]byte{
+					ResetFactoryOpt(),
+					DelROSpecOpt(),
+					DelAccOption(),
+					ExtensionOption(),
+					SetRegion(),
+					SetEventSpecOption(),
+					AddROSpecOption(),
+					EnableROSpecOption(),
+				},
+			},
 		*/
 	}
 
