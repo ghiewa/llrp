@@ -102,7 +102,11 @@ func handler(msg *Msg) {
 			}
 		case *ENABLE_ROSPEC_RESPONSE:
 			kk := k.(*ENABLE_ROSPEC_RESPONSE)
-			log.Infof("[ENA_RO] Success=%v", kk.Status.Success)
+			if kk.Status != nil {
+				log.Infof("[ENA_RO] Success=%v", kk.Status.Success)
+			} else {
+				log.Infof("[ENA_RO] %v", kk.Status)
+			}
 		case *ERROR_MESSAGE:
 			kk := k.(*ERROR_MESSAGE)
 			log.Infof("[ERROR] code=%d ,msg=%s", kk.Status.StatusCode, kk.Status.ErrMsg)
