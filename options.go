@@ -144,6 +144,12 @@ func AddROSpecOption(params ...int) []byte {
 		),
 	)
 }
+func EnableEventAndReport() []byte {
+	return bundle(
+		M_ENABLE_EVENTS_AND_REPORTS,
+		200,
+	)
+}
 func EnableROSpecOption(params ...int) []byte {
 	if len(params) == 0 {
 		params = append(params, 1234)

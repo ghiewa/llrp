@@ -131,7 +131,7 @@ func (nc *RConn) spinUpGoRoutines() {
 	nc.wg = &sync.WaitGroup{}
 	nc.wg.Add(2)
 	// spin
-	//go nc.readLoop(nc.wg)
+	go nc.readLoop(nc.wg)
 	go nc.flusher(nc.wg)
 }
 func (nc *RConn) flusher(wg *sync.WaitGroup) {
