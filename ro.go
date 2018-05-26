@@ -2,7 +2,7 @@ package llrp
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
+	//log "github.com/sirupsen/logrus"
 )
 
 func calcLen(r []interface{}) int {
@@ -103,14 +103,14 @@ func PeriodicTriggerValue(UTCTime uint64, offset uint32, period uint32) []interf
 
 // option gpi trigger for rospec start/stop trigger
 func GPITriggerValue(GPIPortNum uint16, GPIEvent bool, Timeout uint32) []interface{} {
-	l := 4 + 2 + 1 + 4
+	//l := 4 + 2 + 1 + 4
 	ev := uint8(0) // disable
 	if GPIEvent {
 		ev = 1
 	}
 	return []interface{}{
 		uint16(P_GPITriggerValue),
-		uint16(l),
+		//uint16(l),
 		GPIPortNum,
 		ev,
 		Timeout,
@@ -279,9 +279,9 @@ func RoSpec(rospecId, priority, currentState int, params ...[]interface{}) []int
 	var (
 		len_ = 10
 	)
-	for i, k := range params {
+	for _, k := range params {
 		len_ += calcLen(k)
-		log.Debugf("%d : %d \n%x ", i, len_, k)
+		//log.Debugf("%d : %d \n%x ", i, len_, k)
 	}
 	spec := []interface{}{
 		uint16(P_ROSpec),

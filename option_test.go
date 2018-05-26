@@ -27,12 +27,14 @@ func add_ro_spec(t *testing.T) {
 				timeout,
 			),
 		),
-		GetDefaultAISpec(),
-		GetRoReportSpec(),
+		//GetDefaultAISpec(),
+		//GetRoReportSpec(),
 	)
 	fmt.Printf("\n-raw-\n% x", b)
-	fmt.Printf("\n-ro start-\n% x", b[35:45])
+	fmt.Printf("\n-ro start-\n% x", b[34:45])
+	fmt.Printf("\n-pack-\n% x", pack(GPITriggerValue(port_trigger, true, timeout)))
 	fmt.Printf("\n")
+
 }
 
 func TestO(t *testing.T) {
