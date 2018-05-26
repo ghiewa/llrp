@@ -35,7 +35,6 @@ func TestConvertNotify(t *testing.T) {
 		0x00, 0x05,
 	}
 	res := Response(v, len(v))
-	t.Logf("\nlen : %d", len(res))
 	for _, k := range res {
 		switch k.(type) {
 		case *ROAccessReportResponse:
