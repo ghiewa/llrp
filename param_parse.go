@@ -26,9 +26,7 @@ func parseEvtNotificationData(b []byte, walk int) (*EvtData, int) {
 			var (
 				gpi *GpiEventParam
 			)
-			log.Infof("---- 1 gpi --state %d", walk)
 			gpi, walk = parseGPIEvent(b, walk)
-			log.Infof("---- 2 gpi --state %d", walk)
 			evt.GpiEvt = append(evt.GpiEvt, gpi)
 		case P_UTCTimeStamp:
 			evt.TimestampUTC = binary.BigEndian.Uint64(b[walk : walk+8])

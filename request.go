@@ -93,9 +93,3 @@ func ADD_ROSPEC(messageId int, params ...[]interface{}) []byte {
 		params...,
 	)
 }
-
-/*
-func GET_REPORT(n int, contents []interface{}) {
-
-}
-*/

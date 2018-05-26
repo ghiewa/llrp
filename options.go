@@ -99,7 +99,9 @@ func AddROSpecOption(params ...int) []byte {
 	return ADD_ROSPEC(
 		7,
 		RoSpec(1234, 0, 0,
-			RoBoundSpec(1, 0, 0),
+			// start_trigger_type, stop_trgger_type, duration_trigger
+			// set 3 to gpi detect , 2 to event to GPI trigger and 4000 is gpi timeout
+			RoBoundSpec(3, 2, 4000),
 			AISpec(2,
 				AISpecStopTrigger(0, 0),
 				InventoryParameterSpec(1234, 1,
