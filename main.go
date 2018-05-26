@@ -133,7 +133,7 @@ func main() {
 	//log.SetLevel(log.DebugLevel)
 	var (
 		valid        bool
-		timeout      = uint32(10000) // milliseconds
+		timeout      = uint32(0) // milliseconds
 		port_trigger = uint16(1)
 	)
 	readers := []*SPReaderInfo{
