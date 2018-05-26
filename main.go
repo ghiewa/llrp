@@ -34,7 +34,9 @@ func handler(msg *Msg) {
 			}
 		case *EventNotificationResponse:
 			kk := k.(*EventNotificationResponse)
-			log.Infof("[EVT] %+v", kk)
+			if kk.Data != nil {
+				log.Infof("[EVT] %+v", kk.Data)
+			}
 		case *ROAccessReportResponse:
 			if card_evt || am {
 				//log.Warnf("--- Form %s", msg.From.Id)
@@ -156,7 +158,6 @@ func main() {
 						GetRoReportSpec(),
 					),
 				*/
-
 				EnableROSpecOption(),
 				EnableEventAndReport(),
 			},
