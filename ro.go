@@ -79,7 +79,7 @@ func ROSpecStartTrigger(typeof int, params ...[]interface{}) []interface{} {
 	r := []interface{}{
 		uint16(P_ROSpecStartTrigger),
 		uint16(l),
-		//uint8(typeof),
+		uint8(typeof),
 	}
 	for _, k := range params {
 		r = append(r, k...)
