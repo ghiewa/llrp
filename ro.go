@@ -123,7 +123,7 @@ func ROSpecStopTrigger(typeof int, DurationTrigger uint32, params ...[]interface
 		l += calcLen(k)
 	}
 	r := []interface{}{
-		uint16(P_ROSpecStartTrigger),
+		uint16(P_ROSpecStopTrigger),
 		uint16(l),
 		uint8(typeof),
 		DurationTrigger,
