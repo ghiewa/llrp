@@ -21,17 +21,16 @@ func add_ro_spec(t *testing.T) {
 				GPITriggerValue(port_trigger, true, timeout),
 			),
 			// stop by duration trigger
-			/*ROSpecStopTrigger(2,
-				[]interface{}{timeout},
+			ROSpecStopTrigger(1,
+				timeout,
 			),
-			*/
 		),
 		GetDefaultAISpec(),
 		GetRoReportSpec(),
 	)
 	//lenn := len(b)
-	fmt.Printf("\n-raw-% x", b)
-	fmt.Printf("\n-fixed-% x", b[38:])
+	fmt.Printf("\n-raw-\n% x", b)
+	fmt.Printf("\n-fixed-\n% x\n", b[24:45])
 }
 
 func TestO(t *testing.T) {

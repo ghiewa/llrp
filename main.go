@@ -155,9 +155,9 @@ func main() {
 						ROSpecStartTrigger(3,
 							GPITriggerValue(port_trigger, true, timeout),
 						),
-						// stop by duration trigger
-						ROSpecStopTrigger(2,
-							[]interface{}{timeout},
+						ROSpecStopTrigger(
+							1, // stop by duration trigger
+							timeout,
 						),
 					),
 					GetDefaultAISpec(),
