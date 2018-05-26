@@ -312,7 +312,7 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 		n, err := conn.Read(b)
 		if err != nil {
 			log.Errorf("readLoop op error %d", n)
-			nc.processOpErr(err)
+			//nc.processOpErr(err)
 			break
 		}
 		// process
