@@ -34,8 +34,8 @@ func handler(msg *Msg) {
 			}
 		case *EventNotificationResponse:
 			kk := k.(*EventNotificationResponse)
-			if kk.Data != nil {
-				log.Infof("[EVT] %+v", kk.Data)
+			if kk.Data != nil && kk.Data.GpiEvt != nil {
+				log.Infof("[EVT] %+v", kk.Data.GpiEvt)
 			}
 		case *ROAccessReportResponse:
 			if card_evt || am {
@@ -45,7 +45,7 @@ func handler(msg *Msg) {
 					log.Infof("[RO][%s][%s][%s]", kk.Data.EPC_96, ip, msg.From.Id)
 				}
 				count++
-				if count%11 == 0 {
+				if count%1111 == 0 {
 					host.Lock()
 					defer host.Unlock()
 					// toggle io on reader_01
@@ -140,26 +140,26 @@ func main() {
 				ExtensionOption(),
 				SetRegion(),
 				SetEventSpecOption(),
-				AddROSpecOption(),
-				/*
-					AddROSpecCustom(
-						// set trigger option - gpi
-						RoBoundSpecCustom(
-							//GPITriggerValue option = 3
-							ROSpecStartTrigger(3,
-								GPITriggerValue(port_trigger, true, timeout),
-							),
-							ROSpecStopTrigger(
-								1, // stop by duration trigger
-								timeout,
-							),
+				//AddROSpecOption(),
+
+				AddROSpecCustom(
+					// set trigger option - gpi
+					RoBoundSpecCustom(
+						//GPITriggerValue option = 3
+						ROSpecStartTrigger(3,
+							GPITriggerValue(port_trigger, true, timeout),
 						),
-						GetDefaultAISpec(),
-						GetRoReportSpec(),
+						ROSpecStopTrigger(
+							1, // stop by duration trigger
+							timeout,
+						),
 					),
-				*/
+					GetDefaultAISpec(),
+					GetRoReportSpec(),
+				),
+
 				EnableROSpecOption(),
-				//				EnableEventAndReport(),
+				EnableEventAndReport(),
 			},
 		},
 	}
