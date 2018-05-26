@@ -147,8 +147,8 @@ func main() {
 				ExtensionOption(),
 				SetRegion(),
 				SetEventSpecOption(),
-				//AddROSpecOption(),
-				AddROSpecCustom(
+				AddROSpecOption(),
+				/*AddROSpecCustom(
 					// set trigger option - gpi
 					RoBoundSpecCustom(
 						//GPITriggerValue option = 3
@@ -163,6 +163,7 @@ func main() {
 					GetDefaultAISpec(),
 					GetRoReportSpec(),
 				),
+				*/
 				EnableROSpecOption(),
 			},
 		},

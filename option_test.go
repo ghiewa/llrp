@@ -30,6 +30,7 @@ func add_ro_spec(t *testing.T) {
 	)
 	//lenn := len(b)
 	fmt.Printf("\n-raw-\n% x", b)
+	fmt.Printf("\n-ro start-\n% x", b[24:45])
 	fmt.Printf("\n-fixed-\n% x\n", b[24:45])
 }
 
