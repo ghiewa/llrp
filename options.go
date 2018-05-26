@@ -94,6 +94,14 @@ func SetEventSpecOption(params ...bool) []byte {
 		),
 	)
 }
+func AddROSpecCustom(spec ...[]interface{}) []byte {
+	return ADD_ROSPEC(
+		11,
+		RoSpec(1234, 0, 0,
+			spec...,
+		),
+	)
+}
 
 func AddROSpecOption(params ...int) []byte {
 	return ADD_ROSPEC(

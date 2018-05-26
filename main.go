@@ -116,9 +116,7 @@ func handler(msg *Msg) {
 		default:
 			log.Errorf("Can't handle type %v", reflect.TypeOf(k))
 		}
-
 	}
-
 	// msg.From - reader id
 
 }
@@ -133,7 +131,11 @@ func main() {
 	host = opt.NewConn()
 	log.SetOutput(os.Stdout)
 	//log.SetLevel(log.DebugLevel)
-	var valid bool
+	var (
+		valid        bool
+		timeout      = uint32(10000) // milliseconds
+		port_trigger = uint16(1)
+	)
 	readers := []*SPReaderInfo{
 		&SPReaderInfo{
 			Id:   "random_reader_id_00",
@@ -145,40 +147,25 @@ func main() {
 				ExtensionOption(),
 				SetRegion(),
 				SetEventSpecOption(),
-				AddROSpecOption(),
+				//AddROSpecOption(),
+				AddROSpecCustom(
+					// set trigger option - gpi
+					RoBoundSpecCustom(
+						//GPITriggerValue option = 3
+						ROSpecStartTrigger(3,
+							GPITriggerValue(port_trigger, true, timeout),
+						),
+						// stop by duration trigger
+						ROSpecStopTrigger(2,
+							[]interface{}{timeout},
+						),
+					),
+					GetDefaultAISpec(),
+					GetRoReportSpec(),
+				),
 				EnableROSpecOption(),
 			},
 		},
-		/*
-			&SPReaderInfo{
-				Id:   "random_reader_id_01",
-				Host: "192.168.33.17:5084",
-				InitCommand: [][]byte{
-					ResetFactoryOpt(),
-					DelROSpecOpt(),
-					DelAccOption(),
-					ExtensionOption(),
-					SetRegion(),
-					SetEventSpecOption(),
-					AddROSpecOption(),
-					EnableROSpecOption(),
-				},
-			},
-			&SPReaderInfo{
-				Id:   "random_reader_id_02",
-				Host: "192.168.33.18:5084",
-				InitCommand: [][]byte{
-					ResetFactoryOpt(),
-					DelROSpecOpt(),
-					DelAccOption(),
-					ExtensionOption(),
-					SetRegion(),
-					SetEventSpecOption(),
-					AddROSpecOption(),
-					EnableROSpecOption(),
-				},
-			},
-		*/
 	}
 
 	for _, reader := range readers {

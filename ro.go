@@ -49,6 +49,87 @@ func TagReportContentSelector(enable int) []interface{} {
 	}
 }
 
+// RoBoundSpec custom
+// params should be ROSpecStartTrigger and ROSpecStopTrigger
+func RoBoundSpecCustom(params ...[]interface{}) []interface{} {
+	var (
+		l = 4
+	)
+	for _, k := range params {
+		l += calcLen(k)
+	}
+	r := []interface{}{
+		uint16(P_ROBoundarySpec),
+		uint16(l),
+	}
+	for _, k := range params {
+		r = append(r, k...)
+	}
+	return r
+
+}
+func ROSpecStartTrigger(typeof int, params ...[]interface{}) []interface{} {
+	var (
+		l = 4
+	)
+	for _, k := range params {
+		l += calcLen(k)
+	}
+	r := []interface{}{
+		uint16(P_ROSpecStartTrigger),
+		uint16(l),
+	}
+	for _, k := range params {
+		r = append(r, k...)
+	}
+	return r
+}
+
+// option period trigger for rospec start/stop trigger
+func PeriodicTriggerValue(UTCTime uint64, offset uint32, period uint32) []interface{} {
+	l := 4 + 8 + 4 + 4
+	return []interface{}{
+		uint16(P_PeriodicTriggerValue),
+		uint16(l),
+		UTCTime,
+		offset,
+		period,
+	}
+}
+
+// option gpi trigger for rospec start/stop trigger
+func GPITriggerValue(GPIPortNum uint16, GPIEvent bool, Timeout uint32) []interface{} {
+	l := 4
+	ev := uint8(0) // disable
+	if GPIEvent {
+		ev = 1
+	}
+	return []interface{}{
+		uint16(P_GPITriggerValue),
+		uint16(l),
+		GPIPortNum,
+		ev,
+		Timeout,
+	}
+}
+
+func ROSpecStopTrigger(typeof int, params ...[]interface{}) []interface{} {
+	var (
+		l = 5
+	)
+	for _, k := range params {
+		l += calcLen(k)
+	}
+	r := []interface{}{
+		uint16(P_ROSpecStartTrigger),
+		uint16(l),
+	}
+	for _, k := range params {
+		r = append(r, k...)
+	}
+	return r
+
+}
 func RoBoundSpec(startTriggerType, stopTriggerType, DurationTrigger int) []interface{} {
 	bound := []interface{}{
 		uint16(P_ROBoundarySpec),
@@ -107,7 +188,7 @@ func RFTransmitter(hopTableid, channelIndex, power int) []interface{} {
 }
 func C1G2InventoryCommand(stateTagaware int, params ...[]interface{}) []interface{} {
 	var (
-		l = 5
+		l = 5 // type(2) + len(2) + tag state aware(1)
 	)
 	for _, k := range params {
 		l += calcLen(k)
