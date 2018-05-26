@@ -159,7 +159,7 @@ func main() {
 					),
 				*/
 				EnableROSpecOption(),
-				EnableEventAndReport(),
+				//				EnableEventAndReport(),
 			},
 		},
 	}
