@@ -28,10 +28,11 @@ func add_ro_spec(t *testing.T) {
 		GetDefaultAISpec(),
 		GetRoReportSpec(),
 	)
-	//lenn := len(b)
+	lenn := len(b)
+	fmt.Printf("\n-len-\n%d", lenn)
 	fmt.Printf("\n-raw-\n% x", b)
-	fmt.Printf("\n-ro start-\n% x", b[24:45])
-	fmt.Printf("\n-fixed-\n% x\n", b[24:45])
+	fmt.Printf("\n-ro start-\n% x", b[33:45])
+	fmt.Printf("\n")
 }
 
 func TestO(t *testing.T) {
