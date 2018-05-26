@@ -111,6 +111,7 @@ func GPITriggerValue(GPIPortNum uint16, GPIEvent bool, Timeout uint32) []interfa
 		uint16(P_GPITriggerValue),
 		uint16(l),
 		GPIPortNum,
+		GPIPortNum,
 		ev,
 		Timeout,
 	}
