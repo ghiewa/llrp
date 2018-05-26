@@ -68,23 +68,7 @@ func RoBoundSpecCustom(params ...[]interface{}) []interface{} {
 	return r
 
 }
-func ROSpecStartTrigger(typeof int, params ...[]interface{}) []interface{} {
-	var (
-		l = 5 + 2 + 1 + 4
-	)
 
-	r := []interface{}{
-		uint16(P_ROSpecStartTrigger),
-		uint16(l),
-		uint8(typeof),
-		uint16(1),
-		uint8(1),
-		uint32(1000),
-	}
-	return r
-}
-
-/*
 func ROSpecStartTrigger(typeof int, params ...[]interface{}) []interface{} {
 	var (
 		l = 5
@@ -103,7 +87,6 @@ func ROSpecStartTrigger(typeof int, params ...[]interface{}) []interface{} {
 	}
 	return r
 }
-*/
 
 // option period trigger for rospec start/stop trigger
 func PeriodicTriggerValue(UTCTime uint64, offset uint32, period uint32) []interface{} {
