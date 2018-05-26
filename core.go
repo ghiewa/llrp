@@ -257,10 +257,8 @@ func (nc *RConn) waitForMsgs(s *Subscription) {
 			break
 		}
 		// deliver msg
-		if m != nil && (max == 0 || delivered <= max) {
-			if mcb != nil {
-				mcb(m)
-			}
+		if mcb != nil && m != nil && (max == 0 || delivered <= max) {
+			mcb(m)
 		}
 		if max > 0 && delivered >= max {
 			nc.mu.Lock()
