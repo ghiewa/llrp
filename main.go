@@ -153,15 +153,14 @@ func main() {
 					/*
 						RoBoundSpecCustom(
 							//GPITriggerValue option = 3
-							ROSpecStartTrigger(1), //GPITriggerValue(port_trigger, true, timeout),
-
+							ROSpecStartTrigger(3), //GPITriggerValue(port_trigger, true, timeout),
 							ROSpecStopTrigger(
 								0, // stop by duration trigger
 								timeout,
 							),
 						),
+						GetDefaultAISpec(),
 					*/
-					GetDefaultAISpec(),
 					GetRoReportSpec(),
 				),
 
