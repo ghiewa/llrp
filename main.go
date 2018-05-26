@@ -126,7 +126,7 @@ func main() {
 	//log.SetLevel(log.DebugLevel)
 	var (
 		valid        bool
-		timeout      = uint32(10000) // milliseconds
+		timeout      = uint32(0) // milliseconds
 		port_trigger = uint16(1)
 	)
 	readers := []*SPReaderInfo{
@@ -141,7 +141,6 @@ func main() {
 				SetRegion(),
 				SetEventSpecOption(),
 				//AddROSpecOption(),
-
 				AddROSpecCustom(
 					// set trigger option - gpi
 					RoBoundSpecCustom(
@@ -159,7 +158,6 @@ func main() {
 				),
 
 				EnableROSpecOption(),
-				EnableEventAndReport(),
 			},
 		},
 	}
