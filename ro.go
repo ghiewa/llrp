@@ -70,6 +70,29 @@ func RoBoundSpecCustom(params ...[]interface{}) []interface{} {
 }
 func ROSpecStartTrigger(typeof int, params ...[]interface{}) []interface{} {
 	var (
+		l = 5 + 2 + 1 + 4
+	)
+
+	for _, k := range params {
+		//		l += calcLen(k)
+	}
+	r := []interface{}{
+		uint16(P_ROSpecStartTrigger),
+		uint16(l),
+		uint8(typeof),
+		uint16(1),
+		uint8(1),
+		uint32(1000),
+	}
+	for _, k := range params {
+		//		r = append(r, k...)
+	}
+	return r
+}
+
+/*
+func ROSpecStartTrigger(typeof int, params ...[]interface{}) []interface{} {
+	var (
 		l = 5
 	)
 
@@ -86,6 +109,7 @@ func ROSpecStartTrigger(typeof int, params ...[]interface{}) []interface{} {
 	}
 	return r
 }
+*/
 
 // option period trigger for rospec start/stop trigger
 func PeriodicTriggerValue(UTCTime uint64, offset uint32, period uint32) []interface{} {
