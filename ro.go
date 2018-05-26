@@ -73,9 +73,6 @@ func ROSpecStartTrigger(typeof int, params ...[]interface{}) []interface{} {
 		l = 5 + 2 + 1 + 4
 	)
 
-	for _, k := range params {
-		//		l += calcLen(k)
-	}
 	r := []interface{}{
 		uint16(P_ROSpecStartTrigger),
 		uint16(l),
@@ -83,9 +80,6 @@ func ROSpecStartTrigger(typeof int, params ...[]interface{}) []interface{} {
 		uint16(1),
 		uint8(1),
 		uint32(1000),
-	}
-	for _, k := range params {
-		//		r = append(r, k...)
 	}
 	return r
 }
