@@ -2,6 +2,7 @@ package llrp
 
 import (
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"testing"
 )
 
@@ -13,6 +14,7 @@ func add_ro_spec(t *testing.T) {
 		timeout      = uint32(10000) // milliseconds
 		port_trigger = uint16(1)
 	)
+	log.SetLevel(log.DebugLevel)
 	b := AddROSpecCustom(
 		// set trigger option - gpi
 		RoBoundSpecCustom(
@@ -28,10 +30,8 @@ func add_ro_spec(t *testing.T) {
 		GetDefaultAISpec(),
 		GetRoReportSpec(),
 	)
-	lenn := len(b)
-	fmt.Printf("\n-len-\n%d", lenn)
 	fmt.Printf("\n-raw-\n% x", b)
-	fmt.Printf("\n-ro start-\n% x", b[33:45])
+	fmt.Printf("\n-ro start-\n% x", b[35:45])
 	fmt.Printf("\n")
 }
 

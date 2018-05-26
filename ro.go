@@ -2,6 +2,7 @@ package llrp
 
 import (
 	"fmt"
+	log "github.com/sirupsen/logrus"
 )
 
 func calcLen(r []interface{}) int {
@@ -278,8 +279,9 @@ func RoSpec(rospecId, priority, currentState int, params ...[]interface{}) []int
 	var (
 		len_ = 10
 	)
-	for _, k := range params {
+	for i, k := range params {
 		len_ += calcLen(k)
+		log.Debugf("%d : %d \n%x ", i, len_, k)
 	}
 	spec := []interface{}{
 		uint16(P_ROSpec),

@@ -160,8 +160,8 @@ func main() {
 							timeout,
 						),
 					),
-					GetDefaultAISpec(),
-					GetRoReportSpec(),
+					//GetDefaultAISpec(),
+					//GetRoReportSpec(),
 				),
 
 				EnableROSpecOption(),
