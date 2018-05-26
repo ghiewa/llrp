@@ -117,13 +117,13 @@ func GPITriggerValue(GPIPortNum uint16, GPIEvent bool, Timeout uint32) []interfa
 
 func ROSpecStopTrigger(typeof int, DurationTrigger uint32, params ...[]interface{}) []interface{} {
 	var (
-		l = 4 + 1 + 4 + 2
+		l = 4 + 1 + 4
 	)
 	for _, k := range params {
 		l += calcLen(k)
 	}
 	r := []interface{}{
-		uint16(P_ROSpecStopTrigger),
+		uint16(P_ROSpecStopTrigger + 11),
 		uint16(l),
 		uint8(typeof),
 		DurationTrigger,
