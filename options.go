@@ -148,6 +148,7 @@ func EnableEventAndReport() []byte {
 	return bundle(
 		M_ENABLE_EVENTS_AND_REPORTS,
 		200,
+		nil,
 	)
 }
 func EnableROSpecOption(params ...int) []byte {
