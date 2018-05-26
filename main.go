@@ -34,16 +34,7 @@ func handler(msg *Msg) {
 			}
 		case *EventNotificationResponse:
 			kk := k.(*EventNotificationResponse)
-			if kk.Data != nil {
-				gpis := kk.Data.GpiEvt
-				if gpis != nil {
-					log.Infof("\nGPI state changed %s ", msg.From.Id)
-					for _, k := range gpis {
-						log.Infof("port %s  : %v", k.PortNumber, k.Evt)
-					}
-				}
-			}
-			//log.Infof("[EVT]")
+			log.Infof("[EVT] %+v", kk)
 		case *ROAccessReportResponse:
 			if card_evt || am {
 				//log.Warnf("--- Form %s", msg.From.Id)
