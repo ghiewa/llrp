@@ -156,7 +156,7 @@ func main() {
 
 						ROSpecStopTrigger(
 							0, // stop by duration trigger
-							//timeout,
+							timeout,
 						),
 					),
 					GetDefaultAISpec(),
