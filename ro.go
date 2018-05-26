@@ -126,8 +126,8 @@ func ROSpecStopTrigger(typeof int, DurationTrigger uint32, params ...[]interface
 	r := []interface{}{
 		uint16(P_ROSpecStopTrigger),
 		uint16(l),
-		uint8(0),
-		uint32(0),
+		uint8(typeof),
+		DurationTrigger,
 	}
 	for _, k := range params {
 		r = append(r, k...)
