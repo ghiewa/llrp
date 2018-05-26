@@ -101,7 +101,7 @@ func PeriodicTriggerValue(UTCTime uint64, offset uint32, period uint32) []interf
 
 // option gpi trigger for rospec start/stop trigger
 func GPITriggerValue(GPIPortNum uint16, GPIEvent bool, Timeout uint32) []interface{} {
-	l := 4 + 2 + 1 + 4
+	l := 4 + 2 + 1 + 8
 	ev := uint8(0) // disable
 	if GPIEvent {
 		ev = 1
