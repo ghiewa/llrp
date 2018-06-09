@@ -17,6 +17,7 @@ func Response(b []byte, len_data int) (reports []interface{}) {
 		del_acc_spec_resp *DELETE_ACCESSSPEC_RESPONSE
 		add_ro_resp       *ADD_ROSPEC_RESPONSE
 		custom_resp       *CUSTOM_MESSAGE_RESPONSE
+		keep_alive_resp   *KeepaliveResponse
 		en_ro_resp        *ENABLE_ROSPEC_RESPONSE
 		err_resp          *ERROR_MESSAGE
 		dam_res           *MsgLoss
@@ -31,6 +32,9 @@ func Response(b []byte, len_data int) (reports []interface{}) {
 		len_p := int(binary.BigEndian.Uint32(b[walk : walk+4]))
 		walk += 4
 		switch header {
+		case M_KEEPALIVE_ACK:
+			keep_alive_resp = new(KeepaliveResponse)
+			reports = append(reports, keep_alive_resp)
 		case M_RO_ACCESS_REPORT:
 			ro_resp = new(ROAccessReportResponse)
 			ro_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])

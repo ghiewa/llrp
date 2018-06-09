@@ -35,7 +35,26 @@ func (nc *Conn) registry(sp *SPReaderInfo) error {
 		}
 	}()
 	go sp.conn.asyncDispatch()
+	go sp.conn.keep_alive()
 	return nil
+}
+func (nc *RConn) keep_alive() {
+	interval := time.Second * 15
+	for {
+		select {
+		case <-time.After(interval):
+			if nc.isConnected() {
+				// send keepalive
+				nc.publish(
+					pack(KeepaliveSpec()),
+				)
+
+			} else if nc.IsClosed() {
+				return
+			}
+		}
+	}
+
 }
 
 // logic of pushing msg to reader
@@ -190,6 +209,7 @@ func (nc *RConn) connect() error {
 	return nil
 }
 
+// Subscribe handler to notify event from reader
 func (cnc *Conn) subscribe(cb MsgHandler, ch chan *Msg) ([]*Subscription, error) {
 	if cb == nil {
 		return nil, ErrBadSubscription
@@ -216,8 +236,8 @@ func (cnc *Conn) subscribe(cb MsgHandler, ch chan *Msg) ([]*Subscription, error)
 		subs = append(subs, sub)
 	}
 	return subs, nil
-
 }
+
 func (nc *RConn) waitForMsgs(s *Subscription) {
 	var (
 		closed         bool
@@ -312,7 +332,7 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 		n, err := conn.Read(b)
 		if err != nil {
 			log.Errorf("readLoop op error %d", n)
-			//nc.processOpErr(err)
+			nc.processOpErr(err)
 			break
 		}
 		// process
@@ -322,6 +342,7 @@ func (nc *RConn) readLoop(wg *sync.WaitGroup) {
 		}
 	}
 }
+
 func (nc *RConn) processOpErr(err error) {
 	nc.mu.Lock()
 	if nc.opts.AllowReconnect {

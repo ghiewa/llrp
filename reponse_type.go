@@ -61,7 +61,7 @@ type GetConfigResponse struct {
 	//ROSpec    *ROReportSpec
 	//AccSpec   *AccessReportSpec
 	//CfgState  *LLRPConfigState
-	Ka        *KeepaliveSpec
+	Ka        *KeepaliveResponse
 	GPI       []*GPICurrentState
 	GPO       []*GPOWriteData
 	EvtReport *EventReport
@@ -87,7 +87,7 @@ type EventNotificationState struct {
 	EventType uint16
 	State     int
 }
-type KeepaliveSpec struct {
+type KeepaliveResponse struct {
 	Type         int
 	IntervalTime uint32
 }

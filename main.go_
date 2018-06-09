@@ -10,12 +10,13 @@ import (
 )
 
 var (
-	card_evt   bool = true
-	count           = 0
-	limit_card      = 100
-	toggle          = true
-	host       *Conn
-	am         bool
+	card_evt            bool = true
+	count                    = 0
+	limit_card               = 100
+	toggle                   = true
+	host                *Conn
+	am                  bool
+	keep_alive_interval = time.Second * 5
 )
 
 func handler(msg *Msg) {
@@ -34,16 +35,9 @@ func handler(msg *Msg) {
 			}
 		case *EventNotificationResponse:
 			kk := k.(*EventNotificationResponse)
-			if kk.Data != nil {
-				gpis := kk.Data.GpiEvt
-				if gpis != nil {
-					log.Infof("\nGPI state changed %s ", msg.From.Id)
-					for _, k := range gpis {
-						log.Infof("port %s  : %v", k.PortNumber, k.Evt)
-					}
-				}
+			if kk.Data != nil && kk.Data.GpiEvt != nil {
+				log.Infof("[EVT] %+v", kk.Data.GpiEvt)
 			}
-			//log.Infof("[EVT]")
 		case *ROAccessReportResponse:
 			if card_evt || am {
 				//log.Warnf("--- Form %s", msg.From.Id)
@@ -52,7 +46,7 @@ func handler(msg *Msg) {
 					log.Infof("[RO][%s][%s][%s]", kk.Data.EPC_96, ip, msg.From.Id)
 				}
 				count++
-				if count%11 == 0 {
+				if count%1111 == 0 {
 					host.Lock()
 					defer host.Unlock()
 					// toggle io on reader_01
@@ -117,12 +111,9 @@ func handler(msg *Msg) {
 			log.Errorf("Can't handle type %v", reflect.TypeOf(k))
 		}
 	}
-	// msg.From - reader id
-
 }
 
 func main() {
-	log.Info("loop")
 	opt := GetDefaultOptions()
 	opt.Timeout = time.Minute * 2
 	opt.MaxReconnect = 10000
@@ -133,7 +124,7 @@ func main() {
 	//log.SetLevel(log.DebugLevel)
 	var (
 		valid        bool
-		timeout      = uint32(10000) // milliseconds
+		timeout      = uint32(15000) // 15 sec
 		port_trigger = uint16(1)
 	)
 	readers := []*SPReaderInfo{
@@ -155,20 +146,20 @@ func main() {
 						ROSpecStartTrigger(3,
 							GPITriggerValue(port_trigger, true, timeout),
 						),
-						// stop by duration trigger
-						/*ROSpecStopTrigger(2,
-							[]interface{}{timeout},
+
+						ROSpecStopTrigger(
+							1, // stop by duration trigger
+							timeout,
 						),
-						*/
 					),
 					GetDefaultAISpec(),
 					GetRoReportSpec(),
 				),
+
 				EnableROSpecOption(),
 			},
 		},
 	}
-
 	for _, reader := range readers {
 		// doReconnected when loss signal
 		err := host.Registry(reader)
@@ -188,7 +179,6 @@ func main() {
 		}
 		err = nil
 		valid = true
-
 		switch text {
 		case "am":
 			log.Infof("starting non-stop cards log")

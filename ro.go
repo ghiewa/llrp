@@ -26,6 +26,17 @@ func calcLen(r []interface{}) int {
 	}
 	return len_
 }
+func KeepaliveSpec() []interface{} {
+	r := []interface{}{
+		uint16(P_KeepaliveSpec),
+		uint16(5),
+		// 0 : Null – No keepalives SHALL be sent by the Reader
+		// 1 : Periodic
+		uint8(0),
+	}
+	return r
+}
+
 func RoReportSpec(trigger, n int, params ...[]interface{}) []interface{} {
 	l := 7
 	for _, k := range params {
