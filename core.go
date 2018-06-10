@@ -46,10 +46,12 @@ func (nc *RConn) keep_alive() {
 		case <-time.After(interval):
 			if nc.isConnected() {
 				// send keepalive
-				random := int(rand.Int31())
-				nc.publish(
-					SEND_KEEPALIVE(random),
-				)
+				/*
+					random := int(rand.Int31())
+					nc.publish(
+						SEND_KEEPALIVE(random),
+					)
+				*/
 				log.Infof("[%d] Send Keepalive", random)
 			} else if nc.IsClosed() {
 				log.Warnf("End Keepalive")
