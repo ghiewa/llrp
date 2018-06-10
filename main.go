@@ -159,7 +159,7 @@ func main() {
 					),
 					GetDefaultAISpec(),
 					GetRoReportSpec(),
-					KeepaliveSpec(0),
+				//	KeepaliveSpec(0),
 				),
 				EnableROSpecOption(),
 			},
