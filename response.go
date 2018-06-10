@@ -35,6 +35,7 @@ func Response(b []byte, len_data int) (reports []interface{}) {
 		case M_KEEPALIVE_ACK:
 			keep_alive_resp = new(KeepaliveResponse)
 			reports = append(reports, keep_alive_resp)
+			log.Infof("M_KEEPALIVE_ACK %d: %d : % x", len_data, len_p, b)
 		case M_RO_ACCESS_REPORT:
 			ro_resp = new(ROAccessReportResponse)
 			ro_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])
@@ -109,6 +110,7 @@ func Response(b []byte, len_data int) (reports []interface{}) {
 						duticate_cards[ro_resp.Data.EPC_96] = true
 					}
 				}
+
 			case P_GPIPortCurrentState:
 				var (
 					gpi *GPICurrentState

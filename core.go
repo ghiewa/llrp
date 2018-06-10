@@ -39,7 +39,7 @@ func (nc *Conn) registry(sp *SPReaderInfo) error {
 	return nil
 }
 func (nc *RConn) keep_alive() {
-	interval := time.Second * 15
+	interval := time.Second * 5
 	for {
 		select {
 		case <-time.After(interval):
