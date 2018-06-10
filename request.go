@@ -87,7 +87,7 @@ func DEL_ROSPEC(messageId, spec int) []byte {
 
 func SEND_KEEPALIVE(messageId int) []byte {
 	return bundle(
-		M_KEEPALIVE,
+		M_KEEPALIVE_ACK,
 		messageId,
 		nil,
 	)
