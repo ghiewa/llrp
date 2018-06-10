@@ -50,6 +50,7 @@ func (nc *RConn) keep_alive() {
 				)
 				log.Infof("Send Keepalive")
 			} else if nc.IsClosed() {
+				log.Warnf("End Keepalive")
 				return
 			}
 		}
