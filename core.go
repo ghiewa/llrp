@@ -45,11 +45,16 @@ func (nc *RConn) keep_alive() {
 		select {
 		case <-time.After(interval):
 			if nc.isConnected() {
+				var data = []interface{}{
+					uint16(1086), // Rsvd+Ver+Type=62 (KEEPALIVE)
+					uint32(10),   // Length
+					uint32(0),    // ID
+				}
 				// send keepalive
 				random := int(rand.Int31())
-				nc.publish(
-					SEND_KEEPALIVE(random),
-				)
+				nc.publish(pack(
+					data,
+				))
 				log.Infof("[%d] Send Keepalive %d", random, len(SEND_KEEPALIVE(random)))
 			} else if nc.IsClosed() {
 				log.Warnf("End Keepalive")
