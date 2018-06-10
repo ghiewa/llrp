@@ -48,7 +48,7 @@ func (nc *RConn) keep_alive() {
 				nc.publish(
 					pack(KeepaliveSpec()),
 				)
-
+				log.Infof("Send Keepalive")
 			} else if nc.IsClosed() {
 				return
 			}
