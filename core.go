@@ -46,8 +46,8 @@ func (nc *RConn) keep_alive() {
 		case <-time.After(interval):
 			if nc.isConnected() {
 				// send keepalive
+				random := int(rand.Int31())
 				/*
-					random := int(rand.Int31())
 					nc.publish(
 						SEND_KEEPALIVE(random),
 					)
