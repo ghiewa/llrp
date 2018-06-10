@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	log "github.com/sirupsen/logrus"
+	"math/rand"
 	"net"
 	"runtime"
 	"strings"
@@ -45,17 +46,17 @@ func (nc *RConn) keep_alive() {
 		case <-time.After(interval):
 			if nc.isConnected() {
 				// send keepalive
+				random := int(rand.Int31())
 				nc.publish(
-					pack(KeepaliveSpec()),
+					SEND_KEEPALIVE(random),
 				)
-				log.Infof("Send Keepalive")
+				log.Infof("[%d] Send Keepalive", random)
 			} else if nc.IsClosed() {
 				log.Warnf("End Keepalive")
 				return
 			}
 		}
 	}
-
 }
 
 // logic of pushing msg to reader
