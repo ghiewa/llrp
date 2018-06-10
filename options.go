@@ -139,6 +139,7 @@ func AddROSpecOption(params ...int) []byte {
 			RoReportSpec(2, 1,
 				TagReportContentSelector(0x1e40),
 			),
+			KeepaliveSpec(5000),
 		),
 	)
 }

@@ -26,14 +26,20 @@ func calcLen(r []interface{}) int {
 	}
 	return len_
 }
-func KeepaliveSpec() []interface{} {
+
+// If time = 0 ,Reader will not send to client
+func KeepaliveSpec(ms_timeinterval int) []interface{} {
+	enable := 0
+	if ms_timeinterval > 0 {
+		enable = 1
+	}
 	r := []interface{}{
-		uint16(M_KEEPALIVE),
+		uint16(P_KeepaliveSpec),
 		uint16(9),
 		// 0 : Null – No keepalives SHALL be sent by the Reader
 		// 1 : Periodic
-		uint8(1),
-		uint32(5000),
+		uint8(enable),
+		uint32(ms_timeinterval),
 	}
 	return r
 }
@@ -86,7 +92,6 @@ func ROSpecStartTrigger(typeof int, params ...[]interface{}) []interface{} {
 	var (
 		l = 5
 	)
-
 	for _, k := range params {
 		l += calcLen(k)
 	}
