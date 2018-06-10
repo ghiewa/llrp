@@ -23,6 +23,8 @@ func handler(msg *Msg) {
 	for _, k := range msg.Reports {
 		ip := msg.From.Ip
 		switch k.(type) {
+		case *KeepaliveResponse:
+			// ack form keepalive interval
 		case *NetworkIssue:
 			kk := k.(*NetworkIssue)
 			switch kk.Type {
