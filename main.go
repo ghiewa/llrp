@@ -10,12 +10,13 @@ import (
 )
 
 var (
-	card_evt   bool = true
-	count           = 0
-	limit_card      = 100
-	toggle          = true
-	host       *Conn
-	am         bool
+	card_evt            bool = true
+	count                    = 0
+	limit_card               = 100
+	toggle                   = true
+	host                *Conn
+	am                  bool
+	keep_alive_interval = time.Second * 5
 )
 
 func handler(msg *Msg) {
@@ -110,12 +111,9 @@ func handler(msg *Msg) {
 			log.Errorf("Can't handle type %v", reflect.TypeOf(k))
 		}
 	}
-	// msg.From - reader id
-
 }
 
 func main() {
-	log.Info("loop")
 	opt := GetDefaultOptions()
 	opt.Timeout = time.Minute * 2
 	opt.MaxReconnect = 10000
@@ -162,7 +160,6 @@ func main() {
 			},
 		},
 	}
-
 	for _, reader := range readers {
 		// doReconnected when loss signal
 		err := host.Registry(reader)
@@ -182,7 +179,6 @@ func main() {
 		}
 		err = nil
 		valid = true
-
 		switch text {
 		case "am":
 			log.Infof("starting non-stop cards log")
