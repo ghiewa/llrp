@@ -37,11 +37,11 @@ func KeepaliveSpec(ms_timeinterval int) []interface{} {
 	}
 	r := []interface{}{
 		uint16(P_KeepaliveSpec),
-		uint16(9),
+		uint16(5),
 		// 0 : Null – No keepalives SHALL be sent by the Reader
 		// 1 : Periodic
 		uint8(enable),
-		uint32(ms_timeinterval),
+		//uint32(ms_timeinterval),
 	}
 	return r
 }
