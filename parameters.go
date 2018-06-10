@@ -59,6 +59,28 @@ func ReaderEventNotification(config ...bool) []interface{} {
 	return r
 }
 
+// Periodic trigger is specified using UTC time, offset and period
+func PeriodicTriggerValueParam(offset, period uint32, utc []interface{}) []interface{} {
+	len_ := calcLen(utc)
+	r := []interface{}{
+		uint16(P_PeriodicTriggerValue),
+		uint16(8 + len_),
+		offset,
+		period,
+	}
+	r = append(r, utc...)
+	return r
+}
+
+// UTCTimestamp Parameter
+func UTCTimestampParam(microsecond uint64) []interface{} {
+	return []interface{}{
+		uint16(P_UTCTimeStamp),
+		uint16(12),
+		microsecond,
+	}
+}
+
 const (
 	P_UTCTimeStamp                                = 128
 	P_Uptime                                      = 129

@@ -29,7 +29,10 @@ func calcLen(r []interface{}) int {
 
 // If time = 0 ,Reader will not send to client
 func KeepaliveSpec(ms_timeinterval int) []interface{} {
-	enable := 0
+	var (
+		enable = 0
+		period []interface{}
+	)
 	if ms_timeinterval > 0 {
 		enable = 1
 	}

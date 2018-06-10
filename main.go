@@ -105,7 +105,11 @@ func handler(msg *Msg) {
 			}
 		case *ERROR_MESSAGE:
 			kk := k.(*ERROR_MESSAGE)
-			log.Infof("[ERROR] code=%d ,msg=%s", kk.Status.StatusCode, kk.Status.ErrMsg)
+			if kk.Status != nil {
+				log.Errorf("[ERROR] code=%d ,msg=%s", kk.Status.StatusCode, kk.Status.ErrMsg)
+			} else {
+				log.Errorf("[ERROR] Wrong command?")
+			}
 		case *MsgLoss:
 			kk := k.(*MsgLoss)
 			log.Errorf("[MSG_DAMAGE] len=%d ", kk.Len)
