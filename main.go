@@ -126,6 +126,7 @@ func main() {
 	opt.ReconnectWait = time.Minute * 2
 
 	host = opt.NewConn()
+	defer host.Close()
 	log.SetOutput(os.Stdout)
 	//log.SetLevel(log.DebugLevel)
 	var (
@@ -136,7 +137,7 @@ func main() {
 	readers := []*SPReaderInfo{
 		&SPReaderInfo{
 			Id:   "random_reader_id_00",
-			Host: "192.168.33.16:5084",
+			Host: "192.168.33.19:5084",
 			InitCommand: [][]byte{
 				ResetFactoryOpt(),
 				DelROSpecOpt(),
@@ -145,7 +146,6 @@ func main() {
 				SetRegion(),
 				SetEventSpecOption(),
 				//AddROSpecOption(),
-
 				AddROSpecCustom(
 					// set trigger option - gpi
 					RoBoundSpecCustom(
@@ -159,6 +159,7 @@ func main() {
 						),
 					),
 					GetDefaultAISpec(),
+					ReaderEventNotificationSpec(),
 					GetRoReportSpec(),
 				//	KeepaliveSpec(0),
 				),
@@ -259,6 +260,5 @@ func main() {
 		}
 	}
 	// close connection
-	host.Close()
 
 }

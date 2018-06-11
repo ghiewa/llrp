@@ -8,6 +8,14 @@ const (
 	V_1011_Air_Protocol_LLRP_Capabilities
 )
 
+func SEND_KEEPALIVE(messageId int) []byte {
+	return bundle(
+		M_KEEPALIVE,
+		messageId,
+		nil,
+	)
+}
+
 // Convert custom pack to protocol []byte
 func CustomPack(messageType, messageId int, config []interface{}, params ...[]interface{}) []byte {
 	return bundle(messageType, messageId, config, params...)
@@ -82,14 +90,6 @@ func DEL_ROSPEC(messageId, spec int) []byte {
 		M_DELETE_ROSPEC,
 		messageId,
 		[]interface{}{uint32(spec)},
-	)
-}
-
-func SEND_KEEPALIVE(messageId int) []byte {
-	return bundle(
-		M_KEEPALIVE,
-		messageId,
-		nil,
 	)
 }
 
