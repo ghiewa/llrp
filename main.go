@@ -161,8 +161,8 @@ func main() {
 						),
 					*/
 					GetDefaultAISpec(),
-					ReaderEventNotificationSpec(),
-					//GetRoReportSpec(),
+					//ReaderEventNotificationSpec(),
+					GetRoReportSpec(),
 				//	KeepaliveSpec(0),
 				),
 
