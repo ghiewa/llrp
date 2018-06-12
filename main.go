@@ -137,7 +137,7 @@ func main() {
 	readers := []*SPReaderInfo{
 		&SPReaderInfo{
 			Id:   "random_reader_id_00",
-			Host: "192.168.33.19:5084",
+			Host: "192.168.33.17:5084",
 			InitCommand: [][]byte{
 				ResetFactoryOpt(),
 				DelROSpecOpt(),
