@@ -32,7 +32,7 @@ func ReaderEventNotificationSpec(param ...bool) []interface{} {
 	return []interface{}{
 		uint16(P_EventNotificationState),
 		uint16(6),
-		convert16uintbit(param),
+		convert16uintbit(param...),
 	}
 }
 
