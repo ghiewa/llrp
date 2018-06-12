@@ -148,19 +148,21 @@ func main() {
 				//AddROSpecOption(),
 				AddROSpecCustom(
 					// set trigger option - gpi
-					RoBoundSpecCustom(
-						//GPITriggerValue option = 3
-						ROSpecStartTrigger(3,
-							GPITriggerValue(port_trigger, true, timeout),
+					/*
+						RoBoundSpecCustom(
+							//GPITriggerValue option = 3
+							ROSpecStartTrigger(3,
+								GPITriggerValue(port_trigger, true, timeout),
+							),
+							ROSpecStopTrigger(
+								1, // stop by duration trigger
+								timeout,
+							),
 						),
-						ROSpecStopTrigger(
-							1, // stop by duration trigger
-							timeout,
-						),
-					),
+					*/
 					GetDefaultAISpec(),
 					ReaderEventNotificationSpec(),
-					GetRoReportSpec(),
+					//GetRoReportSpec(),
 				//	KeepaliveSpec(0),
 				),
 
