@@ -31,7 +31,7 @@ func ReaderEventNotificationSpec(param ...bool) []interface{} {
 	}
 	var (
 		len_ = 4
-		ev   = EventNotificationState(param)
+		ev   = EventNotificationStateSpec(param)
 	)
 	for _, k := range ev {
 		len_ += calcLen(ev)
@@ -45,7 +45,7 @@ func ReaderEventNotificationSpec(param ...bool) []interface{} {
 	}
 	return r
 }
-func EventNotificationState(param []bool) []interface{} {
+func EventNotificationStateSpec(param []bool) []interface{} {
 	return []interface{}{
 		uint16(P_EventNotificationState),
 		uint16(l),
