@@ -36,8 +36,22 @@ func add_ro_spec(t *testing.T) {
 	fmt.Printf("\n")
 
 }
+func check_keepalive(t *testing.T) {
 
+}
+func check_set_event(t *testing.T) {
+	b := SET_READER_CONFIG(
+		123, // message id
+		false,
+		ReaderEventNotificationSpec(),
+	)
+
+	log.Infof("check_set_event\n % x", b)
+	log.Infof("check_set_event offset 11 \n % x", b[11:11+5])
+}
 func TestO(t *testing.T) {
 	//t.Run("dars", default_add_ro_spec)
-	t.Run("ars", add_ro_spec)
+	t.Run("keep_alive", check_keepalive)
+	t.Run("event", check_set_event)
+	t.Run("add_ro", add_ro_spec)
 }

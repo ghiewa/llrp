@@ -1,5 +1,9 @@
 package llrp
 
+import (
+//log "github.com/sirupsen/logrus"
+)
+
 /*
 
 Value    Definition
@@ -23,31 +27,49 @@ func ReaderEventNotificationSpec(param ...bool) []interface{} {
 			false, true, true, true, true,
 			false, true, true, true, true,
 		}
+		len_p = 10
 	}
 	l := 10 - len_p
+
 	for l > 0 {
 		param = append(param, false)
 		l--
 	}
 	var (
 		len_ = 4
-		ev   = EventNotificationStateSpec(param)
+		evt  = EventNotificationStateSpec(param)
 	)
-	len_ += calcLen(ev)
+	len_ += calcLen(evt)
 	r := []interface{}{
 		uint16(P_EventNotificationState),
 		uint16(len_), // len
 	}
-	r = append(r, ev...)
+	for _, k := range evt {
+		r = append(r, k)
+	}
 	return r
 }
 func EventNotificationStateSpec(param []bool) []interface{} {
-
-	return []interface{}{
-		uint16(P_EventNotificationState),
-		uint16(6),
-		convert16uintbit(param...),
+	var (
+		res []interface{}
+	)
+	//log.Infof("len %d", len(param))
+	for i, k := range param {
+		kk := uint8(0)
+		if k {
+			kk = 0x80
+		}
+		r := []interface{}{
+			uint16(P_EventNotificationState),
+			uint16(7),
+			uint16(i),
+			uint8(kk),
+		}
+		for _, k := range r {
+			res = append(res, k)
+		}
 	}
+	return res
 }
 
 func convert16uintbit(param ...bool) uint16 {

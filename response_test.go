@@ -256,6 +256,7 @@ func test_enable_ro() {
 }
 
 func nloop(t *testing.T) {
+	return
 	onloop()
 }
 func onloop() {

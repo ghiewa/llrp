@@ -110,6 +110,7 @@ func TestM(t *testing.T) {
 }
 
 func loop(t *testing.T) {
+	return
 	log.Info("loop")
 	opt := GetDefaultOptions()
 	opt.Timeout = time.Minute * 2
