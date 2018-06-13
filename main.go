@@ -146,12 +146,17 @@ func main() {
 				SetRegion(),
 				SetEventSpecOption(),
 				//AddROSpecOption(),
+				SET_READER_CONFIG(
+					123, // message id
+					false,
+					ReaderEventNotificationSpec()...,
+				),
 				AddROSpecCustom(
 					// set trigger option - gpi
-
 					RoBoundSpecCustom(
 						//GPITriggerValue option = 3
-						ROSpecStartTrigger(3,
+						ROSpecStartTrigger(
+							3,
 							GPITriggerValue(port_trigger, true, timeout),
 						),
 						ROSpecStopTrigger(
@@ -161,7 +166,6 @@ func main() {
 					),
 
 					GetDefaultAISpec(),
-					//ReaderEventNotificationSpec(),
 					GetRoReportSpec(),
 				//	KeepaliveSpec(0),
 				),

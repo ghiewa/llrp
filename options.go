@@ -106,7 +106,7 @@ func AddROSpecCustom(spec ...[]interface{}) []byte {
 
 func AddROSpecOption(params ...int) []byte {
 	return ADD_ROSPEC(
-		7,
+		7, // message id
 		RoSpec(1234, 0, 0,
 			// start_trigger_type, stop_trgger_type, duration_trigger
 			// set 3 to gpi detect , 2 to event to GPI trigger and 4000 is gpi timeout
@@ -139,7 +139,7 @@ func AddROSpecOption(params ...int) []byte {
 			RoReportSpec(2, 1,
 				TagReportContentSelector(0x1e40),
 			),
-			KeepaliveSpec(5000),
+			//KeepaliveSpec(5000),
 		),
 	)
 }
