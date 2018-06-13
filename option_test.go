@@ -1,6 +1,7 @@
 package llrp
 
 import (
+	"bytes"
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"testing"
@@ -53,7 +54,7 @@ func check_set_event(t *testing.T) {
 		ReaderEventNotificationSpec(),
 	)
 	log.Infof("check_set_event\n % x", b)
-	if len(b) == len(br) {
+	if bytes.Equal(b, br) {
 		log.Infof("check_set_event ok\n % x", br)
 	} else {
 		log.Errorf("check_set_event notok\n % x", br)
