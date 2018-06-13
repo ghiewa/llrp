@@ -24,13 +24,12 @@ func ReaderEventNotificationSpec(param ...bool) []interface{} {
 	if len_p == 0 {
 		// default
 		param = []bool{
-			false, true, true, true, true,
-			false, true, true, true, true,
+			true, true, true, true, true,
+			false, true, false, true,
 		}
-		len_p = 10
+		len_p = 9
 	}
-	l := 10 - len_p
-
+	l := 9 - len_p
 	for l > 0 {
 		param = append(param, false)
 		l--
@@ -61,7 +60,7 @@ func EventNotificationStateSpec(param []bool) []interface{} {
 		}
 		r := []interface{}{
 			uint16(P_EventNotificationState),
-			uint16(7),
+			uint16(7), //len
 			uint16(i),
 			uint8(kk),
 		}
