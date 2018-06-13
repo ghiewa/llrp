@@ -149,7 +149,7 @@ func main() {
 				SET_READER_CONFIG(
 					123, // message id
 					false,
-					ReaderEventNotificationSpec()...,
+					ReaderEventNotificationSpec(),
 				),
 				AddROSpecCustom(
 					// set trigger option - gpi
