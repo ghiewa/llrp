@@ -1,5 +1,9 @@
 package llrp
 
+import (
+	"fmt"
+)
+
 func (o Options) NewConn() *Conn {
 	if o.ReconnectBufSize == 0 {
 		o.ReconnectBufSize = DefaultReconnectBufSize
@@ -30,14 +34,14 @@ func (nc *Conn) ListReader() map[string]*SPReaderInfo {
 
 // set gpo via reader_id by order params 1-4
 func (nc *Conn) GPOset(messageId int, reader_id string, params ...bool) error {
-	var gpo [][]interface{}
-	for i, k := range params {
-		gpo = append(
-			gpo,
-			gPOWriteData_Param(i+1, k),
-		)
-	}
 	if re, ok := nc.readers[reader_id]; ok {
+		var gpo [][]interface{}
+		for i, k := range params {
+			gpo = append(
+				gpo,
+				gPOWriteData_Param(i+1, k),
+			)
+		}
 		return re.conn.publish(
 			SET_READER_CONFIG(
 				messageId,
@@ -46,9 +50,26 @@ func (nc *Conn) GPOset(messageId int, reader_id string, params ...bool) error {
 			),
 		)
 	}
-	return nil
+	return fmt.Errorf("Cann't find reader id")
 }
 
+func (nc *Conn) GPIset(messageId int, reader_id string, port int, port_state bool) error {
+	if re, ok := nc.readers[reader_id]; ok {
+		gpi := gPIPortCurrentState_Param(
+			port,
+			port_state,
+			true,
+		)
+		return re.conn.publish(
+			SET_READER_CONFIG(
+				messageId,
+				false,
+				gpi,
+			),
+		)
+	}
+	return fmt.Errorf("Cann't find reader id")
+}
 func (nc *Conn) GPIget(messageId int, reader_id string) error {
 	if re, ok := nc.readers[reader_id]; ok {
 		return re.conn.publish(
@@ -61,7 +82,7 @@ func (nc *Conn) GPIget(messageId int, reader_id string) error {
 			),
 		)
 	}
-	return nil
+	return fmt.Errorf("Cann't find reader id")
 }
 func (sc *Subscription) Ack(messageId int) error {
 	return sc.conn.publish(
@@ -79,7 +100,7 @@ func (nc *Conn) GPOsetp(messageId int, reader_id string, number_port int, state 
 			),
 		)
 	}
-	return nil
+	return fmt.Errorf("Cann't find reader id")
 
 }
 

@@ -6,6 +6,9 @@ import (
 	log "github.com/sirupsen/logrus"
 	"os"
 	"reflect"
+	"strconv"
+	"strings"
+	sc "text/scanner"
 	"time"
 )
 
@@ -228,8 +231,39 @@ func main() {
 			cmd := scanner.Text()
 			switch cmd {
 			case "i":
-				log.Infof("[GPI] get gpi port on reader [%s]", reader_id)
-				err = host.GPIget(333, reader_id)
+				log.Infof("[GPI] set[s]/get[g] gpi port on reader [%s]", reader_id)
+				cmd = scanner.Text()
+				switch cmd {
+				case "s":
+					log.Infof("[SET] set state port gpi : (o)n / of(f)  [port] \neg. o 1 -> on gpi port 1 \nf 2 -> off gpi port 2")
+					cmd = scanner.Text()
+					var (
+						s          sc.Scanner
+						sett       bool
+						port       int
+						port_state bool
+					)
+					s.Init(strings.NewReader(cmd))
+					for tok := s.Scan(); tok != sc.EOF; {
+						switch s.TokenText() {
+						case "o":
+							port_state = true
+						case "f":
+						default:
+							log.Warnf("please enter gpi port state (o)n / of(f) ")
+							continue
+						}
+						port, err = strconv.Atoi(s.TokenText())
+						if err != nil {
+							log.Warnf("please enter gpi port number")
+							continue
+						}
+						host.GPIset(444, reader_id, port, port_state)
+					}
+				case "g":
+					log.Infof("[GET] get gpi port on reader [%s]", reader_id)
+					err = host.GPIget(333, reader_id)
+				}
 			case "o":
 				log.Infof("[GPO] Please set state [ o(n) | of(f) ]")
 				state := false

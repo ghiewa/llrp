@@ -7,7 +7,7 @@ import (
 func gPIPortCurrentState_Param(port_number, status int, config bool) []interface{} {
 	_config := uint8(0)
 	if config {
-		_config += 1
+		_config = 0x80
 	}
 	return []interface{}{
 		uint16(P_GPIPortCurrentState),
