@@ -134,6 +134,7 @@ func main() {
 		timeout      = uint32(15000) // 15 sec
 		port_trigger = uint16(1)
 	)
+
 	readers := []*SPReaderInfo{
 		&SPReaderInfo{
 			Id:   "random_reader_id_00",
