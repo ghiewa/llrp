@@ -144,12 +144,16 @@ func main() {
 				DelAccOption(),
 				ExtensionOption(),
 				SetRegion(),
-				SetEventSpecOption(),
 				//AddROSpecOption(),
 				SET_READER_CONFIG(
 					123, // message id
 					false,
 					ReaderEventNotificationSpec(),
+				),
+				SET_READER_CONFIG(
+					444, // message id
+					false,
+					KeepaliveSpec(5000),
 				),
 				AddROSpecCustom(
 					// set trigger option - gpi
@@ -167,7 +171,6 @@ func main() {
 
 					GetDefaultAISpec(),
 					GetRoReportSpec(),
-				//	KeepaliveSpec(0),
 				),
 
 				EnableROSpecOption(),

@@ -95,6 +95,7 @@ func KeepaliveSpec(ms_timeinterval int) []interface{} {
 	if ms_timeinterval > 0 {
 		enable = 1
 	}
+
 	r := []interface{}{
 		uint16(P_KeepaliveSpec),
 		uint16(5),
@@ -103,6 +104,7 @@ func KeepaliveSpec(ms_timeinterval int) []interface{} {
 		uint8(enable),
 		//uint32(ms_timeinterval),
 	}
+
 	return r
 }
 
