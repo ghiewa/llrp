@@ -251,13 +251,14 @@ func main() {
 						case "f":
 						default:
 							log.Warnf("please enter gpi port state (o)n / of(f) ")
-							continue
+							break
 						}
 						port, err = strconv.Atoi(s.TokenText())
 						if err != nil {
 							log.Warnf("please enter gpi port number")
-							continue
+							break
 						}
+						log.Infof("GPI set port %d to state %v", port, port_state)
 						host.GPIset(444, reader_id, port, port_state)
 					}
 				case "g":
