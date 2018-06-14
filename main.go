@@ -182,7 +182,7 @@ func main() {
 		// doReconnected when loss signal
 		err := host.Registry(reader)
 		if err != nil {
-			log.Error(err)
+			log.Errorf("registry %v", err)
 		}
 	}
 	host.Subscription(handler)
