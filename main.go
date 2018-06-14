@@ -84,7 +84,7 @@ func handler(msg *Msg) {
 		case *ADD_ROSPEC_RESPONSE:
 			kk := k.(*ADD_ROSPEC_RESPONSE)
 			if kk.Status != nil {
-				log.Infof("[ADD_ROSPEC] success = %v ,%s", kk.Status.Success, kk.Status.ErrMsg)
+				log.Infof("[ADD_ROSPEC] success = %v ", kk.Status.Success)
 			}
 		case *GetConfigResponse:
 			kk := k.(*GetConfigResponse)
