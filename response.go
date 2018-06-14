@@ -87,6 +87,7 @@ func Response(b []byte, len_data int) (reports []interface{}) {
 			reports = append(reports, err_resp)
 		default:
 			log.Errorf("[resp]cant handle code %d ", header)
+			panic("test")
 			dam_res = new(MsgLoss)
 			dam_res.Len = len_p
 			reports = append(reports, dam_res)
