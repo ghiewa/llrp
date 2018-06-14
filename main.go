@@ -25,7 +25,10 @@ func handler(msg *Msg) {
 		switch k.(type) {
 		case *KeepaliveResponse:
 			// ack form keepalive interval
-			log.Infof("Keepalive ack")
+			log.Infof("Keepalive ACk")
+			messageId := 1234
+			// must send ack to reader for keepalive
+			msg.From.Ack(messageId)
 		case *NetworkIssue:
 			kk := k.(*NetworkIssue)
 			switch kk.Type {

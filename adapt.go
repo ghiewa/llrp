@@ -63,6 +63,11 @@ func (nc *Conn) GPIget(messageId int, reader_id string) error {
 	}
 	return nil
 }
+func (sc *Subscription) Ack(messageId int) {
+	return sc.conn.publish(
+		SEND_KEEPALIVE(messageId),
+	)
+}
 
 func (nc *Conn) GPOsetp(messageId int, reader_id string, number_port int, state bool) error {
 	if re, ok := nc.readers[reader_id]; ok {
