@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	log "github.com/sirupsen/logrus"
-	"math/rand"
+	//"math/rand"
 	"net"
 	"runtime"
 	"strings"
