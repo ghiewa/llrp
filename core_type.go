@@ -152,6 +152,8 @@ type Options struct {
 	// ReconnectBufSize is the size of the backing bufio during reconnect.
 	// Once this has been exhausted publish operations will return an error.
 	ReconnectBufSize int
+	// Interval keepalive to prevent readLoop exit
+	KeepaliveInterval time.Duration
 }
 
 const (

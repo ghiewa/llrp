@@ -36,30 +36,7 @@ func (nc *Conn) registry(sp *SPReaderInfo) error {
 		}
 	}()
 	go sp.conn.asyncDispatch()
-	go sp.conn.keep_alive()
 	return nil
-}
-func (nc *RConn) keep_alive() {
-	interval := time.Second * 5
-	for {
-		return
-		select {
-		case <-time.After(interval):
-			if nc.isConnected() {
-				// send keepalive
-				random := int(rand.Int31())
-				/*
-					nc.publish(
-						SEND_KEEPALIVE(random),
-					)
-				*/
-				log.Infof("[%d] Send Keepalive %d", random, len(SEND_KEEPALIVE(random)))
-			} else if nc.IsClosed() {
-				log.Warnf("End Keepalive")
-				return
-			}
-		}
-	}
 }
 
 // logic of pushing msg to reader
