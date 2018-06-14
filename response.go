@@ -86,7 +86,7 @@ func Response(b []byte, len_data int) (reports []interface{}) {
 			err_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])
 			reports = append(reports, err_resp)
 		default:
-			log.Errorf("[core]cant handle code %d ", header)
+			log.Errorf("[resp]cant handle code %d ", header)
 			dam_res = new(MsgLoss)
 			dam_res.Len = len_p
 			reports = append(reports, dam_res)
