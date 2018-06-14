@@ -27,7 +27,7 @@ func handler(msg *Msg) {
 		switch k.(type) {
 		case *KeepaliveResponse:
 			// ack form keepalive interval
-			log.Infof("Keepalive ACk")
+			//log.Infof("Keepalive ACk")
 			messageId := 1234
 			// must send ack to reader for keepalive
 			err := msg.From.Ack(messageId)
@@ -222,8 +222,7 @@ func main() {
 		case "io":
 			log.Infof("sample command please enter reader id number(00 - 10)")
 			scanner.Scan()
-			text = scanner.Text()
-			id := text
+			id := scanner.Text()
 			log.Infof("reader [%s] selected", id)
 			reader_id := "random_reader_id_" + id
 			log.Infof("Please set command [gp(o) | gp(i)]")
@@ -232,6 +231,7 @@ func main() {
 			switch cmd {
 			case "i":
 				log.Infof("[GPI] set[s]/get[g] gpi port on reader [%s]", reader_id)
+				scanner.Scan()
 				cmd = scanner.Text()
 				switch cmd {
 				case "s":
