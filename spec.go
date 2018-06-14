@@ -125,6 +125,48 @@ func RoReportSpec(trigger, n int, params ...[]interface{}) []interface{} {
 	return r
 }
 
+const (
+	C_AISpecStopTrigger_NULL = iota
+	C_AISpecStopTrigger_DURATION
+	C_AISpecStopTrigger_GPI_WITH_TIMEOUT
+	C_AISpecStopTrigger_TAG_OBSERVATION
+)
+
+// Params required GPITrigger & TagObservation Trigger
+func AISpecStopTrigger(AISpecStopTriggerType, DurationTrigger int, params ...[]interface{}) []interface{} {
+	var (
+		l = 9
+	)
+	for _, k := range params {
+		l += calcLen(params)
+	}
+	r := []interface{}{
+		uint16(P_AISpecStopTrigger),
+		uint16(l),
+		uint8(AISpecStopTriggerType),
+		uint32(DurationTrigger),
+	}
+	for _, k := range params {
+		r = append(r, k...)
+	}
+	return r
+}
+
+func TagObservationTrigger(TriggerType, NumberOfTags, NumberOfAttempts, T, Timeout int) []interface{} {
+	var (
+		l = 13
+	)
+	r := []interface{}{
+		uint16(P_TagObservationTrigger),
+		uint16(l),
+		uint8(TriggerType),
+		uint16(NumberOfTags),
+		uint16(T),
+		uint32(Timeout),
+	}
+	return r
+}
+
 func TagReportContentSelector(enable int) []interface{} {
 	return []interface{}{
 		uint16(P_TagReportContentSelector),

@@ -26,6 +26,7 @@ func calcLen(r []interface{}) int {
 	}
 	return len_
 }
+
 func ROSpecStartTrigger(typeof int, params ...[]interface{}) []interface{} {
 	var (
 		l = 5
@@ -92,7 +93,7 @@ func ROSpecStopTrigger(typeof int, DurationTrigger uint32, params ...[]interface
 
 }
 func RoBoundSpec(startTriggerType, stopTriggerType, DurationTrigger int) []interface{} {
-	bound := []interface{}{
+	return []interface{}{
 		uint16(P_ROBoundarySpec),
 		uint16(18),
 		uint16(P_ROSpecStartTrigger),
@@ -103,7 +104,6 @@ func RoBoundSpec(startTriggerType, stopTriggerType, DurationTrigger int) []inter
 		uint8(stopTriggerType),
 		uint32(DurationTrigger),
 	}
-	return bound
 }
 
 func AISpecStopTrigger(typeAIspec, duration int) []interface{} {

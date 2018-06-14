@@ -139,10 +139,9 @@ func main() {
 	log.SetOutput(os.Stdout)
 	//log.SetLevel(log.DebugLevel)
 	var (
-		valid bool
-		/*timeout      = uint32(15000) // 15 sec
+		valid        bool
+		timeout      = uint32(15000) // 15 sec
 		port_trigger = uint16(1)
-		*/
 	)
 	readers := []*SPReaderInfo{
 		&SPReaderInfo{
@@ -164,26 +163,24 @@ func main() {
 					false,
 					KeepaliveSpec(15000), // 15 second
 				),
-				AddROSpecOption(),
-				/*
-					AddROSpecCustom(
-						// set trigger option - gpi
-						RoBoundSpecCustom(
-							//GPITriggerValue option = 3
-							ROSpecStartTrigger(
-								3,
-								GPITriggerValue(port_trigger, true, timeout),
-							),
-							ROSpecStopTrigger(
-								1, // stop by duration trigger
-								timeout,
-							),
+				//AddROSpecOption(),
+				AddROSpecCustom(
+					// set trigger option - gpi
+					RoBoundSpecCustom(
+						//GPITriggerValue option = 3
+						ROSpecStartTrigger(
+							3,
+							GPITriggerValue(port_trigger, true, timeout),
 						),
-
-						GetDefaultAISpec(),
-						GetRoReportSpec(),
+						ROSpecStopTrigger(
+							1, // stop by duration trigger
+							timeout,
+						),
 					),
-				*/
+
+					GetDefaultAISpec(),
+					GetRoReportSpec(),
+				),
 				EnableROSpecOption(),
 			},
 		},
@@ -234,6 +231,7 @@ func main() {
 				scanner.Scan()
 				cmd = scanner.Text()
 				switch cmd {
+				// can't set gpi state
 				case "s":
 					log.Infof("[SET] set state port gpi : (o)n / of(f)  [port] \neg. o 1 -> on gpi port 1 \nf 2 -> off gpi port 2")
 					scanner.Scan()
