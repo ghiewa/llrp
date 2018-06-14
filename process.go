@@ -55,6 +55,7 @@ func (nc *RConn) process(b []byte, len_data int) error {
 		custom_resp       *CUSTOM_MESSAGE_RESPONSE
 		en_ro_resp        *ENABLE_ROSPEC_RESPONSE
 		err_resp          *ERROR_MESSAGE
+		keep_alive_resp   *KeepaliveResponse
 		dam_res           *MsgLoss
 		duticate_cards    = make(map[string]bool)
 		reports           []interface{}
