@@ -138,7 +138,7 @@ func AISpecStopTrigger(AISpecStopTriggerType, DurationTrigger int, params ...[]i
 		l = 9
 	)
 	for _, k := range params {
-		l += calcLen(params)
+		l += calcLen(k)
 	}
 	r := []interface{}{
 		uint16(P_AISpecStopTrigger),

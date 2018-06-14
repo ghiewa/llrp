@@ -106,14 +106,6 @@ func RoBoundSpec(startTriggerType, stopTriggerType, DurationTrigger int) []inter
 	}
 }
 
-func AISpecStopTrigger(typeAIspec, duration int) []interface{} {
-	return []interface{}{
-		uint16(P_AISpecStopTrigger),
-		uint16(9),
-		uint8(typeAIspec),
-		uint32(duration),
-	}
-}
 func AntennaConfiguration(id int, params ...[]interface{}) []interface{} {
 	var (
 		l = 6
