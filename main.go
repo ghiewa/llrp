@@ -74,17 +74,17 @@ func handler(msg *Msg) {
 		case *DELETE_ROSPEC_RESPONSE:
 			kk := k.(*DELETE_ROSPEC_RESPONSE)
 			if kk.Status != nil {
-				log.Infof("[DELRO] success = %v\n", kk.Status.Success)
+				log.Infof("[DELRO] success = %v", kk.Status.Success)
 			}
 		case *DELETE_ACCESSSPEC_RESPONSE:
 			kk := k.(*DELETE_ACCESSSPEC_RESPONSE)
 			if kk.Status != nil {
-				log.Infof("[DELACC] success = %v\n", kk.Status.Success)
+				log.Infof("[DELACC] success = %v", kk.Status.Success)
 			}
 		case *ADD_ROSPEC_RESPONSE:
 			kk := k.(*ADD_ROSPEC_RESPONSE)
 			if kk.Status != nil {
-				log.Infof("[ADD_ROSPEC] success = %v ,%s\n", kk.Status.Success, kk.Status.ErrMsg)
+				log.Infof("[ADD_ROSPEC] success = %v ,%s", kk.Status.Success, kk.Status.ErrMsg)
 			}
 		case *GetConfigResponse:
 			kk := k.(*GetConfigResponse)
