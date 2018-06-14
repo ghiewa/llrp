@@ -74,7 +74,6 @@ func (nc *RConn) process(b []byte, len_data int) error {
 		case M_KEEPALIVE:
 			keep_alive_resp = new(KeepaliveResponse)
 			reports = append(reports, keep_alive_resp)
-			log.Infof("M_KEEPALIVE %d: %d : % x", len_data, len_p, b)
 		case M_RO_ACCESS_REPORT:
 			ro_resp = new(ROAccessReportResponse)
 			ro_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])

@@ -160,7 +160,7 @@ func main() {
 				SET_READER_CONFIG(
 					444, // message id
 					false,
-					KeepaliveSpec(5000),
+					KeepaliveSpec(15000), // 15 second
 				),
 				AddROSpecCustom(
 					// set trigger option - gpi
