@@ -236,6 +236,7 @@ func main() {
 				switch cmd {
 				case "s":
 					log.Infof("[SET] set state port gpi : (o)n / of(f)  [port] \neg. o 1 -> on gpi port 1 \nf 2 -> off gpi port 2")
+					scanner.Scan()
 					cmd = scanner.Text()
 					var (
 						s          sc.Scanner
@@ -262,6 +263,8 @@ func main() {
 				case "g":
 					log.Infof("[GET] get gpi port on reader [%s]", reader_id)
 					err = host.GPIget(333, reader_id)
+				default:
+					log.Warnf("enter (s)et / (g)et to process")
 				}
 			case "o":
 				log.Infof("[GPO] Please set state [ o(n) | of(f) ]")
