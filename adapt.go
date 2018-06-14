@@ -57,12 +57,12 @@ func (nc *Conn) GPIset(messageId int, reader_id string, port int, port_state boo
 	if re, ok := nc.readers[reader_id]; ok {
 		port_s := 0
 		if port_state {
-			port_s = 1
+			port_s += 1
 		}
 		gpi := gPIPortCurrentState_Param(
 			port,
 			port_s,
-			true,
+			false,
 		)
 		return re.conn.publish(
 			SET_READER_CONFIG(
