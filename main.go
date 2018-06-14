@@ -10,13 +10,12 @@ import (
 )
 
 var (
-	card_evt            bool = true
-	count                    = 0
-	limit_card               = 100
-	toggle                   = true
-	host                *Conn
-	am                  bool
-	keep_alive_interval = time.Second * 5
+	card_evt   bool = true
+	count           = 0
+	limit_card      = 100
+	toggle          = true
+	host       *Conn
+	am         bool
 )
 
 func handler(msg *Msg) {
@@ -151,7 +150,6 @@ func main() {
 				DelAccOption(),
 				ExtensionOption(),
 				SetRegion(),
-				//AddROSpecOption(),
 				SET_READER_CONFIG(
 					123, // message id
 					false,
@@ -162,24 +160,26 @@ func main() {
 					false,
 					KeepaliveSpec(15000), // 15 second
 				),
-				AddROSpecCustom(
-					// set trigger option - gpi
-					RoBoundSpecCustom(
-						//GPITriggerValue option = 3
-						ROSpecStartTrigger(
-							3,
-							GPITriggerValue(port_trigger, true, timeout),
+				AddROSpecOption(),
+				/*
+					AddROSpecCustom(
+						// set trigger option - gpi
+						RoBoundSpecCustom(
+							//GPITriggerValue option = 3
+							ROSpecStartTrigger(
+								3,
+								GPITriggerValue(port_trigger, true, timeout),
+							),
+							ROSpecStopTrigger(
+								1, // stop by duration trigger
+								timeout,
+							),
 						),
-						ROSpecStopTrigger(
-							1, // stop by duration trigger
-							timeout,
-						),
+
+						GetDefaultAISpec(),
+						GetRoReportSpec(),
 					),
-
-					GetDefaultAISpec(),
-					GetRoReportSpec(),
-				),
-
+				*/
 				EnableROSpecOption(),
 			},
 		},
