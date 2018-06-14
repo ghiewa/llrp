@@ -253,6 +253,7 @@ func main() {
 							log.Warnf("please enter gpi port state (o)n / of(f) ")
 							break
 						}
+						s.Scan()
 						port, err = strconv.Atoi(s.TokenText())
 						if err != nil {
 							log.Warnf("please enter gpi port number")
