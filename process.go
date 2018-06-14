@@ -70,6 +70,10 @@ func (nc *RConn) process(b []byte, len_data int) error {
 		len_p := int(binary.BigEndian.Uint32(b[walk : walk+4]))
 		walk += 4
 		switch header {
+		case M_KEEPALIVE:
+			keep_alive_resp = new(KeepaliveResponse)
+			reports = append(reports, keep_alive_resp)
+			log.Infof("M_KEEPALIVE_ACK %d: %d : % x", len_data, len_p, b)
 		case M_RO_ACCESS_REPORT:
 			ro_resp = new(ROAccessReportResponse)
 			ro_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])
@@ -120,7 +124,7 @@ func (nc *RConn) process(b []byte, len_data int) error {
 			err_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])
 			reports = append(reports, err_resp)
 		default:
-			log.Errorf("\ncant handle code %d : %s", header, b)
+			log.Errorf("cant handle code %d : %s", header, b)
 			dam_res = new(MsgLoss)
 			dam_res.Len = len_p
 			reports = append(reports, dam_res)
