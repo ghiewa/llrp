@@ -55,9 +55,13 @@ func (nc *Conn) GPOset(messageId int, reader_id string, params ...bool) error {
 
 func (nc *Conn) GPIset(messageId int, reader_id string, port int, port_state bool) error {
 	if re, ok := nc.readers[reader_id]; ok {
+		port_s := 0
+		if port_state {
+			port_s = 1
+		}
 		gpi := gPIPortCurrentState_Param(
 			port,
-			port_state,
+			port_s,
 			true,
 		)
 		return re.conn.publish(
