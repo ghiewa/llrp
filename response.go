@@ -23,6 +23,7 @@ func Response(b []byte, len_data int) (reports []interface{}) {
 		dam_res           *MsgLoss
 		duticate_cards    = make(map[string]bool)
 	)
+	log.Errorf("---------------------------")
 	for len_data > 0 {
 		var (
 			ro_resp *ROAccessReportResponse
