@@ -239,7 +239,6 @@ func main() {
 					cmd = scanner.Text()
 					var (
 						s          sc.Scanner
-						sett       bool
 						port       int
 						port_state bool
 					)
