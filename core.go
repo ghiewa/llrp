@@ -42,6 +42,7 @@ func (nc *Conn) registry(sp *SPReaderInfo) error {
 func (nc *RConn) keep_alive() {
 	interval := time.Second * 5
 	for {
+		return
 		select {
 		case <-time.After(interval):
 			if nc.isConnected() {
@@ -52,7 +53,7 @@ func (nc *RConn) keep_alive() {
 						SEND_KEEPALIVE(random),
 					)
 				*/
-				log.Infof("[%d]1 Send Keepalive %d", random, len(SEND_KEEPALIVE(random)))
+				log.Infof("[%d] Send Keepalive %d", random, len(SEND_KEEPALIVE(random)))
 			} else if nc.IsClosed() {
 				log.Warnf("End Keepalive")
 				return
