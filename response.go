@@ -31,6 +31,7 @@ func Response(b []byte, len_data int) (reports []interface{}) {
 		walk += 2
 		len_p := int(binary.BigEndian.Uint32(b[walk : walk+4]))
 		walk += 4
+		log.Infof("--- %d", header)
 		switch header {
 		case M_KEEPALIVE:
 			keep_alive_resp = new(KeepaliveResponse)
@@ -156,7 +157,6 @@ func Response(b []byte, len_data int) (reports []interface{}) {
 			}
 			walk_pre = walk - walk_pre
 			len_pre -= walk_pre
-			//fmt.Printf("\nlen %d ,walk %d", len_pre, walk_pre)
 		}
 		len_data -= len_p
 	}
