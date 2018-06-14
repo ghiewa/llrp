@@ -63,7 +63,7 @@ func (nc *Conn) GPIget(messageId int, reader_id string) error {
 	}
 	return nil
 }
-func (sc *Subscription) Ack(messageId int) {
+func (sc *Subscription) Ack(messageId int) error {
 	return sc.conn.publish(
 		SEND_KEEPALIVE(messageId),
 	)

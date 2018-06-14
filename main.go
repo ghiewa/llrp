@@ -28,7 +28,10 @@ func handler(msg *Msg) {
 			log.Infof("Keepalive ACk")
 			messageId := 1234
 			// must send ack to reader for keepalive
-			msg.From.Ack(messageId)
+			err = msg.From.Ack(messageId)
+			if err != nil {
+				log.Errorf("ack %v", err)
+			}
 		case *NetworkIssue:
 			kk := k.(*NetworkIssue)
 			switch kk.Type {
