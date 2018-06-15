@@ -20,15 +20,6 @@ func SEND_KEEPALIVE(messageId int) []byte {
 func CustomPack(messageType, messageId int, config []interface{}, params ...[]interface{}) []byte {
 	return bundle(messageType, messageId, config, params...)
 }
-func ENABLE_ROSPEC(messageId, id int) []byte {
-	return bundle(
-		M_ENABLE_ROSPEC,
-		messageId,
-		[]interface{}{
-			uint32(id),
-		},
-	)
-}
 
 /*
 This message can be issued by the Client to the Reader after a LLRP connection is established. The Client uses this message to inform the Reader that it can remove its hold on event and report messages. Readers that are configured to hold events and reports on reconnection (See Section 13.2.6.4) respond to this message by returning the tag reports accumulated (same way they respond to GET_REPORT (See Section 13.1.1)).
@@ -39,6 +30,19 @@ func ENABLE_EVENTS_AND_REPORTS(messageId int) []byte {
 		M_ENABLE_EVENTS_AND_REPORTS,
 		messageId,
 		nil,
+	)
+}
+
+/*
+This message is issued by the Client to the Reader. Upon receiving the message, the Reader moves the ROSpec corresponding to the ROSpecID passed in this message from the disabled to the inactive state.
+*/
+func ENABLE_ROSPEC(messageId, ROSpecID int) []byte {
+	return bundle(
+		M_ENABLE_ROSPEC,
+		messageId,
+		[]interface{}{
+			uint32(ROSpecID),
+		},
 	)
 }
 

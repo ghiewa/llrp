@@ -160,19 +160,3 @@ func AddROSpecOptionDefault() []byte {
 		),
 	)
 }
-func EnableEventAndReport() []byte {
-	return bundle(
-		M_ENABLE_EVENTS_AND_REPORTS,
-		200,
-		nil,
-	)
-}
-func EnableROSpecOption(params ...int) []byte {
-	if len(params) == 0 {
-		params = append(params, 1234)
-	}
-	return ENABLE_ROSPEC(
-		8,
-		params[0],
-	)
-}

@@ -181,7 +181,7 @@ func main() {
 					GetDefaultAISpec(),
 					GetRoReportSpec(),
 				),
-				EnableROSpecOption(),
+				ENABLE_ROSPEC(3333, 1234),
 				ENABLE_EVENTS_AND_REPORTS(4444),
 			},
 		},
