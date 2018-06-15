@@ -30,6 +30,10 @@ func ENABLE_ROSPEC(messageId, id int) []byte {
 	)
 }
 
+/*
+This message can be issued by the Client to the Reader after a LLRP connection is established. The Client uses this message to inform the Reader that it can remove its hold on event and report messages. Readers that are configured to hold events and reports on reconnection (See Section 13.2.6.4) respond to this message by returning the tag reports accumulated (same way they respond to GET_REPORT (See Section 13.1.1)).
+
+*/
 func ENABLE_EVENTS_AND_REPORTS(messageId int) []byte {
 	return bundle(
 		M_ENABLE_EVENTS_AND_REPORTS,
