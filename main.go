@@ -140,8 +140,8 @@ func main() {
 	//log.SetLevel(log.DebugLevel)
 	var (
 		valid        bool
-		timeout      = uint32(15000) // 15 sec
-		port_trigger = uint16(1)
+		timeout      = 15000 // 15 sec
+		port_trigger = 1
 	)
 	readers := []*SPReaderInfo{
 		&SPReaderInfo{
@@ -163,10 +163,11 @@ func main() {
 					false,
 					KeepaliveSpec(15000), // 15 second
 				),
-				//AddROSpecOption(),
+				//AddROSpecOptionDefault(),
 				AddROSpecCustom(
+					14442, // message ID
 					// set trigger option - gpi
-					RoBoundSpecCustom(
+					ROBoundarySpec(
 						//GPITriggerValue option = 3
 						ROSpecStartTrigger(
 							3,
@@ -177,10 +178,10 @@ func main() {
 							timeout,
 						),
 					),
-
 					GetDefaultAISpec(),
 					GetRoReportSpec(),
 				),
+
 				EnableROSpecOption(),
 			},
 		},

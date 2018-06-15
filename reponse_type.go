@@ -54,7 +54,7 @@ type ADD_ROSPEC_RESPONSE struct {
 type GetConfigResponse struct {
 	MsgId  uint32
 	Status *LLRPStatus
-	Id     *Identification
+	Id     *IdentificationParam
 	AnnPty []*AntennaProperty
 	//AnnCon    []*AntennaConfig
 	EvtSpec *ReaderEventNoticationSpec
@@ -71,7 +71,7 @@ type EventReport struct {
 	HoldEventReportsUponReconnect bool
 }
 
-type Identification struct {
+type IdentificationParam struct {
 	Type int
 	Id   string
 }

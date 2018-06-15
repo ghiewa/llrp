@@ -69,8 +69,8 @@ func SetRegion(params ...int) []byte {
 		5,
 		true,
 		CustomParameter(
-			uint32(param[0]),
-			uint32(param[1]),
+			param[0],
+			param[1],
 			uint16(param[2]),
 		),
 	)
@@ -94,52 +94,69 @@ func SetEventSpecOption(params ...bool) []byte {
 		),
 	)
 }
-func AddROSpecCustom(spec ...[]interface{}) []byte {
+func AddROSpecCustom(messageId int, spec ...[]interface{}) []byte {
 	b := ADD_ROSPEC(
-		201,
-		RoSpec(1234, 0, 0,
+		messageId,
+		ROSpec(1234, 0, 0,
 			spec...,
 		),
 	)
 	return b
 }
 
-func AddROSpecOption(params ...int) []byte {
+func AddROSpecOptionDefault() []byte {
 	return ADD_ROSPEC(
 		7, // message id
-		RoSpec(1234, 0, 0,
-			// start_trigger_type, stop_trgger_type, duration_trigger
-			// set 3 to gpi detect , 2 to event to GPI trigger and 4000 is gpi timeout
-			RoBoundSpec(1, 0, 0),
-			AISpec(2,
+		ROSpec(1234, 0, 0,
+			ROBoundarySpec(
+				ROSpecStartTrigger(1),
+				ROSpecStopTrigger(0, 0),
+			),
+			AISpec(
+				2,
+				[]int{
+					1, 2,
+				},
 				AISpecStopTrigger(0, 0),
 				InventoryParameterSpec(1234, 1,
 					AntennaConfiguration(1,
-						RFTransmitter(1, 0, 81),
-						C1G2InventoryCommand(0,
+						RFTransmitter(1, 0, 10),
+						C1G2InventoryCommand(
+							false,
 							C1G2RFControl(1000, 0),
 							C1G2SingulationControl(0x80, 32, 0),
-							CustomParameter(uint32(25882), uint32(23), uint16(2)),
-							CustomParameter(uint32(25882), uint32(26), uint16(0), uint16(0), uint16(0)),
-							CustomParameter(uint32(25882), uint32(28), uint16(0), uint16(0), uint16(0)),
+							CustomParameter(25882, 23, uint16(2)),
+							CustomParameter(25882, 26, uint16(0), uint16(0), uint16(0)),
+							CustomParameter(25882, 28, uint16(0), uint16(0), uint16(0)),
 						),
 					),
 					AntennaConfiguration(2,
 						RFTransmitter(1, 0, 81),
-						C1G2InventoryCommand(0,
+						C1G2InventoryCommand(
+							false,
 							C1G2RFControl(1000, 0),
 							C1G2SingulationControl(0x80, 32, 0),
-							CustomParameter(uint32(25882), uint32(23), uint16(2)),
-							CustomParameter(uint32(25882), uint32(26), uint16(0), uint16(0), uint16(0)),
-							CustomParameter(uint32(25882), uint32(28), uint16(0), uint16(0), uint16(0)),
+							CustomParameter(25882, 23, uint16(2)),
+							CustomParameter(25882, 26, uint16(0), uint16(0), uint16(0)),
+							CustomParameter(25882, 28, uint16(0), uint16(0), uint16(0)),
 						),
 					),
 				),
 			),
 			RoReportSpec(2, 1,
-				TagReportContentSelector(0x1e40),
+				TagReportContentSelector(
+					false,
+					false,
+					false,
+					true,
+					true,
+					true,
+					true,
+					false,
+					false,
+					true,
+				),
 			),
-			//KeepaliveSpec(5000),
 		),
 	)
 }
