@@ -31,14 +31,115 @@ type EventNotificationResponse struct {
 	MsgId uint32
 	Data  *EvtData
 }
+
+//  ReaderEventNotificationData
 type EvtData struct {
-	TimestampUTC uint64
-	GpiEvt       []*GpiEventParam
+	TimestampUTC      uint64
+	Hopping           []*HoppingEventParameter
+	GpiEvt            []*GpiEventParam
+	ROSpEvt           []*ROSpecEventParameter
+	ReportBuf         []*ReportBufferLevelWarningEventParameter
+	ReaderException   []*ReaderExceptionEventParameter
+	RFSurvey          []*RFSurveyEventParameter
+	AISpec            []*AISpecEventParameter
+	Antenna           []*AntennaEventParameter
+	ConnectionAttempt []*ConnectionAttemptEventParameter
+}
+
+const (
+	C_AntennaEventParameter_Antenna_Disconnected = iota
+	C_AntennaEventParameter_Antenna_Connected
+)
+
+type AntennaEventParameter struct {
+	EventType uint8
+	AntennaID uint16
+}
+
+const (
+	C_ConnectionAttemptEvent_Status_Success = iota
+	C_ConnectionAttemptEvent_Status_Failed_Reader_Conn_Exists
+	C_ConnectionAttemptEvent_Status_Failed_Client_Conn_Exists
+	C_ConnectionAttemptEvent_Status_Another_Conn_Attempted
+)
+
+type ConnectionAttemptEventParameter struct {
+	Status uint16
+}
+type HoppingEventParameter struct {
+	HopTableID       uint16
+	NextChannelIndex uint16
 }
 type GpiEventParam struct {
 	PortNumber uint16
 	Evt        bool
 }
+
+const (
+	C_ROSpecEvent_Type_Start_ROSpec = iota
+	C_ROSpecEvent_Type_End_ROSpec
+	C_ROSpecEvent_Type_Preemption_ROSpec
+)
+
+// This parameter carries the ROSpec event details. The EventType could be start or end of the ROSpec.
+type ROSpecEventParameter struct {
+	EventType          uint8
+	ROSpecID           uint32
+	PreemptingROSpecID uint32
+}
+type ReportBufferLevelWarningEventParameter struct {
+	ReportBufferPercentageFull uint8
+}
+type ReportBufferOverflowErrorEvent struct {
+}
+
+type ReaderExceptionEventParameter struct {
+	ROSpecID                 []*ROSpecIDParameter
+	SpecIndex                []*SpecIndexParameter
+	InventoryParameterSpecID []*InventoryParameterSpecIDParameter
+	AntennaID                []*AntennaIDParameter
+	AccessSpecID             []*AccessSpecIDParameter
+	OpSpecID                 []*OpSpecIDParameter
+	Message                  string
+	//CustomExtensionPointList []*CustomParameterResp
+}
+type ROSpecIDParameter struct {
+	ROSpecID uint32
+}
+type SpecIndexParameter struct {
+	SpecIndex uint16
+}
+type InventoryParameterSpecIDParameter struct {
+	InventoryParameterSpecId uint16
+}
+type AntennaIDParameter struct {
+	AntennaID uint16
+}
+type PeakRSSIParameter struct {
+	PeakRSSI uint8
+}
+type ChannelIndexParameter struct {
+	ChannelIndex uint16
+}
+type AccessSpecIDParameter struct {
+}
+
+type OpSpecIDParameter struct {
+	OpSpecId uint16
+}
+type RFSurveyEventParameter struct {
+	EventType uint8
+	ROSpecID  uint32
+	SpecIndex uint16
+}
+type AISpecEventParameter struct {
+	EventType uint8
+	ROSpecID  uint32
+	SpecIndex uint16
+	// air prtocols
+}
+
+//-------------------
 type DELETE_ROSPEC_RESPONSE struct {
 	MsgId  uint32
 	Status *LLRPStatus
