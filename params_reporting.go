@@ -1,10 +1,41 @@
 package llrp
 
+// This parameter is used to enable or disable notification of a single Reader event type.
+func EventNotificationStateParam(EventType int, NotificationState bool) []interface{} {
+	return commonSpec(
+		P_EventNotificationState,
+		[]interface{}{
+			uint16(EventType),
+			convertBooleanUint8(NotificationState),
+		},
+	)
+}
+
 /*
 This parameter is used by the Client to enable or disable notification of one or more Reader events. Notification of buffer overflow events and connection events (attempt/close) are mandatory, and not configurable.
 */
 // params = List of <EventNotificationState Parameter>
 func ReaderEventNotificationSpec(params ...[]interface{}) []interface{} {
+	if len(params) == 0 {
+		// default
+		default_ := map[int]bool{
+			0: true,
+			1: true,
+			2: true,
+			3: true,
+			4: true,
+			5: false,
+			6: true,
+			7: false,
+			8: true,
+		}
+		for v, k := range default_ {
+			params = append(
+				params,
+				EventNotificationStateParam(v, k),
+			)
+		}
+	}
 	return commonSpec(
 		P_ReaderEventNotificationSpec,
 		nil,
