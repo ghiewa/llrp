@@ -30,6 +30,14 @@ func ENABLE_ROSPEC(messageId, id int) []byte {
 	)
 }
 
+func ENABLE_EVENTS_AND_REPORTS(messageId int) []byte {
+	return bundle(
+		M_ENABLE_EVENTS_AND_REPORTS,
+		messageId,
+		nil,
+	)
+}
+
 func GET_READER_CAPABILITIES_V1011(messageId, v_1011 int) []byte {
 	data := []interface{}{
 		uint8(v_1011),

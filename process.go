@@ -74,7 +74,6 @@ func (nc *RConn) process(b []byte, len_data int) error {
 		case M_KEEPALIVE:
 			keep_alive_resp = new(KeepaliveResponse)
 			reports = append(reports, keep_alive_resp)
-
 		case M_RO_ACCESS_REPORT:
 			ro_resp = new(ROAccessReportResponse)
 			ro_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])
@@ -83,6 +82,7 @@ func (nc *RConn) process(b []byte, len_data int) error {
 			evt_resp = new(EventNotificationResponse)
 			evt_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])
 			reports = append(reports, evt_resp)
+			log.Infof("event in")
 			//fmt.Printf("\nevt")
 		case M_GET_READER_CONFIG_RESPONSE:
 			get_resp = new(GetConfigResponse)
