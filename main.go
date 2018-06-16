@@ -209,17 +209,17 @@ func main() {
 					14442,    // message ID
 					ROSpecID, // ROSpecID - 0 is an illegal
 					0,        // Priority 0 - 7
-					C_ROSpec_CurrentState_Active, // CurrentState
+					C_ROSpec_CurrentState_Disabled, // CurrentState
 					// set trigger option - gpi
 					ROBoundarySpec(
 						//GPITriggerValue option = 3
 						ROSpecStartTrigger(
 							3,
-							GPITriggerValue(port_trigger, true, 0),
+							GPITriggerValue(port_trigger, true, timeout),
 						),
 						ROSpecStopTrigger(
-							0, // stop by duration trigger
-							0,
+							1, // stop by duration trigger
+							timeout,
 						),
 					),
 					GetDefaultAISpec(),
