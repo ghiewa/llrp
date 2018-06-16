@@ -70,8 +70,6 @@ func handler(msg *Msg) {
 			if kk.Status != nil {
 				log.Infof("[CLOSE_CONNECTION_RESPONSE][%d] success=%v", kk.MsgId, kk.Status.Success)
 			}
-		case *CUSTOM_MESSAGE_RESPONSE:
-			log.Debugf("CUSTOM_MESSAGE_RESPONSE")
 		case *ROAccessReportResponse:
 			if card_evt || am {
 				kk := k.(*ROAccessReportResponse)
