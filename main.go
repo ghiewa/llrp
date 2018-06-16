@@ -143,6 +143,7 @@ func main() {
 		timeout      = 15000 // 15 sec
 		port_trigger = 1
 	)
+	log.SetLevel(log.DebugLevel)
 	readers := []*SPReaderInfo{
 		&SPReaderInfo{
 			Id:   "random_reader_id_00",

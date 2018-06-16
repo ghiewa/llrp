@@ -82,7 +82,7 @@ func (nc *RConn) process(b []byte, len_data int) error {
 			evt_resp = new(EventNotificationResponse)
 			evt_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])
 			reports = append(reports, evt_resp)
-			log.Infof("event in")
+			log.Infof("event in ")
 			//fmt.Printf("\nevt")
 		case M_GET_READER_CONFIG_RESPONSE:
 			get_resp = new(GetConfigResponse)
@@ -193,6 +193,7 @@ func (nc *RConn) process(b []byte, len_data int) error {
 					continue
 				}
 			default:
+				log.Warnf("not implement %d ", code)
 				// not implement yet will find len_ & skip parameter
 				len_skip := int(binary.BigEndian.Uint16(b[walk : walk+2]))
 				walk += (len_skip - 2)
