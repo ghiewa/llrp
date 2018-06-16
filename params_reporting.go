@@ -1,5 +1,9 @@
 package llrp
 
+import (
+	log "github.com/sirupsen/logrus"
+)
+
 // This parameter is used to enable or disable notification of a single Reader event type.
 func EventNotificationStateParam(EventType int, NotificationState bool) []interface{} {
 	return commonSpec(
@@ -18,6 +22,7 @@ This parameter is used by the Client to enable or disable notification of one or
 func ReaderEventNotificationSpec(params ...[]interface{}) []interface{} {
 	if len(params) == 0 {
 		// default
+		log.Debugf("ReaderEventNotificationSpec == 0")
 		default_ := map[int]bool{
 			0: true,
 			1: true,
