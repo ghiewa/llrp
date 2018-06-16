@@ -246,7 +246,7 @@ func main() {
 			scanner.Scan()
 			cmd := scanner.Text()
 			switch cmd {
-			case "g":
+			case "r":
 				log.Infof("[GetReport] %s", reader_id)
 				err = host.GetRoReport(14122, reader_id)
 			case "i":
