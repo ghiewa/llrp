@@ -205,6 +205,7 @@ func main() {
 					GetDefaultAISpec(),
 					GetRoReportSpec(),
 				),
+				START_ROSPEC(1414, ROSpecID),
 				ENABLE_ROSPEC(3333, ROSpecID),
 				ENABLE_EVENTS_AND_REPORTS(4444),
 			},
@@ -259,7 +260,6 @@ func main() {
 				scanner.Scan()
 				cmd = scanner.Text()
 				switch cmd {
-				// can't set gpi state
 				case "s":
 					log.Infof("[SET] set state port gpi : (o)n / of(f)  [port] \neg. o 1 -> on gpi port 1 \nf 2 -> off gpi port 2")
 					scanner.Scan()

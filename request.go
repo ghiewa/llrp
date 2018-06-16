@@ -1,5 +1,9 @@
 package llrp
 
+import (
+	"math/rand"
+)
+
 const (
 	V_1011_All = iota
 	V_1011_General_Device_Capabilities
@@ -36,8 +40,61 @@ func CustomPack(messageType, messageId int, config []interface{}, params ...[]in
 }
 
 /*
-This message can be issued by the Client to the Reader after a LLRP connection is established. The Client uses this message to inform the Reader that it can remove its hold on event and report messages. Readers that are configured to hold events and reports on reconnection (See Section 13.2.6.4) respond to this message by returning the tag reports accumulated (same way they respond to GET_REPORT (See Section 13.1.1)).
+This command is issued by the Client to the Reader. This command instructs the Reader to gracefully close its connection with the Client. Under normal operating conditions, a Client SHALL attempt to send this command before closing an LLRP connection
+*/
+func CLOSE_CONNECTION(messageId int) []byte {
+	return bundle(
+		M_CLOSE_CONNECTION,
+		messageId,
+		nil,
+	)
+}
 
+/*
+This message is issued by the Client to the Reader. Upon receiving the message, the Reader starts the ROSpec corresponding to ROSpecID passed in this message, if the ROSpec is in the enabled state.
+*/
+func START_ROSPEC(messageId, ROSpecID int) []byte {
+	return bundle(
+		M_START_ROSPEC,
+		messageId,
+		[]interface{}{
+			uint32(preventZero(ROSpecID)),
+		},
+	)
+}
+func preventZero(c int) int {
+	if c == 0 {
+		return int(rand.Uint32())
+	}
+	return c
+}
+
+/*
+This message is issued by the Client to the Reader. Upon receiving the message, the Reader stops the execution of the ROSpec corresponding to the ROSpecID passed in this message. STOP_ROSPEC overrides all other priorities and stops the execution. This basically moves the ROSpec’s state to Inactive. This message does not the delete the ROSpec.
+*/
+func STOP_ROSPEC(messageId, ROSpecID int) []byte {
+	return bundle(
+		M_STOP_ROSPEC,
+		messageId,
+		[]interface{}{
+			uint32(preventZero(ROSpecID)),
+		},
+	)
+}
+
+/*
+This message is issued by the Client to the Reader. Upon receiving the message, the Reader moves the ROSpec corresponding to the ROSpecID passed in this message to the disabled state.
+*/
+func DISABLE_ROSPEC(messageId int) []byte {
+	return bundle(
+		M_DISABLE_ROSPEC,
+		messageId,
+		nil,
+	)
+}
+
+/*
+This message can be issued by the Client to the Reader after a LLRP connection is established. The Client uses this message to inform the Reader that it can remove its hold on event and report messages. Readers that are configured to hold events and reports on reconnection (See Section 13.2.6.4) respond to this message by returning the tag reports accumulated (same way they respond to GET_REPORT (See Section 13.1.1)).
 */
 func ENABLE_EVENTS_AND_REPORTS(messageId int) []byte {
 	return bundle(

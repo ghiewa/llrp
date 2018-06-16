@@ -152,6 +152,22 @@ type ADD_ROSPEC_RESPONSE struct {
 	MsgId  uint32
 	Status *LLRPStatus
 }
+type DISABLE_ROSPEC_RESPONSE struct {
+	MsgId  uint32
+	Status *LLRPStatus
+}
+type START_ROSPEC_RESPONSE struct {
+	MsgId  uint32
+	Status *LLRPStatus
+}
+type STOP_ROSPEC_RESPONSE struct {
+	MsgId  uint32
+	Status *LLRPStatus
+}
+type CLOSE_CONNECTION_RESPONSE struct {
+	MsgId  uint32
+	Status *LLRPStatus
+}
 type GetConfigResponse struct {
 	MsgId  uint32
 	Status *LLRPStatus

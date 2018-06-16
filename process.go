@@ -54,6 +54,10 @@ func (nc *RConn) process(b []byte, len_data int) error {
 		add_ro_resp       *ADD_ROSPEC_RESPONSE
 		custom_resp       *CUSTOM_MESSAGE_RESPONSE
 		en_ro_resp        *ENABLE_ROSPEC_RESPONSE
+		disable_ro_resp   *DISABLE_ROSPEC_RESPONSE
+		start_rospec_resp *START_ROSPEC_RESPONSE
+		stop_rospec_resp  *STOP_ROSPEC_RESPONSE
+		close_conn_resp   *CLOSE_CONNECTION_RESPONSE
 		err_resp          *ERROR_MESSAGE
 		keep_alive_resp   *KeepaliveResponse
 		dam_res           *MsgLoss
@@ -82,13 +86,10 @@ func (nc *RConn) process(b []byte, len_data int) error {
 			evt_resp = new(EventNotificationResponse)
 			evt_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])
 			reports = append(reports, evt_resp)
-			log.Debugf("event in ")
-			//fmt.Printf("\nevt")
 		case M_GET_READER_CONFIG_RESPONSE:
 			get_resp = new(GetConfigResponse)
 			get_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])
 			reports = append(reports, get_resp)
-			//fmt.Printf("\nget")
 		case M_SET_READER_CONFIG_RESPONSE:
 			set_resp = new(SetConfigResponse)
 			set_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])
@@ -97,6 +98,10 @@ func (nc *RConn) process(b []byte, len_data int) error {
 			del_ro_spec_resp = new(DELETE_ROSPEC_RESPONSE)
 			del_ro_spec_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])
 			reports = append(reports, del_ro_spec_resp)
+		case M_CLOSE_CONNECTION_RESPONSE:
+			close_conn_resp = new(CLOSE_CONNECTION_RESPONSE)
+			close_conn_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])
+			reports = append(reports, close_conn_resp)
 		case M_DELETE_ACCESSSPEC_RESPONSE:
 			del_acc_spec_resp = new(DELETE_ACCESSSPEC_RESPONSE)
 			del_acc_spec_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])
@@ -106,6 +111,7 @@ func (nc *RConn) process(b []byte, len_data int) error {
 			add_ro_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])
 			reports = append(reports, add_ro_resp)
 		case M_CUSTOM_MESSAGE:
+			log.Warnf("M_CUSTOM_MESSAGE")
 			custom_resp = new(CUSTOM_MESSAGE_RESPONSE)
 			custom_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])
 			reports = append(reports, custom_resp)
@@ -116,6 +122,18 @@ func (nc *RConn) process(b []byte, len_data int) error {
 			walk -= 3
 			len_p -= 5
 			len_data -= 5
+		case M_DISABLE_ROSPEC_RESPONSE:
+			disable_ro_resp = new(DISABLE_ROSPEC_RESPONSE)
+			disable_ro_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])
+			reports = append(reports, disable_ro_resp)
+		case M_START_ROSPEC_RESPONSE:
+			start_rospec_resp = new(START_ROSPEC_RESPONSE)
+			start_rospec_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])
+			reports = append(reports, start_rospec_resp)
+		case M_STOP_ROSPEC_RESPONSE:
+			stop_rospec_resp = new(STOP_ROSPEC_RESPONSE)
+			stop_rospec_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])
+			reports = append(reports, stop_rospec_resp)
 		case M_ENABLE_ROSPEC_RESPONSE:
 			en_ro_resp = new(ENABLE_ROSPEC_RESPONSE)
 			en_ro_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])
@@ -184,6 +202,14 @@ func (nc *RConn) process(b []byte, len_data int) error {
 					custom_resp.Status = status
 				case en_ro_resp != nil:
 					en_ro_resp.Status = status
+				case disable_ro_resp != nil:
+					disable_ro_resp.Status = status
+				case start_rospec_resp != nil:
+					start_rospec_resp.Status = status
+				case stop_rospec_resp != nil:
+					stop_rospec_resp.Status = status
+				case close_conn_resp != nil:
+					close_conn_resp.Status = status
 				case err_resp != nil:
 					err_resp.Status = status
 				default:
