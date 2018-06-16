@@ -82,7 +82,7 @@ func (nc *RConn) process(b []byte, len_data int) error {
 			evt_resp = new(EventNotificationResponse)
 			evt_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])
 			reports = append(reports, evt_resp)
-			log.Infof("event in ")
+			log.Debugf("event in ")
 			//fmt.Printf("\nevt")
 		case M_GET_READER_CONFIG_RESPONSE:
 			get_resp = new(GetConfigResponse)

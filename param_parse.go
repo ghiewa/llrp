@@ -16,6 +16,7 @@ func parseEvtNotificationData(b []byte, walk int) (*EvtData, int) {
 		len_p = int(binary.BigEndian.Uint16(b[walk:walk+2])) - 4
 	)
 	walk += 2
+	log.Debugf("process event", len_p)
 	for len_p > 0 {
 		code := int(binary.BigEndian.Uint16(b[walk : walk+2]))
 		walk += 2
@@ -33,7 +34,9 @@ func parseEvtNotificationData(b []byte, walk int) (*EvtData, int) {
 			evt.TimestampUTC = binary.BigEndian.Uint64(b[walk : walk+8])
 			//fmt.Printf("\nget time %d", evt.TimestampUTC)
 			walk += 8
+			log.Debugf("time stamp event")
 		default:
+			log.Debugf("not implement event")
 			// ReaderEventNotificationData Parameters
 			// will skip
 			walk += (len_ - 4)
