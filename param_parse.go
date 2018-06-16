@@ -31,9 +31,9 @@ func parseEvtNotificationData(b []byte, walk int) (*EvtData, int) {
 			evt.GpiEvt = append(evt.GpiEvt, gpi)
 			log.Debugf("GPI event")
 		case P_UTCTimeStamp:
-			evt.TimestampUTC = binary.BigEndian.Uint64(b[walk : walk+4])
+			evt.TimestampUTC = binary.BigEndian.Uint64(b[walk : walk+8])
 			//fmt.Printf("\nget time %d", evt.TimestampUTC)
-			walk += 4
+			walk += 8
 			log.Debugf("time stamp event %d", evt.TimestampUTC)
 		default:
 			log.Debugf("not implement event %d", code)
