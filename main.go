@@ -154,10 +154,22 @@ func main() {
 				DelAccOption(),
 				ExtensionOption(),
 				SetRegion(),
+				ENABLE_EVENTS_AND_REPORTS(4444),
 				SET_READER_CONFIG(
 					123, // message id
 					false,
-					ReaderEventNotificationSpec(),
+					ReaderEventNotificationSpec(
+						true, // Upon hopping to next channel (e.g., in FCC regulatory region)
+						true, // GPI event
+						true, // ROSpec event (start/end/preempt)
+						true, // Report buffer fill warning
+						true, // RFSurvey event (start/end)
+						true, // AISpec event (end)
+						true, // AISpec event (end) with singulation details
+						true, // Antenna event (disconnect/connect)
+						true, // SpecLoop event
+
+					),
 				),
 				SET_READER_CONFIG(
 					444, // message id
@@ -183,7 +195,6 @@ func main() {
 					GetRoReportSpec(),
 				),
 				ENABLE_ROSPEC(3333, 1234),
-				ENABLE_EVENTS_AND_REPORTS(4444),
 			},
 		},
 	}
