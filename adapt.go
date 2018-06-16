@@ -31,6 +31,31 @@ func (nc *Conn) Unlock() {
 func (nc *Conn) ListReader() map[string]*SPReaderInfo {
 	return nc.readers
 }
+func (nc *Conn) StopROSpec(messageId, ROSpecID int, reader_id string) error {
+	if re, ok := nc.readers[reader_id]; ok {
+		return re.conn.publish(
+			STOP_ROSPEC(
+				messageId,
+				ROSpecID,
+			),
+		)
+	}
+	return fmt.Errorf("Cann't find reader id")
+
+}
+
+func (nc *Conn) StartROSpec(messageId, ROSpecID int, reader_id string) error {
+	if re, ok := nc.readers[reader_id]; ok {
+		return re.conn.publish(
+			START_ROSPEC(
+				messageId,
+				ROSpecID,
+			),
+		)
+	}
+	return fmt.Errorf("Cann't find reader id")
+
+}
 
 func (nc *Conn) Enable_ROSpec(messageId, ROSpecID int, reader_id string) error {
 
