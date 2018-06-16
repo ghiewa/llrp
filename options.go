@@ -94,10 +94,33 @@ func SetEventSpecOption(params ...bool) []byte {
 		),
 	)
 }
-func AddROSpecCustom(messageId int, spec ...[]interface{}) []byte {
+
+const (
+	C_ROSpec_CurrentState_Disabled = iota
+	C_ROSpec_CurrentState_Inactive
+	C_ROSpec_CurrentState_Active
+)
+
+/*
+This parameter carries the information of the Reader inventory and survey operation.
+ROSpecID: Unsigned Integer; 0 is an illegal ROSpecID for a ROSpec.
+Priority: Integer. Lower numbered priority values are given higher priority.
+Possible Values: 0-7.
+CurrentState: Integer
+----------
+ROBoundarySpec: ROBoundarySpec Parameter
+ListOfSpecs: List of LLRP Parameters
+Possible Values:
+Each parameter can be either an <AISpec Parameter>, a <RFSurveySpec Parameter>, a <LoopSpec Parameter>, or a Custom Parameter.
+ROReportSpec: ROReportSpec Parameter
+*/
+func AddROSpecCustom(messageId, ROSpecID, Priority, CurrentState int, spec ...[]interface{}) []byte {
 	b := ADD_ROSPEC(
 		messageId,
-		ROSpec(1234, 0, 0,
+		ROSpec(
+			ROSpecID,
+			Priority,
+			CurrentState,
 			spec...,
 		),
 	)

@@ -153,7 +153,8 @@ func main() {
 			7: true, // Antenna event (disconnect/connect)
 			8: true, // SpecLoop event
 		}
-		evt_set [][]interface{}
+		evt_set  [][]interface{}
+		ROSpecID = 1234
 	)
 	for v, k := range evt_notify {
 		evt_set = append(
@@ -185,13 +186,16 @@ func main() {
 				),
 				//AddROSpecOptionDefault(),
 				AddROSpecCustom(
-					14442, // message ID
+					14442,    // message ID
+					ROSpecID, // ROSpecID - 0 is an illegal
+					0,        // Priority 0 - 7
+					C_ROSpec_CurrentState_Active, // CurrentState
 					// set trigger option - gpi
 					ROBoundarySpec(
 						//GPITriggerValue option = 3
 						ROSpecStartTrigger(
 							3,
-							GPITriggerValue(port_trigger, true, timeout),
+							GPITriggerValue(port_trigger, true, 0),
 						),
 						ROSpecStopTrigger(
 							0, // stop by duration trigger
@@ -201,7 +205,7 @@ func main() {
 					GetDefaultAISpec(),
 					GetRoReportSpec(),
 				),
-				ENABLE_ROSPEC(3333, 1234),
+				ENABLE_ROSPEC(3333, ROSpecID),
 				ENABLE_EVENTS_AND_REPORTS(4444),
 			},
 		},
@@ -337,5 +341,4 @@ func main() {
 		}
 	}
 	// close connection
-
 }
