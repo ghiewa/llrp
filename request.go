@@ -85,11 +85,13 @@ func STOP_ROSPEC(messageId, ROSpecID int) []byte {
 /*
 This message is issued by the Client to the Reader. Upon receiving the message, the Reader moves the ROSpec corresponding to the ROSpecID passed in this message to the disabled state.
 */
-func DISABLE_ROSPEC(messageId int) []byte {
+func DISABLE_ROSPEC(messageId, ROSpecID int) []byte {
 	return bundle(
 		M_DISABLE_ROSPEC,
 		messageId,
-		nil,
+		[]interface{}{
+			uint32(ROSpecID),
+		},
 	)
 }
 

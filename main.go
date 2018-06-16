@@ -225,7 +225,6 @@ func main() {
 					GetDefaultAISpec(),
 					GetRoReportSpec(),
 				),
-				START_ROSPEC(1414, ROSpecID),
 				ENABLE_ROSPEC(3333, ROSpecID),
 				ENABLE_EVENTS_AND_REPORTS(4444),
 			},
@@ -242,7 +241,7 @@ func main() {
 	var err error
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
-		log.Infof("\n***\tPlease enter command\nlist - list of readers\nd - disable card event log\ne - enable card event log \nio - control gpo/get gpi state\nam - long run to test card logs")
+		log.Infof("\n***\tPlease enter command\nlist - list of readers\nro - command to enable/disabled roreport eg. \nd - disable card event log\ne - enable card event log \nio - control gpo/get gpi state\nam - long run to test card logs")
 		scanner.Scan()
 		text := scanner.Text()
 		if text == "q" {
@@ -262,6 +261,23 @@ func main() {
 		case "e":
 			// enable card logs
 			card_evt = true
+		case "ro":
+			log.Infof("command please enter reader id number(00 - 10)")
+			scanner.Scan()
+			id := scanner.Text()
+			log.Infof("reader [%s] selected", id)
+			reader_id := "random_reader_id_" + id
+			log.Infof("Please set command [(e)nabled | (d)isabled  ROReport")
+			scanner.Scan()
+			cmd := scanner.Text()
+			switch cmd {
+			case "e":
+				err = host.Enable_ROSpec(messageId, ROSpecID)
+			case "d":
+				err = host.Disabled_ROSpec(messageId, ROSpecID)
+			default:
+				log.Warnf("Not found command")
+			}
 		case "io":
 			log.Infof("sample command please enter reader id number(00 - 10)")
 			scanner.Scan()

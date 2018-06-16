@@ -32,6 +32,31 @@ func (nc *Conn) ListReader() map[string]*SPReaderInfo {
 	return nc.readers
 }
 
+func (nc *Conn) Enable_ROSpec(messageId, ROSpecID int, reader_id string) error {
+
+	if re, ok := nc.readers[reader_id]; ok {
+		return re.conn.publish(
+			ENABLE_ROSPEC(
+				messageId,
+				ROSpecID,
+			),
+		)
+	}
+	return fmt.Errorf("Cann't find reader id")
+}
+
+func (nc *Conn) Disabled_ROSpec(messageId, ROSpecID int, reader_id string) error {
+	if re, ok := nc.readers[reader_id]; ok {
+		return re.conn.publish(
+			DISABLE_ROSPEC(
+				messageId,
+				ROSpecID,
+			),
+		)
+	}
+	return fmt.Errorf("Cann't find reader id")
+}
+
 // set gpo via reader_id by order params 1-4
 func (nc *Conn) GPOset(messageId int, reader_id string, params ...bool) error {
 	if re, ok := nc.readers[reader_id]; ok {
