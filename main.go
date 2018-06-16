@@ -4,6 +4,7 @@ import (
 	. "./llrp"
 	"bufio"
 	log "github.com/sirupsen/logrus"
+	"math/rand"
 	"os"
 	"reflect"
 	"strconv"
@@ -28,7 +29,7 @@ func handler(msg *Msg) {
 		case *KeepaliveResponse:
 			// ack form keepalive interval
 			//log.Infof("Keepalive ACk")
-			messageId := 1234
+			messageId := int(rand.Uint32())
 			// must send ack to reader for keepalive
 			err := msg.From.Ack(messageId)
 			if err != nil {
@@ -49,9 +50,30 @@ func handler(msg *Msg) {
 			if kk.Data != nil && kk.Data.GpiEvt != nil {
 				log.Infof("[EVT] %+v", kk.Data.GpiEvt)
 			}
+		case DISABLE_ROSPEC_RESPONSE:
+			kk := k.(*DISABLE_ROSPEC_RESPONSE)
+			if kk.Status != nil {
+				log.Infof("[DISABLE_ROSPEC_RESPONSE][%d] success=%v", kk.MsgId, kk.Status.Success)
+			}
+		case *START_ROSPEC_RESPONSE:
+			kk := k.(*START_ROSPEC_RESPONSE)
+			if kk.Status != nil {
+				log.Infof("[START_ROSPEC_RESPONSE][%d] success=%v", kk.MsgId, kk.Status.Success)
+			}
+		case *STOP_ROSPEC_RESPONSE:
+			kk := k.(*STOP_ROSPEC_RESPONSE)
+			if kk.Status != nil {
+				log.Infof("[STOP_ROSPEC_RESPONSE][%d] success=%v", kk.MsgId, kk.Status.Success)
+			}
+		case *CLOSE_CONNECTION_RESPONSE:
+			kk := k.(*CLOSE_CONNECTION_RESPONSE)
+			if kk.Status != nil {
+				log.Infof("[CLOSE_CONNECTION_RESPONSE][%d] success=%v", kk.MsgId, kk.Status.Success)
+			}
+		case *CUSTOM_MESSAGE_RESPONSE:
+			log.Debugf("CUSTOM_MESSAGE_RESPONSE")
 		case *ROAccessReportResponse:
 			if card_evt || am {
-				//log.Warnf("--- Form %s", msg.From.Id)
 				kk := k.(*ROAccessReportResponse)
 				if kk.Data != nil {
 					log.Infof("[RO][%s][%s][%s]", kk.Data.EPC_96, ip, msg.From.Id)

@@ -111,7 +111,6 @@ func (nc *RConn) process(b []byte, len_data int) error {
 			add_ro_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])
 			reports = append(reports, add_ro_resp)
 		case M_CUSTOM_MESSAGE:
-			log.Warnf("M_CUSTOM_MESSAGE")
 			custom_resp = new(CUSTOM_MESSAGE_RESPONSE)
 			custom_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])
 			reports = append(reports, custom_resp)
@@ -122,6 +121,7 @@ func (nc *RConn) process(b []byte, len_data int) error {
 			walk -= 3
 			len_p -= 5
 			len_data -= 5
+			reports = append(reports, custom_resp)
 		case M_DISABLE_ROSPEC_RESPONSE:
 			disable_ro_resp = new(DISABLE_ROSPEC_RESPONSE)
 			disable_ro_resp.MsgId = binary.BigEndian.Uint32(b[walk : walk+4])
