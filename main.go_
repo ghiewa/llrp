@@ -172,6 +172,7 @@ func main() {
 				DelAccOption(),
 				ExtensionOption(),
 				SetRegion(),
+				ENABLE_EVENTS_AND_REPORTS(4444),
 				SET_READER_CONFIG(
 					123, // message id
 					false,
@@ -193,15 +194,14 @@ func main() {
 							GPITriggerValue(port_trigger, true, timeout),
 						),
 						ROSpecStopTrigger(
-							0, // stop by duration trigger
-							0,
+							1, // stop by duration trigger
+							timeout,
 						),
 					),
 					GetDefaultAISpec(),
 					GetRoReportSpec(),
 				),
 				ENABLE_ROSPEC(3333, 1234),
-				ENABLE_EVENTS_AND_REPORTS(4444),
 			},
 		},
 	}
