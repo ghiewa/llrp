@@ -162,7 +162,6 @@ func main() {
 		)
 	}
 	log.SetLevel(log.DebugLevel)
-
 	readers := []*SPReaderInfo{
 		&SPReaderInfo{
 			Id:   "random_reader_id_00",
@@ -243,10 +242,13 @@ func main() {
 			id := scanner.Text()
 			log.Infof("reader [%s] selected", id)
 			reader_id := "random_reader_id_" + id
-			log.Infof("Please set command [gp(o) | gp(i)]")
+			log.Infof("Please set command [gp(o) | gp(i) | get (r)eport")
 			scanner.Scan()
 			cmd := scanner.Text()
 			switch cmd {
+			case "g":
+				log.Infof("[GetReport] %s", reader_id)
+				err = host.GetRoReport(14122, reader_id)
 			case "i":
 				log.Infof("[GPI] set[s]/get[g] gpi port on reader [%s]", reader_id)
 				scanner.Scan()

@@ -8,9 +8,23 @@ const (
 	V_1011_Air_Protocol_LLRP_Capabilities
 )
 
+/*
+This message is issued by the Reader to the Client. This message can be used by the Client to monitor the LLRP-layer connectivity with the Reader. The Client configures the trigger at the Reader to send the Keepalive message. The configuration is done using the KeepaliveSpec parameter
+*/
 func SEND_KEEPALIVE(messageId int) []byte {
 	return bundle(
 		M_KEEPALIVE_ACK,
+		messageId,
+		nil,
+	)
+}
+
+/*
+This message is issued by the Client to the Reader to get the tag reports. In response to this message, the Reader SHALL return tag reports accumulated. If no reports are available to send as a response to a GET_REPORT message, the Reader MAY return an empty RO_ACCESS_REPORT message.
+*/
+func GET_REPORT(messageId int) []byte {
+	return bundle(
+		M_GET_REPORT,
 		messageId,
 		nil,
 	)

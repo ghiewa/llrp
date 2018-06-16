@@ -53,6 +53,15 @@ func (nc *Conn) GPOset(messageId int, reader_id string, params ...bool) error {
 	return fmt.Errorf("Cann't find reader id")
 }
 
+func (nc *Conn) GetRoReport(messageId int, reader_id string) error {
+	if re, ok := nc.readers[reader_id]; ok {
+		return re.conn.publish(
+			GET_REPORT(messageId),
+		)
+	}
+	return fmt.Errorf("Cann't find reader id")
+}
+
 func (nc *Conn) GPIset(messageId int, reader_id string, port int, port_state bool) error {
 	if re, ok := nc.readers[reader_id]; ok {
 		port_s := 0
