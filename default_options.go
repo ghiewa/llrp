@@ -7,7 +7,7 @@ func GetDefaultAISpec() []interface{} {
 		AISpecStopTrigger(0, 0),
 		InventoryParameterSpec(1234, 1,
 			AntennaConfiguration(1,
-				RFTransmitter(1, 0, 81),
+				RFTransmitter(1, 0, 0x0a),
 				C1G2InventoryCommand(
 					false,
 					C1G2RFControl(1000, 0),
@@ -18,7 +18,7 @@ func GetDefaultAISpec() []interface{} {
 				),
 			),
 			AntennaConfiguration(2,
-				RFTransmitter(1, 0, 81),
+				RFTransmitter(1, 0, 0x0a),
 				C1G2InventoryCommand(
 					false,
 					C1G2RFControl(1000, 0),

@@ -223,7 +223,6 @@ func main() {
 							timeout,
 						),
 					),
-					LoopSpec(1000),
 					GetDefaultAISpec(),
 					GetRoReportSpec(),
 				),
