@@ -174,7 +174,7 @@ func main() {
 			5: false, // AISpec event (end)
 			6: false, // AISpec event (end) with singulation details
 			7: false, // Antenna event (disconnect/connect)
-			8: false, // SpecLoop event
+			8: true,  // SpecLoop event
 		}
 		evt_set  [][]interface{}
 		ROSpecID = 1234
@@ -185,7 +185,7 @@ func main() {
 			EventNotificationStateParam(v, k),
 		)
 	}
-	port_trigger = 2
+	port_trigger = 3
 
 	reader_id_test := "random_reader_id_00"
 	log.Debugf("PortTrigger %d  Timeout %d", port_trigger, timeout)
@@ -224,6 +224,7 @@ func main() {
 							timeout,
 						),
 					),
+					LoopSpec(1000),
 					GetDefaultAISpec(),
 					GetRoReportSpec(),
 				),
@@ -233,7 +234,6 @@ func main() {
 			},
 		},
 	}
-
 	for _, reader := range readers {
 		// doReconnected when loss signal
 		err := host.Registry(reader)
@@ -262,7 +262,6 @@ func main() {
 		}
 		err = nil
 		valid = true
-
 		switch text {
 		// test toggle port
 		case "t":
