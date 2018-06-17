@@ -16,7 +16,7 @@ import (
 var (
 	card_evt   bool = true
 	count           = 0
-	limit_card      = 100
+	limit_card      = 100000
 	toggle          = true
 	host       *Conn
 	am         bool
@@ -155,6 +155,7 @@ func main() {
 	opt.ReconnectWait = time.Minute * 2
 	opt.KeepaliveInterval = time.Second * 15
 	host = opt.NewConn()
+	// close connection
 	defer host.Close()
 	log.SetOutput(os.Stdout)
 	//log.SetLevel(log.DebugLevel)
@@ -184,7 +185,7 @@ func main() {
 	}
 	port_trigger = 2
 	log.Debugf("PortTrigger %d  Timeout %d", port_trigger, timeout)
-	log.SetLevel(log.DebugLevel)
+	//log.SetLevel(log.DebugLevel)
 	readers := []*SPReaderInfo{
 		&SPReaderInfo{
 			Id:   "random_reader_id_00",
@@ -398,5 +399,4 @@ func main() {
 			}
 		}
 	}
-	// close connection
 }
