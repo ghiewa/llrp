@@ -182,6 +182,7 @@ func main() {
 			EventNotificationStateParam(v, k),
 		)
 	}
+	port_trigger = 2
 	log.Debugf("PortTrigger %d  Timeout %d", port_trigger, timeout)
 	log.SetLevel(log.DebugLevel)
 	readers := []*SPReaderInfo{
@@ -195,20 +196,20 @@ func main() {
 				ExtensionOption(),
 				SetRegion(),
 				SET_READER_CONFIG(
-					123, // message id
+					rand.Int(), // message id
 					false,
 					ReaderEventNotificationSpec(evt_set...),
 				),
 				SET_READER_CONFIG(
-					444, // message id
+					rand.Int(), // message id
 					false,
 					KeepaliveSpec(15000), // 15 second
 				),
 				//AddROSpecOptionDefault(),
 				AddROSpecCustom(
-					14442,    // message ID
-					ROSpecID, // ROSpecID - 0 is an illegal
-					0,        // Priority 0 - 7
+					rand.Int(), // message ID
+					ROSpecID,   // ROSpecID - 0 is an illegal
+					0,          // Priority 0 - 7
 					C_ROSpec_CurrentState_Disabled, // CurrentState
 					// set trigger option - gpi
 					ROBoundarySpec(
@@ -225,9 +226,9 @@ func main() {
 					GetDefaultAISpec(),
 					GetRoReportSpec(),
 				),
-				ENABLE_ROSPEC(3333, ROSpecID),
-				START_ROSPEC(12341, ROSpecID),
-				ENABLE_EVENTS_AND_REPORTS(4444),
+				ENABLE_ROSPEC(rand.Int(), ROSpecID),
+				START_ROSPEC(rand.Int(), ROSpecID),
+				ENABLE_EVENTS_AND_REPORTS(rand.Int()),
 			},
 		},
 	}
