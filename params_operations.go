@@ -140,7 +140,9 @@ func RFSurveySpecStopTrigger(StopTriggerType, Duration, N int) []interface{} {
 func LoopSpec(LoopCount int) []interface{} {
 	return commonSpec(
 		P_LoopSpec,
-		nil,
+		[]interface{}{
+			uint32(LoopCount),
+		},
 	)
 }
 
