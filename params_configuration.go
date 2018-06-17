@@ -1,5 +1,9 @@
 package llrp
 
+import (
+	"time"
+)
+
 /*
 This parameter, LLRPConfigurationStateValue, is a 32-bit value which represents a
 Reader’s entire LLRP configuration state including: LLRP configuration parameters,
@@ -75,7 +79,7 @@ func GPOWriteDataFunc(GPOPortNumber int, GPOData bool) []interface{} {
 
 // This parameter carries the specification for the keepalive message generation by the Reader. This includes the definition of the periodic trigger to send the keepalive message
 // PeriodicTriggerValue: Integer. Time interval in milliseconds. This field is ignored when KeepaliveTriggerType is not 1.
-func KeepaliveSpec(PeriodicTriggerValue int) []interface{} {
+func KeepaliveSpec(PeriodicTriggerValue time.Duration) []interface{} {
 
 	typeof := uint8(0)
 	if PeriodicTriggerValue > 0 {
@@ -85,7 +89,10 @@ func KeepaliveSpec(PeriodicTriggerValue int) []interface{} {
 		P_KeepaliveSpec,
 		[]interface{}{
 			typeof,
-			uint32(PeriodicTriggerValue),
+			uint32(
+				// convert to millisecond
+				PeriodicTriggerValue / 1000000,
+			),
 		},
 	)
 }
