@@ -234,7 +234,6 @@ func main() {
 		},
 	}
 
-	host.Subscription(handler)
 	for _, reader := range readers {
 		// doReconnected when loss signal
 		err := host.Registry(reader)
@@ -242,6 +241,7 @@ func main() {
 			log.Errorf("registry %v", err)
 		}
 	}
+	host.Subscription(handler)
 	// gpi state change notify
 	host.GPIToggleMonitor(
 		reader_id_test,
