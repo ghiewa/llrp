@@ -1,4 +1,4 @@
-package main
+package llrp
 
 import (
 	. "./llrp"
@@ -171,10 +171,10 @@ func main() {
 			1: true,  // GPI event
 			2: true,  // ROSpec event (start/end/preempt)
 			3: true,  // Report buffer fill warning
-			4: false, // RFSurvey event (start/end)
-			5: false, // AISpec event (end)
-			6: false, // AISpec event (end) with singulation details
-			7: false, // Antenna event (disconnect/connect)
+			4: true,  // RFSurvey event (start/end)
+			5: true,  // AISpec event (end)
+			6: true,  // AISpec event (end) with singulation details
+			7: true,  // Antenna event (disconnect/connect)
 			8: true,  // SpecLoop event
 		}
 		evt_set  [][]interface{}
