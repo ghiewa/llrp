@@ -233,6 +233,8 @@ func main() {
 			},
 		},
 	}
+
+	host.Subscription(handler)
 	for _, reader := range readers {
 		// doReconnected when loss signal
 		err := host.Registry(reader)
@@ -252,7 +254,7 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	state_ := true
 	for {
-		log.Infof("\n***\tPlease enter command\nlist - list of readers\ns - start/stop rospec to notify event\nro - command to enable/disabled roreport eg. \nd - disable card event log\ne - enable card event log \nio - control gpo/get gpi state\nam - long run to test card logs")
+		log.Infof("\n***\tPlease enter command\nlist - list of readers\ns - start/stop rospec to notify event\nro - command to enable/disabled roreport eg. \nd - disable card event log\ne - enable card event log \nio - control gpo/get gpi state\nam - long run to test card logs\nt - toggle gpo all port on 00\ng - get test port on 00")
 		scanner.Scan()
 		text := scanner.Text()
 		if text == "q" {
