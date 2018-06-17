@@ -147,6 +147,9 @@ func handler(msg *Msg) {
 		}
 	}
 }
+func handler_toggle_port(evt *GPITriggerEvent) {
+
+}
 
 func main() {
 	opt := GetDefaultOptions()
@@ -183,11 +186,13 @@ func main() {
 		)
 	}
 	port_trigger = 2
+
+	reader_id_test := "random_reader_id_00"
 	log.Debugf("PortTrigger %d  Timeout %d", port_trigger, timeout)
 	//log.SetLevel(log.DebugLevel)
 	readers := []*SPReaderInfo{
 		&SPReaderInfo{
-			Id:   "random_reader_id_00",
+			Id:   reader_id_test,
 			Host: "192.168.33.20:5084",
 			InitCommand: [][]byte{
 				ResetFactoryOpt(),
@@ -235,9 +240,17 @@ func main() {
 			log.Errorf("registry %v", err)
 		}
 	}
-	host.Subscription(handler)
+	// gpi state change notify
+	host.GPIToggleMonitor(
+		reader_id_test,
+		port_trigger,
+		time.Second*5,       // duration
+		handler_toggle_port, // handler
+	)
+
 	var err error
 	scanner := bufio.NewScanner(os.Stdin)
+	state_ := true
 	for {
 		log.Infof("\n***\tPlease enter command\nlist - list of readers\ns - start/stop rospec to notify event\nro - command to enable/disabled roreport eg. \nd - disable card event log\ne - enable card event log \nio - control gpo/get gpi state\nam - long run to test card logs")
 		scanner.Scan()
@@ -247,7 +260,16 @@ func main() {
 		}
 		err = nil
 		valid = true
+
 		switch text {
+		// test toggle port
+		case "t":
+			state_ = !state_
+			log.Infof("Test toggle all port -> %v", state_)
+			err = host.GPOset(rand.Int(), reader_id_test, state_, state_, state_, state_)
+		case "g":
+			log.Infof("Get all port -> %v", state_)
+			err = host.GPIget(rand.Int(), reader_id_test)
 		case "am":
 			log.Infof("starting non-stop cards log")
 			am = true
@@ -277,7 +299,6 @@ func main() {
 			default:
 				log.Warnf("Notfound command")
 			}
-
 		case "ro":
 			log.Infof("command please enter reader id number(00 - 10)")
 			scanner.Scan()

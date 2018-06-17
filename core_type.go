@@ -81,6 +81,13 @@ const (
 // disconnected and closed connections.
 type ConnHandler func(*RConn)
 
+type HandlerGPIToggle func(*GPITriggerEvent)
+
+type GPITriggerEvent struct {
+	//  map[Port]StatePort
+	PortTrigger map[int]bool
+}
+
 // ErrHandler is used to process asynchronous errors encountered
 // while processing inbound messages.
 type ErrHandler func(*Conn, *Subscription, error)

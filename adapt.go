@@ -2,6 +2,7 @@ package llrp
 
 import (
 	"fmt"
+	"time"
 )
 
 func (o Options) NewConn() *Conn {
@@ -18,6 +19,9 @@ func (o Options) NewConn() *Conn {
 }
 func (nc *Conn) Registry(reader *SPReaderInfo) error {
 	return nc.registry(reader)
+}
+func (nc *Conn) GPIToggleMonitor(reader_id string, port_trigger int, t time.Duration, cb HandlerGPIToggle) {
+
 }
 
 func (nc *Conn) Lock() {
