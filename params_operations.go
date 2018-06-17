@@ -136,7 +136,7 @@ func RFSurveySpecStopTrigger(StopTriggerType, Duration, N int) []interface{} {
 }
 
 // Instructs the Reader to execute the first Spec in the Set of Specs.
-// LoopCount: This value instructs the reader on the number of times to loop through the Set of Specs within the ROSpec.
+// LoopCount: This value instructs the reader on the number of times to loop through the Set of Specs within the ROSpec
 func LoopSpec(LoopCount int) []interface{} {
 	return commonSpec(
 		P_LoopSpec,
