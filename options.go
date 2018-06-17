@@ -9,7 +9,6 @@ func (sp *SPReaderInfo) processCommandOptions() {
 	nc := sp.conn
 	nc.mu.Lock()
 	defer nc.mu.Unlock()
-	KeepaliveSpec
 }
 
 func ResetFactoryOpt() []byte {

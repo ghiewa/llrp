@@ -199,11 +199,7 @@ func main() {
 					rand.Int(), // message id
 					false,
 					ReaderEventNotificationSpec(evt_set...),
-				),
-				SET_READER_CONFIG(
-					rand.Int(), // message id
-					false,
-					KeepaliveSpec(time.Second*60/1000000), // millisecond - 1 min
+					KeepaliveSpec(time.Minute+time.Second*30), // 1min30sec
 				),
 				//AddROSpecOptionDefault(),
 				AddROSpecCustom(
