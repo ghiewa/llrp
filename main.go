@@ -153,7 +153,6 @@ func main() {
 	opt.Timeout = time.Minute * 2
 	opt.MaxReconnect = 10000
 	opt.ReconnectWait = time.Minute * 2
-	opt.KeepaliveInterval = time.Second * 15
 	host = opt.NewConn()
 	// close connection
 	defer host.Close()
@@ -204,7 +203,7 @@ func main() {
 				SET_READER_CONFIG(
 					rand.Int(), // message id
 					false,
-					KeepaliveSpec(15000), // 15 second
+					KeepaliveSpec(time.Second*60/1000000), // millisecond - 1 min
 				),
 				//AddROSpecOptionDefault(),
 				AddROSpecCustom(
