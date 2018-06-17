@@ -47,6 +47,7 @@ func handler(msg *Msg) {
 			}
 		case *EventNotificationResponse:
 			kk := k.(*EventNotificationResponse)
+			log.Infof("EventNotificationResponse")
 			if kk.Data != nil && kk.Data.GpiEvt != nil {
 				log.Infof("[EVT] %+v", kk.Data.GpiEvt)
 			}
