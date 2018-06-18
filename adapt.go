@@ -34,6 +34,7 @@ func (nc *Conn) GPIToggleMonitor(reader_id string, port_trigger int, t time.Dura
 
 		nc.subscribe(
 			func(msg *Msg) {
+				log.Debugf("message in")
 				if msg.From.Id != reader_id && cb == nil {
 					return
 				}
@@ -65,6 +66,7 @@ func (nc *Conn) GPIToggleMonitor(reader_id string, port_trigger int, t time.Dura
 			for {
 				select {
 				case <-time.After(t):
+					log.Debugf("time to check gpi")
 					if re.conn.isClosed() {
 						return
 					}

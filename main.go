@@ -189,7 +189,7 @@ func main() {
 	port_trigger = 3
 	reader_id_test := "random_reader_id_00"
 	log.Debugf("PortTrigger %d  Timeout %d", port_trigger, timeout)
-	//log.SetLevel(log.DebugLevel)
+	log.SetLevel(log.DebugLevel)
 	readers := []*SPReaderInfo{
 		&SPReaderInfo{
 			Id:   reader_id_test,
