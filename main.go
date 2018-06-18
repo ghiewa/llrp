@@ -26,6 +26,17 @@ func handler(msg *Msg) {
 	for _, k := range msg.Reports {
 		ip := msg.From.Ip
 		switch k.(type) {
+		case *GetConfigResponse:
+			kk := k.(*GetConfigResponse)
+			log.Infof("[GET][%d] : %+v", kk.MsgId, kk.Status)
+			if kk.GPI != nil {
+				log.Infof("\ngpi=")
+				for _, kkk := range kk.GPI {
+					log.Infof("[%d=%d],", kkk.Number, kkk.State)
+					host.GPICheck(msg.From.Id, kk.GPI)
+				}
+
+			}
 		case *KeepaliveResponse:
 			// ack form keepalive interval
 			//log.Infof("Keepalive ACk")
@@ -109,15 +120,6 @@ func handler(msg *Msg) {
 			if kk.Status != nil {
 				log.Infof("[ADD_ROSPEC] success = %v ", kk.Status.Success)
 			}
-		case *GetConfigResponse:
-			kk := k.(*GetConfigResponse)
-			log.Infof("[GET][%d] : %+v", kk.MsgId, kk.Status)
-			if kk.GPI != nil {
-				log.Infof("\ngpi=")
-				for _, kkk := range kk.GPI {
-					log.Infof("[%d=%d],", kkk.Number, kkk.State)
-				}
-			}
 		case *SetConfigResponse:
 			kk := k.(*SetConfigResponse)
 			log.Infof("[SET][%d] success=%v", kk.MsgId, kk.Status.Success)
@@ -148,8 +150,8 @@ func handler(msg *Msg) {
 		}
 	}
 }
-func handler_toggle_port(evt *GPITriggerEvent) {
-	log.Infof("--- Toggle Port %s:%v", evt.ReaderId, evt.PortTrigger)
+func handler_toggle_port(evt *IOState) {
+	log.Infof("-- toggle %+v", evt)
 }
 
 func main() {

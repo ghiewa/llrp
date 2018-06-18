@@ -22,46 +22,49 @@ func (o Options) NewConn() *Conn {
 func (nc *Conn) Registry(reader *SPReaderInfo) error {
 	return nc.registry(reader)
 }
+func (nc *Conn) GPICheck(reader_id string, gpis []*GPICurrentState) error {
+	if re, ok := nc.readers[reader_id]; ok {
+		state := re.state.gpi
+		for _, v := range gpis {
+			if pre_state, ok := state.Ports[v.Number]; ok {
+				if !state.init || v.State != pre_state {
+					pa := new(IOState)
+					pa.ReaderId = reader_id
+					pa.Ports = map[uint16]int{
+						v.Number: v.State,
+					}
+					state.init = true
+					state.Ports[v.Number] = v.State
+					// fire to toggle handler
+					if state.cb != nil {
+						state.cb(pa)
+					}
+				}
+			}
+		}
+		return nil
+	}
+	return fmt.Errorf("Cann't find reader id")
+}
 
-func (nc *Conn) GPIToggleMonitor(reader_id string, port_trigger int, t time.Duration, cb HandlerGPIToggle) error {
+func (nc *Conn) GPIToggleMonitor(reader_id string, port_trigger int, t time.Duration, cb HandlerIOState) error {
 	if re, ok := nc.readers[reader_id]; ok {
 		// filter toggle gpi
 		var (
-			first       = false
-			pre_state   = 0
 			PortTrigger = uint16(port_trigger)
 		)
-
-		nc.subscribe(
-			func(msg *Msg) {
-				log.Debugf("message in")
-				if msg.From.Id != reader_id && cb == nil {
-					return
-				}
-				for _, k := range msg.Reports {
-					switch k.(type) {
-					case *GetConfigResponse:
-						kk := k.(*GetConfigResponse)
-						if kk.GPI != nil {
-							// logic gpi
-							for _, v := range kk.GPI {
-								if v.Number == PortTrigger {
-									if first || v.State != pre_state {
-										pa := new(GPITriggerEvent)
-										pa.ReaderId = reader_id
-										pa.PortTrigger = map[int]int{
-											port_trigger: v.State,
-										}
-										cb(pa)
-										pre_state = v.State
-									}
-								}
-							}
-						}
-					}
-				}
-			}, nil,
-		)
+		re.conn.mu.Lock()
+		if re.state == nil {
+			re.state = new(GState)
+		}
+		if re.state.gpi == nil {
+			re.state.gpi = new(IOState)
+		}
+		re.state.gpi.Ports = map[uint16]int{
+			PortTrigger: 0,
+		}
+		re.state.gpi.cb = cb
+		re.conn.mu.Unlock()
 		go func() {
 			for {
 				select {

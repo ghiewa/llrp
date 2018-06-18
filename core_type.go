@@ -81,13 +81,7 @@ const (
 // disconnected and closed connections.
 type ConnHandler func(*RConn)
 
-type HandlerGPIToggle func(*GPITriggerEvent)
-
-type GPITriggerEvent struct {
-	ReaderId string
-	//  map[Port]StatePort
-	PortTrigger map[int]int
-}
+type HandlerIOState func(*IOState)
 
 // ErrHandler is used to process asynchronous errors encountered
 // while processing inbound messages.
@@ -215,11 +209,23 @@ type SPReaderInfo struct {
 	Id          string `json:"reader_id"`
 	Host        string `json:"host"`
 	conn        *RConn
+	state       *GState
 	DidConnect  bool
 	Reconnects  int
 	LastAttempt time.Time
 	isImplicit  bool
 	InitCommand [][]byte
+}
+
+type GState struct {
+	gpi *IOState
+	gpo *IOState
+}
+type IOState struct {
+	ReaderId string
+	Ports    map[uint16]int
+	init     bool
+	cb       HandlerIOState
 }
 
 // A Conn represents a bare connection to a reader.
