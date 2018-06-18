@@ -131,31 +131,30 @@ func GET_READER_CAPABILITIES_V1011(messageId, v_1011 int) []byte {
 }
 
 const (
-	V_1311_All = iota
-	V_1311_Identification
-	V_1311_AntennaProperties
-	V_1311_AntennaConfiguration
-	V_1311_ROReportSpec
-	V_1311_ReaderEventNotificationSpec
-	V_1311_AccessReportSpec
-	V_1311_LLRPConfigurationStateValue
-	V_1311_KeepaliveSpec
-	V_1311_GPIPortCurrentState
-	V_1311_GPOWriteData
-	V_1311_EventsAndReports
+	C_GET_READER_CONFIG_All = iota
+	C_GET_READER_CONFIG_Identification
+	C_GET_READER_CONFIG_AntennaProperties
+	C_GET_READER_CONFIG_AntennaConfiguration
+	C_GET_READER_CONFIG_ROReportSpec
+	C_GET_READER_CONFIG_ReaderEventNotificationSpec
+	C_GET_READER_CONFIG_AccessReportSpec
+	C_GET_READER_CONFIG_LLRPConfigurationStateValue
+	C_GET_READER_CONFIG_KeepaliveSpec
+	C_GET_READER_CONFIG_GPIPortCurrentState
+	C_GET_READER_CONFIG_GPOWriteData
+	C_GET_READER_CONFIG_EventsAndReports
 )
 
-func GET_READER_CONFIG_V1311(messageId, AntennaID, v_1311, GPIPortNum, GPOPortNum int) []byte {
-	config := []interface{}{
-		uint16(AntennaID),
-		uint8(v_1311),
-		uint16(GPIPortNum),
-		uint16(GPOPortNum),
-	}
+func GET_READER_CONFIG(messageId, AntennaID, C_TYPE, GPIPortNum, GPOPortNum int) []byte {
 	return bundle(
 		M_GET_READER_CONFIG,
 		messageId,
-		config,
+		[]interface{}{
+			uint16(AntennaID),
+			uint8(C_TYPE),
+			uint16(GPIPortNum),
+			uint16(GPOPortNum),
+		},
 	)
 }
 

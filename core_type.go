@@ -84,8 +84,9 @@ type ConnHandler func(*RConn)
 type HandlerGPIToggle func(*GPITriggerEvent)
 
 type GPITriggerEvent struct {
+	ReaderId string
 	//  map[Port]StatePort
-	PortTrigger map[int]bool
+	PortTrigger map[int]int
 }
 
 // ErrHandler is used to process asynchronous errors encountered

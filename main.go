@@ -1,4 +1,4 @@
-package llrp
+package main
 
 import (
 	. "./llrp"
@@ -149,7 +149,7 @@ func handler(msg *Msg) {
 	}
 }
 func handler_toggle_port(evt *GPITriggerEvent) {
-
+	log.Infof("--- Toggle Port %s:%v", evt.ReaderId, evt.PortTrigger)
 }
 
 func main() {

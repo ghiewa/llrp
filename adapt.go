@@ -2,6 +2,8 @@ package llrp
 
 import (
 	"fmt"
+	log "github.com/sirupsen/logrus"
+	"math/rand"
 	"time"
 )
 
@@ -20,8 +22,72 @@ func (o Options) NewConn() *Conn {
 func (nc *Conn) Registry(reader *SPReaderInfo) error {
 	return nc.registry(reader)
 }
-func (nc *Conn) GPIToggleMonitor(reader_id string, port_trigger int, t time.Duration, cb HandlerGPIToggle) {
 
+func (nc *Conn) GPIToggleMonitor(reader_id string, port_trigger int, t time.Duration, cb HandlerGPIToggle) error {
+	if re, ok := nc.readers[reader_id]; ok {
+		// filter toggle gpi
+		var (
+			first       = false
+			pre_state   = 0
+			PortTrigger = uint16(port_trigger)
+		)
+
+		nc.subscribe(
+			func(msg *Msg) {
+				if msg.From.Id != reader_id && cb == nil {
+					return
+				}
+				for _, k := range msg.Reports {
+					switch k.(type) {
+					case *GetConfigResponse:
+						kk := k.(*GetConfigResponse)
+						if kk.GPI != nil {
+							// logic gpi
+							for _, v := range kk.GPI {
+								if v.Number == PortTrigger {
+									if first || v.State != pre_state {
+										pa := new(GPITriggerEvent)
+										pa.ReaderId = reader_id
+										pa.PortTrigger = map[int]int{
+											port_trigger: v.State,
+										}
+										cb(pa)
+										pre_state = v.State
+									}
+								}
+							}
+						}
+					}
+				}
+			}, nil,
+		)
+		go func() {
+			for {
+				select {
+				case <-time.After(t):
+					if re.conn.isClosed() {
+						return
+					}
+					err := re.conn.publish(
+						GET_READER_CONFIG(
+							rand.Int(),
+							0,
+							C_GET_READER_CONFIG_GPIPortCurrentState,
+							0,
+							0,
+						),
+					)
+					if err != nil {
+						log.Errorf("gpi error %s", err)
+					}
+
+				}
+			}
+		}()
+		return nil
+	} else {
+		return fmt.Errorf("Cann't find reader id")
+	}
 }
 
 func (nc *Conn) Lock() {
@@ -140,10 +206,10 @@ func (nc *Conn) GPIset(messageId int, reader_id string, port int, port_state boo
 func (nc *Conn) GPIget(messageId int, reader_id string) error {
 	if re, ok := nc.readers[reader_id]; ok {
 		return re.conn.publish(
-			GET_READER_CONFIG_V1311(
+			GET_READER_CONFIG(
 				messageId,
 				0,
-				V_1311_GPIPortCurrentState,
+				C_GET_READER_CONFIG_GPIPortCurrentState,
 				0,
 				0,
 			),
