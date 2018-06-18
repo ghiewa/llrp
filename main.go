@@ -29,14 +29,12 @@ func handler(msg *Msg) {
 		case *GetConfigResponse:
 			kk := k.(*GetConfigResponse)
 			log.Infof("[GET][%d] : %+v", kk.MsgId, kk.Status)
-
 			if kk.GPI != nil {
-				/*
-					log.Infof("\ngpi=")
-					for _, kkk := range kk.GPI {
-						log.Infof("[%d=%d],", kkk.Number, kkk.State)
-					}
-				*/
+
+				log.Infof("\ngpi=")
+				for _, kkk := range kk.GPI {
+					log.Infof("[%d=%d],", kkk.Number, kkk.State)
+				}
 				host.GPICheck(msg.From.Id, kk.GPI)
 			}
 		case *KeepaliveResponse:
