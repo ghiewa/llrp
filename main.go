@@ -153,7 +153,7 @@ func handler(msg *Msg) {
 func handler_toggle_port(evt *IOState) {
 	log.Infof("-- toggle %s- %v", evt.ReaderId, evt.Ports)
 	for v, k := range evt.Ports {
-		if k {
+		if k == 1 {
 			log.Info("port active on %d ", v)
 			ROSpecID := 1234
 			err := host.StartROSpec(rand.Int(), ROSpecID, evt.ReaderId)
