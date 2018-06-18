@@ -29,13 +29,15 @@ func handler(msg *Msg) {
 		case *GetConfigResponse:
 			kk := k.(*GetConfigResponse)
 			log.Infof("[GET][%d] : %+v", kk.MsgId, kk.Status)
-			if kk.GPI != nil {
-				log.Infof("\ngpi=")
-				for _, kkk := range kk.GPI {
-					log.Infof("[%d=%d],", kkk.Number, kkk.State)
-					host.GPICheck(msg.From.Id, kk.GPI)
-				}
 
+			if kk.GPI != nil {
+				/*
+					log.Infof("\ngpi=")
+					for _, kkk := range kk.GPI {
+						log.Infof("[%d=%d],", kkk.Number, kkk.State)
+					}
+				*/
+				host.GPICheck(msg.From.Id, kk.GPI)
 			}
 		case *KeepaliveResponse:
 			// ack form keepalive interval
@@ -152,6 +154,11 @@ func handler(msg *Msg) {
 }
 func handler_toggle_port(evt *IOState) {
 	log.Infof("-- toggle %+v", evt)
+	ROSpecID := 1234
+	err = host.StartROSpec(rand.Int(), ROSpecID, evt.ReaderId)
+	if err != nil {
+		log.Errorf("handler_toggle_port %v", err)
+	}
 }
 
 func main() {
